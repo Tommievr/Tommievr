@@ -1,6 +1,6 @@
-# AI Automation Agency — Main Focus
+# AI Automation Agency — Lead
 
-> FOCUS: Follow One Course Until Successful.
+> Status: lead (not the main focus). Main focus is the trading bot.
 
 **Offer:** I build AI automations for small businesses (email replies, appointment booking, invoice processing, content generation). One-off setup fee plus a monthly maintenance fee.
 
@@ -18,6 +18,5 @@ n8n or Make, Claude API, Python for custom parts.
 4. **Week 4 - Deliver and learn:** finish the first job, collect a testimonial, and write down what to improve.
 
 ## Rules
-- No new side projects until the first client is paid.
 - Trading bot and games are background projects, at most a few hours a week.
 - Track outreach and results in `log.md`.

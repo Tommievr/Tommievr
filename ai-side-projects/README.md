@@ -1,13 +1,13 @@
 # AI Side Projects
 
-**FOCUS: Follow One Course Until Successful.** Main course: the automation agency.
+**FOCUS: Follow One Course Until Successful.** Main course: the trading bot.
 
 Projects I'm building to earn some money on the side with AI.
 
 | Project | Status | Description |
 |---|---|---|
-| [ai-automation-agency](./ai-automation-agency) | **MAIN FOCUS** | AI automations for small businesses |
-| [trading-bot](./trading-bot) | Background | Automated trading bot |
+| [trading-bot](./trading-bot) | **MAIN FOCUS** | Automated trading bot |
+| [leads](./leads) | Exploring slowly | Side ideas, incl. the AI automation agency |
 | [games](./games) | Background | Small games built together with a friend |
 
 ## Ideas / backlog
