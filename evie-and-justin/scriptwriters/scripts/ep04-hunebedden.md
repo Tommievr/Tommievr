@@ -134,6 +134,7 @@ EVIE: Three — **Today.** We can still walk beside them.
 JUSTIN: Hold on. So the ice is way back there, the farmers are somewhere in the middle, and we're at the end?
 EVIE: Yes. And the ribbon between each card is longer than you'd think.
 JUSTIN: Five thousand years. That's eighty lifetimes, one after another.
+EVIE: Good thing we've got all the time in the world.
 EVIE: Imagine eighty grandmas in a row, each handing the story to the next.
 JUSTIN: And my grandma still forgets where she put her glasses.
 EVIE: And the stones are still here. Still sleeping.

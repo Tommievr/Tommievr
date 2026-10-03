@@ -207,7 +207,7 @@ JUSTIN: And we leave before the tide comes back.
 EVIE: This is the end of our first big season, friends.
 COTTON: Will we see you again?
 TOFFEE: Please say yes. Please, please.
-JUSTIN: We'll meet again. (smiles) There's a lot of Netherlands left.
+JUSTIN: We'll meet again. (smiles) There's a lot of Netherlands left, and we've got all the time in the world.
 [Teaser card: "More little adventures soon."]
 
 **GOODNIGHT OUTRO (0:30)**

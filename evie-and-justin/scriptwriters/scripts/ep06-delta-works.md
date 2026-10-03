@@ -47,15 +47,16 @@ JUSTIN: Especially if there's mud.
 **EXPLORE & DISCOVER (5:00)**
 *Scene 1 — The storm that changed everything (1:15)*
 [A quiet museum corner, with a storybook illustration of a stormy night.]
-EVIE: A long time ago, in 1953, there was a terrible storm.
+EVIE: A long time ago, in 1953, there was a very big storm.
 COTTON: What happened?
 EVIE: The sea rose very high and broke through dikes. Water rushed over the land in the night.
 [Soft storybook flashback: dark waves, lit windows, rooftops. Calm music.]
-EVIE: More than eighteen hundred people died. Many families lost their homes.
-TOFFEE (very quiet): That's so sad.
-COTTON: It's okay to feel sad. [bell rings softly]
+EVIE: Many families had to leave their homes. It was a very hard time.
+TOFFEE (very quiet): That sounds so sad.
+COTTON: It's okay to feel that. [bell rings softly]
+EVIE: But people helped each other. They rebuilt their homes, together.
 JUSTIN: And that's when the Dutch said, never again.
-EVIE: Together, people decided to make the land safer.
+EVIE: Together, they decided to make the land safer.
 COTTON: So they built big walls?
 EVIE: Yes. A huge plan, called the Delta Works. Dams, barriers and gates along the coast of Zeeland.
 JUSTIN: A *very* big plan.
