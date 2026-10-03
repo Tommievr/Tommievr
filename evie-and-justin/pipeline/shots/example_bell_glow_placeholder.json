@@ -1,0 +1,20 @@
+{
+  "shot_id": "test_bell_glow",
+  "duration_s": 3.0,
+  "fps": 24,
+  "aspect": "16:9",
+  "variant": "dusk",
+  "spoiler": "ep07",
+  "background": "placeholder",
+  "characters": [
+    {"name": "cotton", "model": null, "pos": [-0.25, 0.1, 0], "rot_z": 15},
+    {"name": "toffee", "model": null, "pos": [ 0.25, 0.1, 0], "rot_z": -15}
+  ],
+  "camera": {"preset": "medium_two", "distance_scale": 0.9},
+  "fx": [
+    {"type": "drink", "option": "blossom", "pos": [0, -0.4, 0]},
+    {"type": "bell_glow", "characters": ["cotton", "toffee"], "frame": 6, "length": 60}
+  ],
+  "render": {"samples": 24, "percent": 60},
+  "out": "pipeline/renders/test_bell_glow"
+}

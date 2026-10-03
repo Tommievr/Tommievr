@@ -3,12 +3,14 @@
   "duration_s": 4.0,
   "fps": 24,
   "aspect": "16:9",
+  "variant": "golden",
   "background": "afsluitdijk",
   "characters": [
-    {"name": "evie",   "model": "pipeline/meshy/evie/rigged/evie.glb",   "pos": [-0.8, 0, 0], "anim": "walk"},
-    {"name": "justin", "model": "pipeline/meshy/justin/rigged/justin.glb", "pos": [ 0.8, 0, 0], "anim": "walk"}
+    {"name": "evie",   "model": "pipeline/meshy/evie/rigged/evie.blend",   "collection": "evie",   "pos": [-0.35, 0, 0], "rot_z": 15, "height_m": 0.22, "anim": "idle_breathe", "expression": "happy"},
+    {"name": "justin", "model": "pipeline/meshy/justin/rigged/justin.blend", "collection": "justin", "pos": [ 0.35, 0, 0], "rot_z": -15, "height_m": 0.22, "anim": "idle_breathe", "expression": "curious",
+     "lipsync": "pipeline/renders/audio/ep01_s01_001_justin.json"}
   ],
-  "camera": {"pos": [0, -6, 1.6], "look_at": [0, 0, 0.6], "lens_mm": 45},
+  "camera": {"preset": "medium_two", "yaw": 0},
   "audio": {"file": "pipeline/renders/audio/ep01_s01_001.wav"},
   "out": "pipeline/renders/ep01_s01_001"
 }

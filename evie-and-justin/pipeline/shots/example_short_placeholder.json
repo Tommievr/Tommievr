@@ -1,0 +1,15 @@
+{
+  "shot_id": "test_short_placeholder",
+  "duration_s": 2.0,
+  "fps": 24,
+  "aspect": "9:16",
+  "variant": "dusk",
+  "background": "placeholder",
+  "characters": [
+    {"name": "cotton", "model": null, "pos": [-0.35, 0, 0], "rot_z": 20},
+    {"name": "toffee", "model": null, "pos": [ 0.35, 0, 0], "rot_z": -20}
+  ],
+  "camera": {"preset": "medium_two"},
+  "render": {"samples": 24, "percent": 40},
+  "out": "pipeline/renders/test_short_placeholder"
+}

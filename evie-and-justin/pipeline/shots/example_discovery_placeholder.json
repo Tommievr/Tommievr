@@ -1,0 +1,70 @@
+{
+  "shot_id": "test_discovery",
+  "duration_s": 2.0,
+  "fps": 24,
+  "aspect": "16:9",
+  "variant": "dusk",
+  "background": "placeholder",
+  "characters": [
+    {
+      "name": "evie",
+      "model": null,
+      "pos": [
+        -0.32,
+        0.1,
+        0
+      ],
+      "rot_z": 25
+    },
+    {
+      "name": "justin",
+      "model": null,
+      "pos": [
+        0.32,
+        0.1,
+        0
+      ],
+      "rot_z": -25
+    }
+  ],
+  "camera": {
+    "preset": "medium_two"
+  },
+  "fx": [
+    {
+      "type": "drink",
+      "option": "blossom",
+      "pos": [
+        0,
+        -0.35,
+        0
+      ]
+    },
+    {
+      "type": "tag_glow",
+      "characters": [
+        "evie",
+        "justin"
+      ],
+      "frame": 6,
+      "length": 40,
+      "peak": 2.6
+    },
+    {
+      "type": "sparkles",
+      "pos": [
+        0,
+        -0.35,
+        0.12
+      ],
+      "frame": 6,
+      "count": 40,
+      "radius": 0.2
+    }
+  ],
+  "render": {
+    "samples": 24,
+    "percent": 40
+  },
+  "out": "pipeline/renders/test_discovery"
+}

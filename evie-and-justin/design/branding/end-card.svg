@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080" role="img" aria-label="End card 1920x1080 (mockup). Dashed boxes = YouTube end-screen element slots; keep slots free of art. Dusk look.">
+<title>End card 1920x1080 (mockup). Dashed boxes = YouTube end-screen element slots; keep slots free of art. Dusk look.</title>
+<defs>
+<g id="evie-head">
+  <path d="M-62,-30 L-70,-92 Q-68,-100 -60,-96 L-22,-62 Z" fill="#F5EFE9"/>
+  <path d="M62,-30 L70,-92 Q68,-100 60,-96 L22,-62 Z" fill="#F5EFE9"/>
+  <path d="M-58,-44 L-62,-80 L-34,-60 Z" fill="#F3A38F"/>
+  <path d="M58,-44 L62,-80 L34,-60 Z" fill="#F3A38F"/>
+  <ellipse cx="0" cy="0" rx="82" ry="70" fill="#F5EFE9"/>
+  <path d="M-66,-44 Q-48,-86 -22,-66 Q-34,-52 -46,-34 Q-58,-30 -66,-44 Z" fill="#1A1412"/>
+  <circle cx="-30" cy="4" r="18" fill="#fff"/><circle cx="30" cy="4" r="18" fill="#fff"/>
+  <circle cx="-28" cy="6" r="13" fill="#0A67A0"/><circle cx="32" cy="6" r="13" fill="#0A67A0"/>
+  <circle cx="-28" cy="6" r="7" fill="#05080C"/><circle cx="32" cy="6" r="7" fill="#05080C"/>
+  <circle cx="-24" cy="0" r="3.5" fill="#fff"/><circle cx="36" cy="0" r="3.5" fill="#fff"/>
+  <path d="M-6,30 L6,30 L0,38 Z" fill="#F2958A"/>
+  <path d="M-14,44 Q0,56 14,44" fill="none" stroke="#7a4a44" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="-52" cy="30" r="9" fill="#F7C2B3" opacity=".7"/><circle cx="52" cy="30" r="9" fill="#F7C2B3" opacity=".7"/>
+</g>
+<g id="justin-head">
+  <path d="M-62,-30 L-70,-92 Q-68,-100 -60,-96 L-22,-62 Z" fill="#2A1A14"/>
+  <path d="M62,-30 L70,-92 Q68,-100 60,-96 L22,-62 Z" fill="#2A1A14"/>
+  <path d="M-58,-44 L-62,-80 L-34,-60 Z" fill="#EBA591"/>
+  <path d="M58,-44 L62,-80 L34,-60 Z" fill="#EBA591"/>
+  <ellipse cx="0" cy="0" rx="86" ry="70" fill="#2A1A14"/>
+  <circle cx="-30" cy="4" r="19" fill="#FBF4EE"/><circle cx="30" cy="4" r="19" fill="#FBF4EE"/>
+  <circle cx="-28" cy="6" r="13" fill="#3F8A1E"/><circle cx="32" cy="6" r="13" fill="#3F8A1E"/>
+  <circle cx="-28" cy="6" r="7" fill="#05080C"/><circle cx="32" cy="6" r="7" fill="#05080C"/>
+  <circle cx="-24" cy="0" r="3.5" fill="#fff"/><circle cx="36" cy="0" r="3.5" fill="#fff"/>
+  <path d="M-6,30 L6,30 L0,38 Z" fill="#B9564A"/>
+  <path d="M-14,44 Q0,56 14,44" fill="none" stroke="#b9a89a" stroke-width="3.5" stroke-linecap="round"/>
+</g>
+<g id="tag">
+  <circle r="26" fill="#EBA02B" stroke="#B8700A" stroke-width="3"/>
+  <ellipse cx="0" cy="6" rx="9" ry="8" fill="#B8700A"/>
+  <circle cx="-11" cy="-6" r="4" fill="#B8700A"/><circle cx="-4" cy="-13" r="4" fill="#B8700A"/>
+  <circle cx="4" cy="-13" r="4" fill="#B8700A"/><circle cx="11" cy="-6" r="4" fill="#B8700A"/>
+</g>
+<g id="pair">
+  <use href="#evie-head" x="-78" y="0" transform="rotate(-6 -78 0)"/>
+  <use href="#justin-head" x="78" y="10" transform="rotate(6 78 10)"/>
+  <path d="M-130,64 Q-78,92 -30,70" fill="none" stroke="#B3203C" stroke-width="9" stroke-linecap="round"/>
+  <path d="M30,80 Q80,104 134,76" fill="none" stroke="#22160F" stroke-width="9" stroke-linecap="round"/>
+  <use href="#tag" x="-76" y="100" transform="scale(.7) translate(-32 43)"/>
+  <use href="#tag" x="82" y="108" transform="scale(.7) translate(35 46)"/>
+</g>
+<g id="badge">
+  <circle r="380" fill="#FFF1D6"/>
+  <circle r="380" fill="none" stroke="#EBA02B" stroke-width="20"/>
+  <path d="M-380,120 Q0,40 380,120 L380,0 A380,380 0 0 0 -380,0 Z" fill="none"/>
+  <clipPath id="bclip"><circle r="368"/></clipPath>
+  <g clip-path="url(#bclip)">
+    <rect x="-380" y="-380" width="760" height="470" fill="#8EC8F0"/>
+    <rect x="-380" y="-60" width="760" height="150" fill="#FFD9A8" opacity=".85"/>
+    <circle cx="150" cy="-40" r="70" fill="#FFC76B"/>
+    <rect x="-380" y="90" width="760" height="290" fill="#8CBF6A"/>
+    <rect x="-380" y="80" width="760" height="20" fill="#3FA7A6"/>
+    <use href="#pair" transform="translate(0 30) scale(1.75)"/>
+  </g>
+</g>
+<linearGradient id="esky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2B2D52"/><stop offset=".7" stop-color="#8E6BA8"/><stop offset="1" stop-color="#F2A5A0"/></linearGradient></defs>
+
+<rect width="1920" height="1080" fill="url(#esky)"/><rect y="760" width="1920" height="320" fill="#4F5B73" opacity=".35"/><text x="960" y="150" font-family="'Fredoka','Baloo 2','Nunito','Trebuchet MS',sans-serif" font-size="84" font-weight="700" fill="#FFF1D6" text-anchor="middle" >Goodnight, little adventurers</text><text x="960" y="215" font-family="'Fredoka','Baloo 2','Nunito','Trebuchet MS',sans-serif" font-size="44" font-weight="500" fill="#FFD9A8" text-anchor="middle" >More adventures are waiting...</text><rect x="150" y="300" width="760" height="428" rx="30" fill="none" stroke="#EBA02B" stroke-width="8" stroke-dasharray="26 14"/><text x="530" y="530" font-family="'Fredoka','Baloo 2','Nunito','Trebuchet MS',sans-serif" font-size="38" font-weight="500" fill="#FFF1D6" text-anchor="middle" >VIDEO 1 (next episode)</text><rect x="1010" y="300" width="760" height="428" rx="30" fill="none" stroke="#EBA02B" stroke-width="8" stroke-dasharray="26 14"/><text x="1390" y="530" font-family="'Fredoka','Baloo 2','Nunito','Trebuchet MS',sans-serif" font-size="38" font-weight="500" fill="#FFF1D6" text-anchor="middle" >VIDEO 2 (best for viewer)</text><circle cx="960" cy="860" r="90" fill="none" stroke="#FFC76B" stroke-width="8" stroke-dasharray="20 12"/><text x="960" y="868" font-family="'Fredoka','Baloo 2','Nunito','Trebuchet MS',sans-serif" font-size="24" font-weight="600" fill="#FFF1D6" text-anchor="middle" >SUBSCRIBE</text><g transform="translate(300 940) scale(.55)"><use href="#pair"/></g><g transform="translate(1620 940) scale(.55)"><use href="#pair"/></g><circle cx="1700" cy="120" r="60" fill="#FFC76B" opacity=".5"/>
+</svg>
