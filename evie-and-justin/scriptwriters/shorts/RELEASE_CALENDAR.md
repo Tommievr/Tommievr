@@ -36,13 +36,13 @@ Canonical text: **"Full episode on Day 4!"** Countdown variants per short:
 - Day 1 short: "Full episode in 3 days (Day 4)" · Day 2: "in 2 days (Day 4)" · Day 3: "TOMORROW (Day 4)". Platform mapping: pin the Ep. link in the first comment; use the 'Related video' field.
 
 ## Titles / captions / hashtags
-Rules: ≤ 60 chars, English, one emoji, no clickbait that isn't true in the video, kid-safe, no personal data. Lore: the kittens-don't-age drink is clearly fantasy.
+Rules: ≤ 60 chars, English, one emoji, no clickbait that isn't true in the video, kid-safe, no personal data. Lore: the Moondew Blossom (kittens don't age) is clearly fantasy; Ep.1 captions carry the line 'Real kids: never taste things you find, ask a grown-up'. Green/red paw cues always paired with sound + icon. Do NOT spoil the Ep.7 lamb-drink moment anywhere.
 
 
 ### Ep.1 — The Land Below the Sea (Afsluitdijk) · Days 1–4
-- **Day 1 — Hook:** title *What if you never grew up? 🐱✨* · caption: Evie and Justin never grow up… and tonight they explore a sea wall! Full episode in 3 days (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Afsluitdijk #Dikes
+- **Day 1 — Hook:** title *What if you never grew up? 🐱✨* · caption: What if you never grew up? Evie and Justin found a Moondew Blossom (it's a story! Real kids never taste things they find. Ask a grown-up!). Full episode in 3 days (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Afsluitdijk #Dikes
 - **Day 2 — Fun fact:** title *A sea that became a LAKE! 🌊* · caption: Salty sea → freshwater lake. How did it happen? Full episode in 2 days (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Afsluitdijk #Dikes
-- **Day 3 — Cliffhanger:** title *32 km… and a glowing mystery 😮* · caption: A very long walk, and something glowing at the end… Full episode TOMORROW (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Afsluitdijk #Dikes
+- **Day 3 — Cliffhanger:** title *A glowing flower on the dike 🌸* · caption: A glowing flower, a green paw and a big question. Ask a grown-up before you ever try anything you find! Full episode TOMORROW (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Afsluitdijk #Dikes
 - **Day 4 — FULL EPISODE:** title *The Land Below the Sea | Evie & Justin's Little Adventures* · caption: Two kittens ask how a country can live below the sea. Dikes, gates and one very long wall. Goodnight beat included. 🌙 · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Afsluitdijk #Dikes #Cartoon
 
 ### Ep.2 — The Island That Disappeared (Schokland) · Days 5–8

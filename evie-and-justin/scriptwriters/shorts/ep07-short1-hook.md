@@ -8,14 +8,15 @@ script_aligned: yes
 ---
 **ON-SCREEN TEXT (big, top safe zone):** "WHERE DID THE SEA GO?"
 
-**HOOK (0–3 s):** Endless shining mudflat under a pink sky; four small figures on a firm path, a guide's shadow ahead.
+**HOOK (0–3 s):** Endless shining mudflat under a pink sky; four small figures on a firm path, a guide's shadow ahead. Paw symbol glows GREEN (chime + check) because the guide is with them.
 
 **BODY:**
 TOFFEE: Where did the water go?
 COTTON: It went… out.
 EVIE: We're walking on the sea floor!
-JUSTIN: With a guide. Don't try this at home.
-TOFFEE: Or at the beach. Or anywhere without a guide.
+[Paw symbol: GREEN, chime + check.]
+JUSTIN: Safe, because we have a guide. Don't try this at home.
+TOFFEE: Or anywhere without a guide.
 JUSTIN: Wow. Toffee listened.
 
 **FRAMING (9:16):** Vertical 9:16. Evie & Justin centred in the middle third; big text in the top safe zone (keep clear of the bottom ~20% for app UI and the sides ~8%). Colours per CHARACTERS.md.
@@ -24,5 +25,6 @@ JUSTIN: Wow. Toffee listened.
 
 **FACTS & SOURCES:**
 - Wadlopen = guided walk across the seabed at low tide: https://www.holland.com/global/tourism/discover-the-netherlands/visit-the-regions/wadden-islands/mud-flat-walking
+- Green/red paw: lead/DECISIONS.md item 10: evie-and-justin/lead/DECISIONS.md
 
-**NOTES:** Safety: guide must be heard/seen (shadow, boots). Never imply walking out alone.
+**NOTES:** Safety: guide must be heard/seen (shadow, boots). Never imply walking out alone. No lamb-drink content (Ep.7 spoiler rule).

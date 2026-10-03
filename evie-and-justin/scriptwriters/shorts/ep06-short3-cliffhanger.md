@@ -8,15 +8,15 @@ script_aligned: yes
 ---
 **ON-SCREEN TEXT (big, top safe zone):** "WHEN THE STORM COMES…"
 
-**HOOK (0–3 s):** Dark clouds, wind, rising waves; the four friends safely behind a railing.
+**HOOK (0–3 s):** Dark clouds, wind, rising waves; the four friends safely behind a railing. Evie's paw symbol turns RED (low hum + X icon) when Toffee leans toward the edge.
 
 **BODY:**
 EVIE: What if the sea is like a big friendly dog?
 JUSTIN: A dog. Okay.
 EVIE: Most days it plays. In a storm, it gets the zoomies!
-COTTON: So the gate is a baby gate.
-TOFFEE: Can I try one?
-COTTON AND JUSTIN: No!
+TOFFEE: Can I peek at the water?
+[Paw symbol turns RED: hum + X.]
+COTTON AND JUSTIN: Back from the edge!
 
 **FRAMING (9:16):** Vertical 9:16. Evie & Justin centred in the middle third; big text in the top safe zone (keep clear of the bottom ~20% for app UI and the sides ~8%). Colours per CHARACTERS.md.
 
@@ -24,5 +24,6 @@ COTTON AND JUSTIN: No!
 
 **FACTS & SOURCES:**
 - Gates close at storm surge (~3 m above NAP); closed only ~30 times so far (count grows - verify): https://en.wikipedia.org/wiki/Oosterscheldekering
+- Green/red paw: lead/DECISIONS.md item 10: evie-and-justin/lead/DECISIONS.md
 
-**NOTES:** No flood imagery, no casualty numbers. Everyone behind railings. Fun, light tone.
+**NOTES:** No flood imagery, no casualty numbers (confirmed none in current Ep.6 script). Everyone behind railings; paw turns GREEN again with a chime once behind the rail.

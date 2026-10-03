@@ -8,10 +8,11 @@ script_aligned: yes
 ---
 **ON-SCREEN TEXT (big, top safe zone):** "THE TIDE IS COMING BACK!"
 
-**HOOK (0–3 s):** Thin sheets of water slide across the flat; group heads calmly to the dike.
+**HOOK (0–3 s):** Thin sheets of water slide across the flat; Evie's paw symbol turns RED (hum + X) as the water appears, then the group heads calmly to the dike and it turns GREEN.
 
 **BODY:**
 COTTON: Is that the sea?
+[Paw symbol: RED, hum + X.]
 GUIDE (off-screen): The tide, coming in. Time to turn back.
 TOFFEE: Is it chasing us?
 GUIDE: No. It's doing what it does, twice a day.
@@ -24,5 +25,6 @@ GUIDE: Walk.
 
 **FACTS & SOURCES:**
 - Groups walk back before the tide returns: https://www.sylt.de/en/veranstaltungen/wattwanderungen
+- Green/red paw: lead/DECISIONS.md item 10: evie-and-justin/lead/DECISIONS.md
 
-**NOTES:** Calm, never scary. Guide is a voice only.
+**NOTES:** Calm, never scary. Guide is a voice only. Do not spoil the Ep.7 ending (no drink/birthday content).
