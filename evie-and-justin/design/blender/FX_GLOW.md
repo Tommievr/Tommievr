@@ -118,3 +118,12 @@ Palette: lilac `#B9A2FF` = the drink, gold `#FFB520` = the bell, so the bell vis
 - The Ep.7 reveal (lambs + drink + glowing bells) must **not** appear in any earlier Short, thumbnail or teaser. Mark shot specs with `"spoiler": "ep07"`; `build_shot.py` prints a **WARNING** when such a shot is rendered, and a louder one in 9:16 (Shorts).
 - Ep.5-6 may foreshadow only through dialogue (lambs wanting to stay little / birthdays), not with the glow.
 - Shorts for Ep.7 itself should use a cut **before** the bells glow (cliffhanger rule from the episode slate).
+
+# 10. Evie's pouch: glow-peek and open
+Full spec in `../props/EVIE_POUCH.md`. Code: `fx.make_pouch`, `fx.pouch_peek`, `fx.pouch_open`; render `example_pouch_peek.png`. Spec snippets:
+```json
+{"name": "evie", "pouch": true}                                        // on the character: builds the pouch beside the tag
+{"type": "pouch_peek", "characters": ["evie"], "frame": 12, "length": 72}   // Ep.4 tease / Ep.7 opening beat: faint lilac glow + 6 tiny sparkles
+{"type": "pouch_open", "characters": ["evie"], "frame": 12, "length": 72}   // Ep.7 SPOILER: loosens, glow 1.5, lilac+gold burst
+```
+Faint on purpose (emission ≤ 0.9, light ≤ 3 W). Never in Shorts unless the script allows it.

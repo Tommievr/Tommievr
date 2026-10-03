@@ -77,6 +77,8 @@ def build(spec, aspect=None, variant=None):
     if spec.get("spoiler"):
         msg = f"this shot is a SPOILER for {spec['spoiler']}"
         print(f"[evg] WARNING: {msg}" + (": do NOT publish it as a Short/thumbnail before release!" if aspect == "9:16" else ""))
+    if aspect == "9:16" and any(f.get("type") in ("pouch_peek", "pouch_open") for f in spec.get("fx", [])):
+        print("[evg] WARNING: pouch glow in a Short: only if the script marks this frame as spoiler-safe (pouch_open = Ep.7 reveal)")
     fx.apply_fx(spec.get("fx"), {c["name"]: rt for c, rt in zip(spec["characters"], roots)}, spec.get("fps", 24))
     if spec.get("tag_glow"):
         g = spec["tag_glow"]

@@ -50,6 +50,16 @@ The gold paw symbol on Evie's tag turns **GREEN (safe) / RED (unsafe)**. Both ca
 Colours are chosen for colour-blind viewers (deuteranopia ΔE 52); **never colour alone**: glyph + ring + pulse + sound always accompany it. Recipe, code and sound table: `../blender/FX_GLOW.md` sections 8.1-8.3.
 **Build note:** the tag must be a plain gold disc with a **separate paw symbol** (Meshy's baked paw print cannot change colour): `fx.make_tag_disc(...)`, details in `FX_GLOW.md` section 8.4. On-model check: at rest the tag looks like the reference (gold disc, darker gold paw print).
 
+## Pouch (carried all season, Ep.1 on)
+A **tiny chunky cloth drawstring pouch** hangs from Evie's collar **beside her paw tag** (on her left, +X side). She carries the petal with the glowing drop in it all season and opens it for the lambs in Ep.7. Justin has none.
+| Part | Hex | Note |
+|---|---|---|
+| Cloth | **`#CDB8F2`** soft lilac | stands out on white fur; ties to the Moondew Blossom (cream `#F6EBD3` only as an alternative) |
+| Drawstring | `#FFF1D6` cream | with two tiny string ends |
+| Strap | `#D01F4B` | same raspberry as her collar |
+| Inside / glow | `#4A3A5A` / `#B9A2FF` | glow only during `pouch_peek` / `pouch_open` |
+Size: sack ≈ 3.4 x 3.8 cm (about the tag's width), hangs ≈ 2.5 cm below the collar, gap to the tag ≥ 1.5 cm; flat toon colour, no cloth texture, **no clipping through the tag, neck or chest** in idle/walk. Build and rig: `../props/EVIE_POUCH.md` (hand-built, parented to `collar_root`). On-model: [ ] pouch present from Ep.1 on · [ ] lilac, chunky, on the left of the tag · [ ] never on Justin.
+
 ## Expression notes (`COMMON.md` section 3)
 happy: big shining eyes, blush, tiny fangs · curious: head tilt to the patch side · surprised: huge eyes, thin iris ring · scared_but_brave: ears flat, shining eyes, little chin up · sleepy: slow lids, tail wrapped · laughing: arcs, wide mouth.
 
