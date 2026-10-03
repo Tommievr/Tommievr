@@ -1,0 +1,14 @@
+{
+  "shot_id": "ep01_s01_001",
+  "duration_s": 4.0,
+  "fps": 24,
+  "aspect": "16:9",
+  "background": "afsluitdijk",
+  "characters": [
+    {"name": "evie",   "model": "pipeline/meshy/evie/rigged/evie.glb",   "pos": [-0.8, 0, 0], "anim": "walk"},
+    {"name": "justin", "model": "pipeline/meshy/justin/rigged/justin.glb", "pos": [ 0.8, 0, 0], "anim": "walk"}
+  ],
+  "camera": {"pos": [0, -6, 1.6], "look_at": [0, 0, 0.6], "lens_mm": 45},
+  "audio": {"file": "pipeline/renders/audio/ep01_s01_001.wav"},
+  "out": "pipeline/renders/ep01_s01_001"
+}

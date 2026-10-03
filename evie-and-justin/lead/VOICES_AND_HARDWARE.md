@@ -22,3 +22,6 @@ If the device can't even generate stills: use free cloud GPU tiers/colab-style n
 
 ## Decision
 First test: **Kokoro local TTS** using the Ep.1 script. Re-check its licence for monetised use before release.
+
+## Update
+Hardware is strong, so the low-compute still-image plan is now only a fallback. Voices needed: Evie, Justin, Cotton (from Ep.4/5), Toffee, plus narrator. Test Kokoro voices for all five.

@@ -11,3 +11,6 @@ Third channel next to `lead/` and `scriptwriters/`. Job: **keep Evie & Justin ex
 
 ## Approval
 Design proposals → lead approval → locked in `STYLE_GUIDE.md`. Nothing is "canon" until locked.
+
+## Update: 3D pipeline
+Characters will be built as 3D models with Meshy and animated in Blender via Python. See `meshy/MESHY_BRIEF.md`. Lambs (Cotton, Toffee) join mid-season; their sheets use the same format.
