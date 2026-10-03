@@ -12,10 +12,14 @@ Get 7 episodes + 21 shorts through a repeatable pipeline.
 6. **Shorts cut-down** → vertical 9:16 reframing
 7. **QA**: facts, character consistency, kid-safety, ≤10:00
 
-## Open decisions for tomorrow
-- What hardware (GPU/VRAM) and which generation tools/models will be used?
-- Voice approach: human voice actors vs. synthetic?
-- Real Dutch location footage/photos as backgrounds vs. fully generated worlds?
+## Decisions made
+- **World:** fully generated, cartoony (see `../design/STYLE_GUIDE.md`).
+- **Design team:** `../design/` — cats on-model, better backgrounds. Channel name/logo: TBD.
+- **Voices:** free/open options only for now (see `VOICES_AND_HARDWARE.md`).
+
+## Open decisions
+- Hardware unknown: run `../tools/hardware_check.sh` and share the output.
+- Final voice choice after listening tests.
 - Channel name, logo, upload account.
 
 ## Suggested order

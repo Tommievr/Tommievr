@@ -7,6 +7,8 @@ Netherlands and explain one concept per episode along the way.
 |---|---|
 | `lead/` | Channel bible, characters, episode slate, production + shorts plan. Owned by the **lead** (Tommie + Claude). |
 | `scriptwriters/` | Separate workspace for script writers: guide, templates, drafts. |
+| `design/` | Design team: character sheets, style guide, generated cartoony backgrounds. |
+| `tools/` | Helper scripts (e.g. `hardware_check.sh`). |
 | `assets/` | Character reference art and shared visuals. |
 
 ## Two channels, two jobs
