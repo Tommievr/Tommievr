@@ -10,6 +10,8 @@ Spec (in a shot JSON):  "fx": [
   {"type": "tag_state", "characters": ["evie"],           "state": "unsafe", "frame": 12, "length": 72},
   {"type": "pouch_peek", "characters": ["evie"], "frame": 12, "length": 72},            # faint lilac glow from Evie's pouch (Ep.4, Ep.7 opening)
   {"type": "pouch_open", "characters": ["evie"], "frame": 12, "length": 72},            # Ep.7: pouch opened for the lambs (SPOILER)
+  {"type": "flower_crown", "characters": ["cotton"], "frame": 12},                      # lamb birthday crown (pops in at frame)
+  {"type": "birthday", "characters": ["cotton", "toffee"], "frame": 12, "length": 72}, # crown + lilac bell glow (reuses bell_glow), no cake
   {"type": "bell_glow", "characters": ["cotton", "toffee"], "frame": 12, "length": 72}      # Ep.7 spoiler: never in Shorts before release
 ]
 """
@@ -19,7 +21,7 @@ import random
 import bpy
 
 from . import toon
-from .palette import BELL_DRINK, DRINK, GOLD, POUCH, TAG_STATE, hex_to_linear_rgba
+from .palette import BELL_DRINK, CROWN, DRINK, GOLD, POUCH, TAG_STATE, hex_to_linear_rgba
 
 
 # ---------------------------------------------------------------- emission helpers
@@ -575,6 +577,72 @@ def pouch_open(root, frame=12, length=72, peak=1.5):
     return 1
 
 
+# ---------------------------------------------------------------- lamb birthday: flower crown (+ bell_glow)
+def make_flower_crown(root, scheme=None, n=7, frame=None, center=None, radius=None, tilt_deg=-8.0):
+    """Chunky flower crown for a lamb (placeholder-sized: head centre (0,-0.17,0.24)*1.3, wool crown on top).
+    A thin green vine ring with n flowers (5 chunky petals + gold centre, colours cycle through the lamb's scheme) and small leaves
+    between them. The ring sits ON the wool crown (30 % sunk into the clumps), tilted 8 degrees forward so the front flowers face the camera, well above the floppy ears
+    (ear attachment is 0.06 m lower) so nothing clips. frame=None: always visible; frame=N: pops in (scale 0 -> 1.15 -> 1 in 10 frames).
+    Real models: build the same way by hand, parent '<name>_crown' to the head bone; keep the ring radius = 72 % of the head width at
+    the crown height and the vine inside the wool bumps (see design/props/FLOWER_CROWN.md)."""
+    name = root.name.replace("_root", "")
+    s = 1.3                                   # lamb scale (placeholder)
+    colors = scheme or CROWN.get(name, CROWN["cotton"])
+    c = center or (0.0, -0.188 * s, 0.298 * s)
+    r = radius or 0.068 * s
+    anchor = bpy.data.objects.new(f"{name}_crown", None)
+    bpy.context.scene.collection.objects.link(anchor)
+    anchor.parent = root
+    anchor.location = c
+    anchor.rotation_euler = (math.radians(tilt_deg), 0, 0)
+    vine_m = toon.simple_material("crown_vine", CROWN["vine"], rim_strength=0.15)
+    leaf_m = toon.simple_material("crown_leaf", CROWN["leaf"], rim_strength=0.15)
+    centre_m = toon.simple_material("crown_centre", CROWN["centre"], rim_strength=0.2)
+    petal_m = [toon.simple_material(f"crown_petal_{i}", h, rim_strength=0.2) for i, h in enumerate(colors)]
+
+    def prim(kind, nm, loc, sc, mat, rot=None, minor=0.2):
+        if kind == "sphere":
+            bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, radius=1, location=(0, 0, 0))
+        else:
+            bpy.ops.mesh.primitive_torus_add(major_radius=1, minor_radius=minor, major_segments=48, minor_segments=8, location=(0, 0, 0))
+        o = bpy.context.active_object
+        o.name = f"{name}_crown_{nm}"
+        o.parent = anchor
+        o.location, o.scale = loc, sc
+        if rot:
+            o.rotation_euler = rot
+        bpy.ops.object.shade_smooth()
+        o.data.materials.append(mat)
+        return o
+
+    prim("torus", "vine", (0, 0, 0), (r, r, r), vine_m, minor=0.045)
+    fr = 0.0155 * s                            # flower radius: chunky (about a fifth of the ring radius x 1.6)
+    for i in range(n):
+        a = i * math.tau / n
+        x, y = math.cos(a) * r, math.sin(a) * r
+        pm = petal_m[i % len(petal_m)]
+        for k in range(5):
+            b = k * math.tau / 5
+            prim("sphere", f"f{i}p{k}", (x + math.cos(b) * fr * 0.62, y + math.sin(b) * fr * 0.62, 0.004 * s),
+                 (fr * 0.55, fr * 0.55, fr * 0.32), pm)
+        prim("sphere", f"f{i}c", (x, y, 0.007 * s), (fr * 0.38, fr * 0.38, fr * 0.30), centre_m)
+        # leaf pair between this flower and the next, lying along the ring
+        a2 = a + math.tau / (2 * n)
+        prim("sphere", f"l{i}", (math.cos(a2) * r, math.sin(a2) * r, 0.001 * s), (fr * 0.45, fr * 0.22, fr * 0.14), leaf_m, rot=(0, 0, a2 + math.pi / 2))
+    if frame is not None:
+        for f, sc in ((max(1, frame - 1), 0.0), (frame + 6, 1.15), (frame + 10, 1.0)):
+            anchor.scale = (sc, sc, sc)
+            anchor.keyframe_insert("scale", frame=f)
+    return anchor
+
+
+def birthday(root, frame=12, length=72):
+    """Lamb birthday (Ep.7): flower crown pops in and the bell glows lilac/gold (bell_glow reused). No cake. Celebration, not ageing.
+    SPOILER if combined with the drink glow; the plain crown alone is fine for Shorts only if the script says so."""
+    make_flower_crown(root, frame=frame)
+    return bell_glow(root, frame + 4, length)
+
+
 def apply_fx(spec_fx, roots_by_name, fps=24):
     """Apply the "fx" list of a shot spec."""
     for fx in spec_fx or []:
@@ -602,6 +670,14 @@ def apply_fx(spec_fx, roots_by_name, fps=24):
             for n in fx.get("characters", ["evie"]):
                 if n in roots_by_name:
                     pouch_open(roots_by_name[n], fx.get("frame", 12), fx.get("length", 72), fx.get("peak", 1.5))
+        elif t == "flower_crown":
+            for n in fx.get("characters", [k for k in roots_by_name if k in ("cotton", "toffee")]):
+                if n in roots_by_name:
+                    make_flower_crown(roots_by_name[n], frame=fx.get("frame"))
+        elif t == "birthday":
+            for n in fx.get("characters", [k for k in roots_by_name if k in ("cotton", "toffee")]):
+                if n in roots_by_name:
+                    birthday(roots_by_name[n], fx.get("frame", 12), fx.get("length", 72))
         elif t == "bell_glow":
             for n in fx.get("characters", list(roots_by_name)):
                 if n in roots_by_name:

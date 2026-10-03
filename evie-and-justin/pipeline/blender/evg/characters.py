@@ -95,6 +95,9 @@ def load_character(spec):
     if spec.get("pouch"):
         from . import fx
         fx.make_pouch(root, spec.get("pouch_cloth", "lilac"))
+    if spec.get("crown"):
+        from . import fx as _fx
+        _fx.make_flower_crown(root, frame=spec.get("crown_frame"))
     if spec.get("expression"):
         apply_expression(root, spec["expression"])
     if spec.get("anim"):

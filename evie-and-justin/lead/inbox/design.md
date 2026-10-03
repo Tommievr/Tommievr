@@ -1,7 +1,12 @@
 # Design team → Lead inbox
 Branch `claude/evie-justin-design` (no PR). Updated after the lead's answers (Q-10 to Q-14 + earlier defaults accepted) and the **special drink** request.
 
-## Latest (round 5): Evie's pouch
+## Latest (round 6): crown + answers Q-18..21 applied (branch merged with the main project branch first)
+- **Q-18/Q-19 applied** (`FX_GLOW.md` section 12): tag close-up ≥ 1.5 s with a caption every time; the paw colour change also in Shorts, always with the close-up (tag centre y ≈ 800-1000 in 9:16). Q-21 lilac pouch: already in (`EVIE_POUCH.md`).
+- **Q-20 applied: lamb flower crown** → `design/props/FLOWER_CROWN.md` + Cotton/Toffee sheet sections: green vine ring, 7 chunky flowers (Cotton pink/cream/lilac, Toffee cream/yellow/pink so it reads on chestnut wool), gold centres, sits on the wool clumps ≥ 6 cm above the ear attachment (no ear clipping), flat toon, **no cake**. Code `fx.make_flower_crown` + `fx.birthday` (crown pop-in + reused `bell_glow`), **tested** (render `design/blender/example_birthday.png`; placeholder crown is simple). Day 1 checklist 4d (later).
+- **Flag for lead/writers:** the Ep.7 script has Toffee asking "birthdays? With cake?". The visual decision is no cake: keep it as a spoken line only, or tell me and I add a tiny cake prop.
+
+## Round 5: Evie's pouch
 - **Pouch designed** → `design/props/EVIE_POUCH.md` + Evie sheet section: tiny chunky **soft-lilac `#CDB8F2`** cloth drawstring pouch (cream drawstring, raspberry strap like her collar) on a short strap beside the paw tag, +X side, ≥ 1.5 cm clear of the tag, flat toon colour. **Hand-built in Blender recommended** (`fx.make_pouch`, tested, parented to `collar_root`); Meshy prompt (≤600 chars) provided as the alternative. Clipping checklist included. Justin has none.
 - **Glow-peek FX** (`fx.pouch_peek`): faint lilac glow from the opening, ≤0.9 emission, 6 tiny sparkles, 3 s breath; for Ep.4 and the Ep.7 opening beat. `fx.pouch_open` for the Ep.7 reveal. Render `design/blender/example_pouch_peek.png`; **tested** on placeholders. `build_shot.py` warns when pouch glow is rendered in 9:16.
 - Day 1 checklist 4c (optional). **New question Q-21:** pouch cloth colour: (a) lilac *(recommended, visible on white fur, ties to the drink)*; (b) cream; (c) raspberry to match the collar.

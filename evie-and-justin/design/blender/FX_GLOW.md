@@ -127,3 +127,10 @@ Full spec in `../props/EVIE_POUCH.md`. Code: `fx.make_pouch`, `fx.pouch_peek`, `
 {"type": "pouch_open", "characters": ["evie"], "frame": 12, "length": 72}   // Ep.7 SPOILER: loosens, glow 1.5, lilac+gold burst
 ```
 Faint on purpose (emission ≤ 0.9, light ≤ 3 W). Never in Shorts unless the script allows it.
+
+# 11. Lamb birthday: flower crown + bell glow
+Spec: `../props/FLOWER_CROWN.md`. Code: `fx.make_flower_crown`, `fx.birthday` (= crown pop-in + `bell_glow`). Render `example_birthday.png`. `{"type": "birthday", "characters": ["cotton", "toffee"], "frame": 12, "length": 72}` or character key `"crown": true`. No cake. Spoiler for Ep.7 when the bell glow is included.
+
+# 12. Editing rules for the tag signal (lead decisions)
+- **Hold the tag close-up at least 1.5 s with a caption every time** ("[soft chime]" / "[low hum]").
+- **Shorts too:** the paw colour change appears in Shorts as well, **always with the close-up** (`extreme_close_tag` in 9:16: lens 135 mm, safe area content x 60-920, y 250-1400: put the tag centre at about y 800-1000).

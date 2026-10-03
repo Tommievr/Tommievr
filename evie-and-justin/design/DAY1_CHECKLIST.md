@@ -41,6 +41,9 @@ Style (decided): **stylised 3D cartoon, simple fur.** The reference PNGs are col
 - [ ] Build the pouch by hand (`fx.make_pouch` as a start), lilac, parent to `collar_root`; check no clipping with the tag/neck in idle and walk
 - [ ] Render `pipeline/shots/example_pouch_placeholder.json` style close-up with `pouch_peek` (faint glow; **Ep.4 tease, not for Shorts**)
 
+## 4d. OPTIONAL, Ep.7 prep (later, SPOILER assets): lamb flower crown → `design/props/FLOWER_CROWN.md`
+- [ ] Build the crown by hand (`fx.make_flower_crown` as a start), parent to the head bone, clipping checklist, then a `birthday` test (crown + bell glow)
+
 ## 5. Later (not day 1)
 - [ ] Cotton and Toffee (needed before Ep.5; same recipe, `--kind lamb`)
 - [ ] Ep.7 only (SPOILER, not before): lamb `bell_glow` test (`design/blender/FX_GLOW.md` section 9; shot spec `"spoiler": "ep07"`)

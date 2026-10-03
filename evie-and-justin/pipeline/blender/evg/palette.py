@@ -19,6 +19,11 @@ DRINK = {"liquid": "#B9A2FF", "liquid_deep": "#7A5FE0", "sparkle": "#FFE08A", "p
 # Chosen for colour-blind viewers: big brightness gap (luminance 0.77 vs 0.16) and CVD-simulated deltaE 52 (deutan) / 58 (protan);
 # plain green #2ECC40 vs red #FF4136 collapses to deltaE 9 for deuteranopia. Never rely on colour alone: glyph + pulse + ring + sound too.
 TAG_STATE = {"safe": "#4DFFC4", "unsafe": "#D81B2A", "off": GOLD, "glyph": "#FFFFFF"}
+# lamb birthday flower crowns (Ep.7+): simple chunky flowers, two colour schemes so the lambs stay distinguishable
+CROWN = {"vine": "#4F9A58", "leaf": "#6CC070", "centre": "#FFB520",
+         "cotton": ["#FFA8A0", "#FFF1D6", "#CDB8F2"],      # pink, cream, lilac
+         "toffee": ["#FFF1D6", "#FFD84D", "#FFA8A0"]}       # cream, sunny yellow, pink (reads on chestnut wool)
+
 # Evie's pouch (carries a petal with one glowing drop all season; opened for the lambs in Ep.7)
 POUCH = {"cloth": "#CDB8F2", "cloth_cream": "#F6EBD3", "string": "#FFF1D6", "strap": "#D01F4B", "inside": "#4A3A5A", "glow": "#B9A2FF"}
 BELL_DRINK = {"lilac": "#B9A2FF", "gold": GOLD}   # lamb bells when they receive the drink (Ep.7)

@@ -46,3 +46,6 @@ happy: soft smile, blush, ears bounce · curious: head tilt, one ear lifts · su
 
 ## Bell glow (Ep.7, SPOILER)
 The gold heart bell **glows lilac/gold when the lamb receives the Moondew Blossom drink in Ep.7**; keep this out of everything published before Ep.7. Recipe: `../blender/FX_GLOW.md` section 9. The bell is a separate object named `<name>_bell` (emissive-capable toon gold). Lambs do **not** use the green/red paw (that is the cats' tag mechanic).
+
+## Birthday flower crown (Ep.7 and later birthdays; no cake)
+Cotton wears a **chunky flower crown** on the wool crown: green vine ring + 7 flowers (pink `#FFA8A0`, cream `#FFF1D6`, lilac `#CDB8F2`, gold centres) with small leaves; sits on the clumps, **clear of the floppy ears**, pops in with the lilac bell glow (`birthday` FX). Spec, clipping checklist and build: `../props/FLOWER_CROWN.md`. Spoiler-safe only if the script allows; the glow part is an Ep.7 spoiler.
