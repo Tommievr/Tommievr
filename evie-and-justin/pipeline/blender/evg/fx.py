@@ -8,6 +8,8 @@ Spec (in a shot JSON):  "fx": [
   {"type": "drink",     "pos": [0, -0.4, 0.0], "option": "blossom", "frame": 1},
   {"type": "tag_state", "characters": ["evie", "justin"], "state": "safe",   "frame": 12, "length": 72},
   {"type": "tag_state", "characters": ["evie"],           "state": "unsafe", "frame": 12, "length": 72},
+  {"type": "pouch_peek", "characters": ["evie"], "frame": 12, "length": 72},            # faint lilac glow from Evie's pouch (Ep.4, Ep.7 opening)
+  {"type": "pouch_open", "characters": ["evie"], "frame": 12, "length": 72},            # Ep.7: pouch opened for the lambs (SPOILER)
   {"type": "bell_glow", "characters": ["cotton", "toffee"], "frame": 12, "length": 72}      # Ep.7 spoiler: never in Shorts before release
 ]
 """
@@ -17,7 +19,7 @@ import random
 import bpy
 
 from . import toon
-from .palette import BELL_DRINK, DRINK, GOLD, TAG_STATE, hex_to_linear_rgba
+from .palette import BELL_DRINK, DRINK, GOLD, POUCH, TAG_STATE, hex_to_linear_rgba
 
 
 # ---------------------------------------------------------------- emission helpers
@@ -466,6 +468,113 @@ def bell_glow(root, frame=12, length=72, peak=2.8):
     return n
 
 
+# ---------------------------------------------------------------- Evie's pouch
+def make_pouch(root, cloth="lilac", offset=(0.05, -0.215, 0.145), scale=1.0, parent=None):
+    """Tiny chunky cloth pouch on a short strap from Evie's collar, beside the paw tag (placeholder-sized: collar front at y -0.225, z 0.19).
+    Parts (all named '<name>_pouch*'): sack, neck ring, lip (open top), inside (dark), drawstring ring, strap, glow (hidden until used).
+    For real models: build it by hand the same way (see design/character-sheets/evie.md) and parent to the 'collar_root' bone:
+    parent=<armature>, parent_bone is set by the caller. Keeps clear of the tag (>= 1.5 cm gap) and of the neck."""
+    name = root.name.replace("_root", "")
+    cloth_hex = POUCH["cloth"] if cloth == "lilac" else POUCH["cloth_cream"]
+    m_cloth = toon.simple_material("pouch_cloth", cloth_hex, rim_strength=0.2)
+    m_string = toon.simple_material("pouch_string", POUCH["string"], rim_strength=0.1)
+    m_strap = toon.simple_material("pouch_strap", POUCH["strap"], rim_strength=0.1)
+    m_in = toon.simple_material("pouch_inside", POUCH["inside"], rim_strength=0, threshold=0.0)
+    s = scale
+    ox, oy, oz = (offset[0] * s, offset[1] * s, offset[2] * s)
+    anchor = bpy.data.objects.new(f"{name}_pouch", None)
+    bpy.context.scene.collection.objects.link(anchor)
+    anchor.parent = parent or root
+    anchor.location = (ox, oy, oz)
+
+    def prim(kind, nm, loc, sc, mat, rot=None, **kw):
+        if kind == "sphere":
+            bpy.ops.mesh.primitive_uv_sphere_add(segments=24, ring_count=12, radius=1, location=(0, 0, 0))
+        elif kind == "cyl":
+            bpy.ops.mesh.primitive_cylinder_add(vertices=24, radius=1, depth=2, location=(0, 0, 0))
+        elif kind == "cone":
+            bpy.ops.mesh.primitive_cone_add(vertices=24, radius1=1, radius2=kw.get("r2", 0.6), depth=2, location=(0, 0, 0))
+        elif kind == "torus":
+            bpy.ops.mesh.primitive_torus_add(major_radius=1, minor_radius=kw.get("minor", 0.2), location=(0, 0, 0))
+        o = bpy.context.active_object
+        o.name = f"{name}_pouch_{nm}"
+        o.parent = anchor
+        o.location = tuple(c * s for c in loc)
+        o.scale = tuple(c * s for c in sc)
+        if rot:
+            o.rotation_euler = rot
+        bpy.ops.object.shade_smooth()
+        o.data.materials.append(mat)
+        return o
+
+    prim("sphere", "sack", (0, 0, -0.012), (0.017, 0.015, 0.019), m_cloth)                       # plump bag
+    prim("cone", "lip", (0, 0, 0.0115), (0.0105, 0.0105, 0.005), m_cloth, r2=0.8)               # short flared opening
+    prim("cyl", "inside", (0, 0, 0.0162), (0.0078, 0.0078, 0.0004), m_in)                        # dark interior seen from above/front
+    prim("torus", "string", (0, 0, 0.0075), (0.0097, 0.0097, 0.0097), m_string, minor=0.13)     # drawstring cinch
+    for sx in (-1, 1):                                                                               # two tiny string ends
+        prim("sphere", f"tassel{sx}", (sx * 0.006, -0.0105, 0.001), (0.0022, 0.0022, 0.0045), m_string)
+    prim("cyl", "strap", (0, 0.004, 0.032), (0.0016, 0.0016, 0.0135), m_strap)                   # strap up to the collar
+    glow = prim("sphere", "glow", (0, 0, 0.0185), (0.0074, 0.0074, 0.0048), glow_material(f"{name}_pouch_glow_mat", POUCH["glow"], 0.0))
+    glow["peek"] = True
+    return anchor
+
+
+def _pouch_parts(root):
+    p = {o.name.split("_pouch_")[-1]: o for o in root.children_recursive if "_pouch_" in o.name}
+    return p
+
+
+def pouch_peek(root, frame=12, length=72, peak=0.9, light_peak=3.0):
+    """FAINT lilac glow from the pouch opening (Ep.4 tease, Ep.7 opening beat): glow disc emission 0 -> peak -> 0 with a slow breath,
+    a very soft lilac light on the collar fur, and 6 tiny lilac sparkles drifting up. Deliberately subtle: a hint, not a reveal.
+    Keep peak <= ~1.2 (Standard view), light_peak small. Spoiler rule: fine in episodes; check the script before using it in a Short."""
+    parts = _pouch_parts(root)
+    glow = parts.get("glow")
+    if glow is None:
+        print(f"[evg] note: no pouch on {root.name} (add \"pouch\": true to the character or fx type 'pouch')")
+        return 0
+    bpy.context.view_layer.update()
+    mat = glow.material_slots[0].material
+    f0, f1, f2 = frame, frame + length // 3, frame + length
+    breath = [(f0, 0.0), (f1, peak), (f1 + length // 6, peak * 0.7), (f1 + length // 3, peak), (f2, 0.0)]
+    animate_emission(mat, breath)
+    data = bpy.data.lights.new(f"POUCH_glow_{root.name}", "POINT")
+    data.color = hex_to_linear_rgba(POUCH["glow"])[:3]
+    data.shadow_soft_size = 0.02
+    lo = bpy.data.objects.new(f"POUCH_glow_{root.name}", data)
+    lo.parent = glow
+    lo.location = (0, -0.4, 0.6)
+    bpy.context.scene.collection.objects.link(lo)
+    for f, v in breath:
+        data.energy = v / max(peak, 0.01) * light_peak
+        data.keyframe_insert("energy", frame=f)
+    sparkle_burst(tuple(glow.matrix_world.translation), 6, POUCH["glow"], f1, length // 2, 0.015, 0.05, size=0.5, seed=11, strength=1.6)
+    return 1
+
+
+def pouch_open(root, frame=12, length=72, peak=1.5):
+    """Ep.7 opening moment (SPOILER): drawstring loosens (ring scales up, lip flares), glow rises, a petal's lilac+gold sparkle burst rises out."""
+    parts = _pouch_parts(root)
+    if "string" not in parts:
+        print(f"[evg] note: no pouch on {root.name}")
+        return 0
+    bpy.context.view_layer.update()
+    ring, lip = parts["string"], parts["lip"]
+    for o, mult in ((ring, 1.45), (lip, 1.25)):
+        base = tuple(o.scale)
+        o.keyframe_insert("scale", frame=frame)
+        o.scale = tuple(v * mult for v in base)
+        o.keyframe_insert("scale", frame=frame + length // 4)
+        o.keyframe_insert("scale", frame=frame + length - 6)
+        o.scale = base
+        o.keyframe_insert("scale", frame=frame + length)
+    pouch_peek(root, frame, length, peak=peak, light_peak=8.0)
+    top = tuple(parts["glow"].matrix_world.translation)
+    sparkle_burst(top, 22, POUCH["glow"], frame + length // 4, length // 2, 0.04, 0.12, size=1.0, seed=21)
+    sparkle_burst(top, 12, GOLD, frame + length // 4 + 4, length // 2, 0.035, 0.14, size=0.9, seed=23)
+    return 1
+
+
 def apply_fx(spec_fx, roots_by_name, fps=24):
     """Apply the "fx" list of a shot spec."""
     for fx in spec_fx or []:
@@ -481,6 +590,18 @@ def apply_fx(spec_fx, roots_by_name, fps=24):
             for n in fx.get("characters", list(roots_by_name)):
                 if n in roots_by_name:
                     tag_state(roots_by_name[n], fx.get("state", "safe"), fx.get("frame", 12), fx.get("length", 72))
+        elif t == "pouch":
+            for n in fx.get("characters", list(roots_by_name)):
+                if n in roots_by_name:
+                    make_pouch(roots_by_name[n], fx.get("cloth", "lilac"))
+        elif t == "pouch_peek":
+            for n in fx.get("characters", ["evie"]):
+                if n in roots_by_name:
+                    pouch_peek(roots_by_name[n], fx.get("frame", 12), fx.get("length", 72), fx.get("peak", 0.9))
+        elif t == "pouch_open":
+            for n in fx.get("characters", ["evie"]):
+                if n in roots_by_name:
+                    pouch_open(roots_by_name[n], fx.get("frame", 12), fx.get("length", 72), fx.get("peak", 1.5))
         elif t == "bell_glow":
             for n in fx.get("characters", list(roots_by_name)):
                 if n in roots_by_name:

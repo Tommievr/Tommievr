@@ -1,7 +1,12 @@
 # Design team → Lead inbox
 Branch `claude/evie-justin-design` (no PR). Updated after the lead's answers (Q-10 to Q-14 + earlier defaults accepted) and the **special drink** request.
 
-## Latest (round 4): lead answers Q-15..17 applied
+## Latest (round 5): Evie's pouch
+- **Pouch designed** → `design/props/EVIE_POUCH.md` + Evie sheet section: tiny chunky **soft-lilac `#CDB8F2`** cloth drawstring pouch (cream drawstring, raspberry strap like her collar) on a short strap beside the paw tag, +X side, ≥ 1.5 cm clear of the tag, flat toon colour. **Hand-built in Blender recommended** (`fx.make_pouch`, tested, parented to `collar_root`); Meshy prompt (≤600 chars) provided as the alternative. Clipping checklist included. Justin has none.
+- **Glow-peek FX** (`fx.pouch_peek`): faint lilac glow from the opening, ≤0.9 emission, 6 tiny sparkles, 3 s breath; for Ep.4 and the Ep.7 opening beat. `fx.pouch_open` for the Ep.7 reveal. Render `design/blender/example_pouch_peek.png`; **tested** on placeholders. `build_shot.py` warns when pouch glow is rendered in 9:16.
+- Day 1 checklist 4c (optional). **New question Q-21:** pouch cloth colour: (a) lilac *(recommended, visible on white fur, ties to the drink)*; (b) cream; (c) raspberry to match the collar.
+
+## Round 4: lead answers Q-15..17 applied
 - **Q-15 locked:** Moondew Blossom; `design/props/SPECIAL_DRINK.md` marked approved (origin: found by the cats).
 - **Green/red paw tag (Q-16 replaced)** → `design/blender/FX_GLOW.md` section 8 + `evg/fx.py` `tag_state` (`safe` / `unsafe` / `off`). **Tested** (render `design/blender/example_tag_states.png`). Colours: **SAFE mint-aqua `#4DFFC4`, UNSAFE deep red `#D81B2A`** (colour-blind check by CVD simulation: deuteranopia ΔE 52, protanopia 58; plain green/red would be ΔE 9). **Non-colour cues, always all together:** white **check mark ✓ vs X ✕** on the paw, **solid vs dashed rotating ring**, **slow smooth pulse vs fast hard 3-flash pulse**, soft light, captions. **Sound table for audio** (soft rising chime vs low hum + 3 low bonks; calm, never a siren) is in section 8.3.
 - **How the tag is built so it can switch state** (Meshy/Blender note): Meshy's baked paw can't change, so each tag is rebuilt as a plain gold disc + separate paw symbol (`fx.make_tag_disc`); documented in FX_GLOW 8.4, RIGGING 5b, QA_AND_FIXES. **Green/red paw sections added to the Evie and Justin sheets.**

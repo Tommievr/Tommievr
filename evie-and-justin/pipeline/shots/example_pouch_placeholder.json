@@ -1,0 +1,45 @@
+{
+  "shot_id": "test_pouch",
+  "duration_s": 3.0,
+  "fps": 24,
+  "aspect": "16:9",
+  "variant": "golden",
+  "background": "placeholder",
+  "characters": [
+    {
+      "name": "evie",
+      "model": null,
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot_z": 0,
+      "pouch": true
+    }
+  ],
+  "camera": {
+    "preset": "extreme_close_tag",
+    "subject": [
+      0.025,
+      -0.22,
+      0.16
+    ],
+    "distance_scale": 1.0
+  },
+  "fx": [
+    {
+      "type": "pouch_peek",
+      "characters": [
+        "evie"
+      ],
+      "frame": 6,
+      "length": 60
+    }
+  ],
+  "render": {
+    "samples": 32,
+    "percent": 60
+  },
+  "out": "pipeline/renders/test_pouch"
+}

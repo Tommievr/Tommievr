@@ -92,6 +92,9 @@ def load_character(spec):
         for o in new:
             if o.type == "MESH" and not o.name.startswith("PLACEHOLDER"):
                 toon.convert_to_toon(o)
+    if spec.get("pouch"):
+        from . import fx
+        fx.make_pouch(root, spec.get("pouch_cloth", "lilac"))
     if spec.get("expression"):
         apply_expression(root, spec["expression"])
     if spec.get("anim"):
