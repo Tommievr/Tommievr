@@ -19,3 +19,6 @@ Fully generated video per shot is GPU-heavy. A cheaper way that still looks grea
 Many successful kids' channels work this way; 7 × 10 min is realistic.
 
 If the device can't even generate stills: use free cloud GPU tiers/colab-style notebooks for generation only and edit locally.
+
+## Decision
+First test: **Kokoro local TTS** using the Ep.1 script. Re-check its licence for monetised use before release.

@@ -1,4 +1,4 @@
-# Evie & Justin — Little Cats, Big Netherlands
+# Evie & Justin's Little Adventures
 
 A YouTube channel where two kittens go on small adventures to unusual places in the
 Netherlands and explain one concept per episode along the way.

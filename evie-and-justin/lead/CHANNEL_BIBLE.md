@@ -1,5 +1,7 @@
 # Channel Bible
 
+**Channel name (decided):** Evie & Justin's Little Adventures
+
 ## Premise
 Evie and Justin were the stars of bedtime stories. Now they're awake, curious, and exploring
 the Netherlands. Each episode visits one unusual place and unpacks **one concept** there
