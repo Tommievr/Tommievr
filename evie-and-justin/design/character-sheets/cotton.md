@@ -1,76 +1,45 @@
-# Cotton — character sheet (proposed v1.0)
-Working name (see `lead/CHARACTERS.md`). Debuts end of Ep.4 (bell mystery), joins from Ep.5. Reference: `assets/characters/lambs-reference.png` (left lamb). Shared specs: `COMMON.md`.
-
-**Role/personality in one line:** gentle, a little shy, natural peacemaker; the local guide who knows the land. **Her bell ring is her signature sound** (design for a clearly visible, animatable bell).
-**Acting notes:** soft, small movements; head dips when shy; skips and hops when happy; looks at others for reassurance.
+# Cotton — character sheet (proposed v1.1, stylised simple wool)
+Working name (`lead/CHARACTERS.md`). Debuts end of Ep.4, joins Ep.5. Colour/markings reference only (NOT the style): `assets/characters/lambs-reference.png`, left lamb. Shared: `COMMON.md`.
+**Personality:** gentle, a little shy, peacemaker, local guide. **Signature: her bell ring** (bell must be a clear, animatable separate object). **Acting:** soft small movements, head dips when shy, happy skips.
 
 ## Colours
-| Part | Sampled (lit) | Albedo (proposed) | Notes |
+| Part | Reference (sampled, lit) | **Base (use this)** | Notes |
 |---|---|---|---|
-| Wool (cream) | `#E6BDA4` (med) / `#EAC4AE` (lit) | **`#F7EBD9`** cream | curly wool; shade colour in render `#E5CDB6` |
-| Face fur (short, cream) | `#EBC4AB` | **`#F6E0CB`** | smooth, short, lighter than the wool |
-| Ear inner (floppy, pink) | `#EA7E68` | **`#F29A8A`** | wide, big pink inside, cream fuzz edge |
-| Nose | `#F89E8D` | **`#F5A092`** | small, pink, rounded |
-| Blush | — | `#F7C4B4` | soft |
-| **Iris (BLUE)** | `#076093` / lit `#0790C6` | **outer `#0A67A0` → inner `#2FA3D8`** | same blue family as Evie |
-| Brow marks | — | `#9A8176` | soft grey-brown |
-| Lashes | — | `#1A1210` | |
-| **Hooves** (dark) | `#593A2F` / lit `#684330` | **`#4A332C`** | rounded, soft split |
-| **Collar (light blue)** | `#5A6670` – `#63717D` (strongly shadowed in the reference) | **`#8FB6DB`** light blue | design intent: the reference collar is in shadow and reads dusty; use a clear soft light blue |
-| **Bell** (gold, heart cut-out) | `#E48A19` / lit `#F4A32A` | **`#EBA02B`**, cut-out `#2A1B10` | round sleigh-bell shape, **heart-shaped slot**; metallic 1.0, roughness 0.3 |
-| Tail pom | `#EFCBBB` | `#F7EBD9` | small round pom |
+| Wool (cream) | `#E6BDA4` | **`#FFF3DF`** | clean cream clumps |
+| Face (short cream) | `#EBC4AB` | **`#FFE7CF`** | smooth |
+| Ear inner | `#EA7E68` | **`#FFA8A0`** | big pink insides |
+| Nose | `#F89E8D` | **`#FF9FA8`** | |
+| **Iris (BLUE)** | `#076093` | **`#1E7FD6`**, rim `#1566B8`, inner `#4DB5F5` | same as Evie |
+| **Hooves** | `#593A2F` | **`#5A4040`** | chunky, dark, rounded |
+| **Collar (light blue)** | `#5A6670` (in shadow) | **`#7FB8F0`** | clear soft light blue |
+| **Bell** | `#E48A19` | **`#FFB520`** gold, heart cut-out `#3A2418` | |
+| Tail pom | | `#FFF3DF` | |
 
-## Proportions (head-units, 1 HU = head width)
+## Proportions (head-units)
 | Measure | Value |
 |---|---|
-| Body length | ≈ 2.2 HU |
-| Standing height to top of head | ≈ 2.3 HU (lambs are leggier than kittens) |
-| Shoulder height | ≈ 1.7 HU |
-| Head | round, ≈ 1.0 : 1, wool crown of curls on top and sides, smooth short face |
-| Eyes | ≈ 0.24 HU each, wide-set, same cartoon eye as the kittens |
-| Ears | **large, floppy, horizontal**, each ≈ 0.55 HU long, attached low on the sides of the head, pink inside, droop slightly |
-| Muzzle | short, small pink nose, soft mouth |
-| Legs | **longer and slimmer than the kittens'**, slightly bent, ≈ 1.2 HU long, dark hooves |
-| Tail | small round pom ≈ 0.3 HU |
-| Wool | **curls as texture + normal map** (not geometry): clumped, scalloped silhouette; chest/belly the same wool |
-In metres: shoulder height 0.30, body length 0.40, head width 0.17 (1.3 × kitten scale, proposal Q-04).
+| Body length | ≈ 2.0 HU (rounded cloud) |
+| Height to top of head | ≈ 2.2 HU (leggier than the kittens) |
+| Head | round, ≈ 1:1, wool clump crown, smooth face |
+| Eyes | very big ≈ 0.28 HU |
+| Ears | **large floppy, horizontal**, ≈ 0.55 HU each, pink inside |
+| Legs | slimmer and longer than the kittens', **chunky hooves** |
+| Tail | round pom ≈ 0.3 HU |
+| Wool | **12-20 big rounded clumps** as simple bumps on body, head crown and chest; no curls |
+Metres: shoulder 0.30, body length 0.40, head width 0.17 (1.3 x kitten; Q-04).
 
 ## Silhouette
-Cloud-like scalloped body and head, two wide floppy ears out to the sides, slim legs with dark hooves, round pom tail. Dot test: **scalloped cloud + flopped ears**.
+Cloud of rounded clumps on four slim legs, wide floppy ears, round pom. Light-toned (cream).
 
-## Collar / bell details
-- Collar: thin light-blue band, small stitch dots, sits low on the neck.
-- Bell: gold round bell, hangs from a small ring, **heart-shaped slot** on its face (visible from the front), a small dark slit under it. The bell is a **separate object** in the rig (bone chain), so it can swing and ring in sync with audio.
-- Bell glow at emotional beats: optional `TAG_glow` equivalent.
+## Collar / bell
+Thin light-blue collar. **Gold sleigh bell** with a clear **heart-shaped slot**, hung from a ring at the front centre, **separate object** (bone chain: swings, rings in sync with audio). Optional bell glow like the cats' tag.
 
-## Expressions (`COMMON.md`) — Cotton notes
-| Expression | Note |
-|---|---|
-| happy | gentle smile, blush, head slightly tilted, ears bouncing |
-| curious | head tilt, one ear lifts |
-| surprised | ears fly out and up, round "o" |
-| scared_but_brave | ears back, shoulders in, then chin up |
-| sleepy | ears droop fully, slow blink |
-| laughing | closed arcs, small tongue, ears bounce |
-Visemes: `COMMON.md`; lambs have **no fangs**: `vis_G` shows the top gum/lip instead.
+## Expression notes
+happy: soft smile, blush, ears bounce · curious: head tilt, one ear lifts · surprised: ears fly out and up · scared_but_brave: ears back, then chin up · sleepy: ears drop, slow blink · laughing: closed arcs, ears bounce. No fangs.
 
 ## Neutral input pose (Meshy)
-`COMMON.md` section 3. Lamb specifics: **ears relaxed, horizontal** and symmetrical; **legs straight and clearly separated** (long legs make this easy); **bell hanging straight, heart slot facing the camera**; wool outline clean (no loose strands). Mouth closed.
+`COMMON.md` section 5. Ears relaxed horizontal, legs straight and separated, bell facing camera with the heart visible, **wool as chunky clumps (no curls)**. White-ish subject on `#EDEDED`: use light grey.
 
-## On-model / off-model checklist
-**ON-MODEL ✔**
-- [ ] Cream curly wool (scalloped silhouette) + smooth cream face
-- [ ] **Blue** eyes, same big cartoon eye
-- [ ] Big floppy ears, pink inside
-- [ ] **Light-blue** collar + **gold bell with heart cut-out**
-- [ ] Dark hooves, slim legs
-- [ ] Small round pom tail
-- [ ] Looks soft and gentle (shy-sweet), not bold
-
-**OFF-MODEL ✘**
-- [ ] White/grey/yellow wool, smooth (non-curly) body, or looks like a poodle/goat
-- [ ] Green/brown eyes
-- [ ] Collar not blue; bell missing, not gold, or heart slot missing (a plain bell, a star, etc.)
-- [ ] Pink hooves, cat paws, extra limbs
-- [ ] Upright pointed ears
-- [ ] Realistic sheep proportions (long snout, thick legs)
+## On-model / off-model
+**ON ✔** [ ] cream clump wool + smooth cream face · [ ] BLUE eyes, very big · [ ] big floppy pink-inside ears · [ ] light-blue collar + gold heart bell · [ ] dark chunky hooves · [ ] round pom · [ ] gentle look · [ ] **simple clumps, no curl detail**
+**OFF ✘** [ ] white/grey/yellow wool · [ ] eyes not blue · [ ] collar not blue, bell missing/no heart · [ ] pink hooves/cat paws · [ ] pointed upright ears · [ ] curly-wool texture detail, photoreal/Pixar-fur · [ ] realistic sheep proportions

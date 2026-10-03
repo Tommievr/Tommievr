@@ -1,0 +1,38 @@
+{
+  "shot_id": "test_placeholder",
+  "duration_s": 2.0,
+  "fps": 24,
+  "aspect": "16:9",
+  "variant": "golden",
+  "background": "placeholder",
+  "characters": [
+    {
+      "name": "evie",
+      "model": null,
+      "pos": [
+        -0.3,
+        0,
+        0
+      ],
+      "rot_z": 20
+    },
+    {
+      "name": "justin",
+      "model": null,
+      "pos": [
+        0.3,
+        0,
+        0
+      ],
+      "rot_z": -20
+    }
+  ],
+  "camera": {
+    "preset": "medium_two"
+  },
+  "out": "pipeline/renders/test_placeholder",
+  "render": {
+    "samples": 24,
+    "percent": 40
+  }
+}

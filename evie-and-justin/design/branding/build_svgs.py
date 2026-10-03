@@ -156,11 +156,11 @@ eps = [("Master golden hour", ["#FFC76B","#FFF1D6","#F7B58A","#8EC8F0","#FFD9A8"
  ("Ep5 Kootwijkerzand", ["#9FD0F0","#FFD8A0","#E8A55B","#3F6B4A","#9A5FB0","#F2D29B","#5B4A6B","#FFF0D0"]),
  ("Ep6 Delta Works", ["#7DB8E8","#FFD4A8","#BFC6CC","#3C8FC8","#4C7FB0","#D5DADF","#3F4F6E","#FFF1D6"]),
  ("Ep7 Wadden Sea", ["#B5CCE6","#F6D3CC","#B79A94","#9CC4D0","#E7C6CF","#F3D9D2","#6A5668","#FFF4EA"])]
-chars = [("Evie", [("fur","#F5EFE9"),("patch","#1A1412"),("eyes","#0A67A0"),("collar","#B3203C"),("tag","#EBA02B"),("ear","#F3A38F")]),
- ("Justin", [("fur","#2A1A14"),("ear back","#F6E3DA"),("eyes","#2F7A1A"),("collar","#22160F"),("tag","#EBA02B"),("nose","#B9564A")]),
- ("Cotton", [("wool","#F7EBD9"),("ear","#F29A8A"),("eyes","#0A67A0"),("collar","#8FB6DB"),("bell","#EBA02B"),("hoof","#4A332C")]),
- ("Toffee", [("wool","#6A3418"),("cream","#F2DCC8"),("eyes","#357A22"),("collar","#4F7F2E"),("bell","#EBA02B"),("hoof","#3A2620")])]
-b = txt(60, 70, "Palette board (proposed v1.0) - STYLE_GUIDE sections 2 and character sheets", 34, C['indigo'], 700, "start")
+chars = [("Evie", [("fur","#FFF6EC"),("patch","#2A2030"),("eyes","#1E7FD6"),("collar","#D01F4B"),("tag","#FFB520"),("ear","#FFA9A0")]),
+ ("Justin", [("fur","#352B3D"),("ear back","#FFEBDD"),("eyes","#3FB52A"),("collar","#17121C"),("tag","#FFB520"),("ear","#FF9FA0")]),
+ ("Cotton", [("wool","#FFF3DF"),("ear","#FFA8A0"),("eyes","#1E7FD6"),("collar","#7FB8F0"),("bell","#FFB520"),("hoof","#5A4040")]),
+ ("Toffee", [("wool","#9C4A1C"),("cream","#FFE9CF"),("eyes","#5CC236"),("collar","#43A047"),("bell","#FFB520"),("hoof","#4A2E26")])]
+b = txt(60, 70, "Palette board (proposed v1.1) - STYLE_GUIDE sections 2 and character sheets", 34, C['indigo'], 700, "start")
 y = 110
 for name, cols in eps:
     b += txt(60, y+34, name, 24, C['indigo'], 600, "start")
@@ -169,7 +169,7 @@ for name, cols in eps:
         b += f'<rect x="{x}" y="{y}" width="140" height="56" rx="10" fill="{c}" stroke="#0002"/>' + txt(x+70, y+80, c, 15, C['plum'], 500)
     y += 100
 y += 10
-b += txt(60, y+10, "Characters (albedo, proposed)", 30, C['indigo'], 700, "start"); y += 40
+b += txt(60, y+10, "Characters (base colours v1.1)", 30, C['indigo'], 700, "start"); y += 40
 for name, parts in chars:
     b += txt(60, y+34, name, 24, C['indigo'], 600, "start")
     for i, (pn, c) in enumerate(parts):

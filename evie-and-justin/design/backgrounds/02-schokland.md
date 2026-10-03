@@ -1,4 +1,6 @@
 # Ep.2: Schokland — "The Island That Disappeared"
+> **v1.1 style update (lead direction):** backgrounds are **simple, bold, clean 3D cartoon**: big flat colour shapes, 3-5 hero props, chunky bevelled forms, no texture noise, no normal-map grit, no fine detail. Facts/sources below are unchanged. Copy-paste prompts: `prompt-packs/02-schokland.md`.
+
 **Accent:** field gold `#E3B93C`. **Hero silhouette:** a low grassy rise with a small church and tiny village, surrounded by flat fields to the horizon.
 **Mood:** quiet, nostalgic, mysterious: "this used to be sea". Once an island in the Zuiderzee, now surrounded by farmland (Noordoostpolder reclaimed 1942).
 

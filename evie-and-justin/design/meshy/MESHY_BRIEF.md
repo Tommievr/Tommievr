@@ -9,7 +9,7 @@ Meshy works best from a clean image: single character, neutral pose, plain backg
 Needed per character:
 - Front view, **A-pose / neutral standing**, 4 legs visible, tail visible.
 - Optional: side and 3/4 views for multi-view input.
-The current reference images are in action poses, so first generate **neutral-pose turnaround images** (design team) before sending to Meshy.
+The reference images are in action poses and in the old realistic style, so first generate **neutral-pose, simple-style turnaround images** (see `characters/`) before sending to Meshy.
 
 ## Export & checks
 - Export **GLB** (or FBX) with textures. Keep originals in `pipeline/meshy/<name>/raw/`.
@@ -17,8 +17,8 @@ The current reference images are in action poses, so first generate **neutral-po
 - **Rigging:** try Meshy auto-rig for quadrupeds if available; otherwise rig in Blender (simple quadruped armature + shape keys for blink/mouth).
 - Needed expressions as shape keys or swappable textures: blink, smile, open mouth (A/E/O/M visemes), surprised, sleepy.
 
-## Fur/wool strategy
-Keep fur as texture + normal map, not real hair, so renders stay fast and consistent. Add subtle rim light in Blender for the glow.
+## Fur/wool strategy (updated v1.1)
+**Style change (lead): stylised 3D cartoon with SIMPLE fur.** No realistic/Pixar fur. Smooth short matte fur with a few chunky tufts (cats), big simple cloud-clump wool (lambs), flat colours, toon shading (`../blender/SHADING.md`). The reference images are colour/markings reference only. Prompts: `MESHY_PROMPTS.md`, `characters/`.
 
 ## Licence
 Confirm Meshy plan gives commercial rights for YouTube monetisation before final assets are published. Record plan and date in `pipeline/meshy/LICENCE_NOTES.md`.

@@ -1,4 +1,6 @@
 # Ep.1: Afsluitdijk — "The Land Below the Sea"
+> **v1.1 style update (lead direction):** backgrounds are **simple, bold, clean 3D cartoon**: big flat colour shapes, 3-5 hero props, chunky bevelled forms, no texture noise, no normal-map grit, no fine detail. Facts/sources below are unchanged. Copy-paste prompts: `prompt-packs/01-afsluitdijk.md`.
+
 **Accent:** sea teal `#3FA7A6` (palette row 1). **Hero silhouette:** one long straight dike + the tall monument tower.
 **Mood:** huge, calm, windy, the world is wide open; the kittens are tiny. Water on **both** sides.
 
@@ -42,4 +44,4 @@ Note for the scriptwriters: the monument site is **between Breezanddijk and Den 
 - Hero shorts shot: `low_hero` with the tower behind.
 
 ## Prompt starter (for painted sky/far plates)
-`Cartoony 3D storybook background, Afsluitdijk, long straight dike road to the horizon, sea on one side and calm lake on the other, slim cream concrete monument tower, huge sky with fluffy clouds, warm golden-hour light, soft painterly textures, no characters, no text, empty lower third, wide 16:9.`
+`Cartoony 3D storybook background, Afsluitdijk, long straight dike road to the horizon, sea on one side and calm lake on the other, slim cream concrete monument tower, huge sky with fluffy clouds, warm golden-hour light, flat clean colours, no texture noise, no characters, no text, empty lower third, wide 16:9.`

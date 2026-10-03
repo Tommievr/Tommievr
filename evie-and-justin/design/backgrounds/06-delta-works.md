@@ -1,4 +1,6 @@
 # Ep.6: Delta Works / Neeltje Jans — "The Gates Against the Sea"
+> **v1.1 style update (lead direction):** backgrounds are **simple, bold, clean 3D cartoon**: big flat colour shapes, 3-5 hero props, chunky bevelled forms, no texture noise, no normal-map grit, no fine detail. Facts/sources below are unchanged. Copy-paste prompts: `prompt-packs/06-delta-works.md`.
+
 **Accent:** steel blue `#4C7FB0`. **Hero silhouette:** a long row of giant concrete piers standing in the water, with steel gates between them.
 **Mood:** dramatic but safe, huge scale, calm water, big blue sky. The characters stand on the artificial island Neeltje Jans looking out.
 

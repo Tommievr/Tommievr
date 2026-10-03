@@ -1,4 +1,6 @@
 # Ep.4: Hunebedden, Drenthe — "The Sleeping Giants"
+> **v1.1 style update (lead direction):** backgrounds are **simple, bold, clean 3D cartoon**: big flat colour shapes, 3-5 hero props, chunky bevelled forms, no texture noise, no normal-map grit, no fine detail. Facts/sources below are unchanged. Copy-paste prompts: `prompt-packs/04-hunebedden.md`.
+
 **Accent:** stone grey-purple `#8B8499`. **Hero silhouette:** huge flat capstones on upright stones, a "table" in a clearing.
 **Mood:** mysterious but friendly, soft mist. The episode ends on a cliffhanger: **a bell rings somewhere in the heath, two shadows** (lambs; see `lead/episodes/EPISODE_SLATE.md`): the set must have a **heath to the back** where the shadows can appear.
 

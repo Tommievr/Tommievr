@@ -1,4 +1,6 @@
 # Ep.3: Giethoorn — "The Village With No Roads"
+> **v1.1 style update (lead direction):** backgrounds are **simple, bold, clean 3D cartoon**: big flat colour shapes, 3-5 hero props, chunky bevelled forms, no texture noise, no normal-map grit, no fine detail. Facts/sources below are unchanged. Copy-paste prompts: `prompt-packs/03-giethoorn.md`.
+
 **Accent:** canal green `#4FA37A`. **Hero silhouette:** thatched roof + small arched wooden bridge over a narrow canal.
 **Mood:** fairytale, intimate, lush: the first location where the kittens are *enclosed* by the set (trees and houses close on both sides).
 
@@ -27,7 +29,7 @@
 3. **Whisper boat** + **punt** (modular, with and without passengers)
 4. Mooring posts, lantern, flower boxes (pink `#E88FB4` and white)
 5. Willow tree, reeds, lily pads (reusable kit)
-6. Water: a Blender material (glossy, soft ripples, tinted `#3F8A8C`, reflections on)
+6. Water: a Blender material (flat toon, tinted `#3F8A8C`, a few soft ripple bands, optional reflection)
 
 ## Variants
 | Variant | Look |
