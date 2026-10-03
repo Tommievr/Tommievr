@@ -1,5 +1,19 @@
 # Design team → Lead inbox
-Branch `claude/evie-justin-design` (no PR). Nothing here is canon until you approve. Updated after the **style change** (stylised 3D cartoon, simple fur).
+Branch `claude/evie-justin-design` (no PR). Updated after the lead's answers (Q-10 to Q-14 + earlier defaults accepted) and the **special drink** request.
+
+## Latest (round 3)
+- **Approved v1.1 marked** in `design/STYLE_GUIDE.md` and `design/character-sheets/` (design files only).
+- **Special drink designed** → `design/props/SPECIAL_DRINK.md`: 3 options, **recommended A: "Moondew Blossom"** (pale-lilac flower cup holding a floating glowing lilac droplet with a gold star: no bottle, so the least like alcohol/medicine). B Star Acorn Cup, C Dewdrop Flask (closest to a potion bottle: not recommended). Colours: glow `#B9A2FF`, sparkles `#FFE08A`. Safety rules, Meshy prompts (≤600 chars, cup only; glow is a Blender sphere) and negatives included.
+- **Glow/sparkle recipe + paw-tag discovery moment** → `design/blender/FX_GLOW.md` + code `pipeline/blender/evg/fx.py` (`"fx"` list in the shot JSON: `drink`, `tag_glow`, `sparkles`). **Tested headless**: tags pulse gold, blossom lights the ground, 4-point sparkle burst; render `design/blender/example_discovery.png`. Bloom = compositor Glare (manual, 2 min).
+- **Day 1 checklist**: drink added as optional section 4b, after Evie and Justin.
+- Found/fixed while testing: emission > ~2.5 clips to white under Standard view (kept glow strengths low), prop child offsets double-applied (fixed).
+
+## Open questions for lead/writers (drink)
+1. **Q-15** Drink option: (a) A Moondew Blossom *(recommended)*; (b) B Star Acorn Cup; (c) C Dewdrop Flask (needs the safety rules strictly).
+2. **Q-16** Script handling: (a) kittens discover, tag glow, taste one drop in-story with a light "only works in stories" beat *(recommended, kid-safe)*; (b) discovery only, never tasted on screen; (c) full drinking scene (writers must keep it clearly fantasy).
+3. **Q-17** Do Cotton and Toffee (join Ep.5) get affected by the drink (bells glow too)? (a) decide later, the code already handles bells *(recommended)*; (b) yes, they stay lambs forever; (c) no.
+
+## Earlier status (style change)
 
 ## Status
 | # | Work item | Status | Where |
@@ -16,8 +30,8 @@ Branch `claude/evie-justin-design` (no PR). Nothing here is canon until you appr
 What the code does today (proven by rendering): `build_shot.py` takes a JSON shot, builds toon placeholder characters (or loads rigged `.blend`/`.glb`), background (placeholder ground until `scenes/<loc>.blend` exists), golden/day/dusk light rig with light linking, camera preset, expression, blink, Rhubarb lip-sync by shape-key name; `--aspect 9:16` re-renders the same shot vertical. See `design/blender/example_*.png`.
 Tested-and-fixed along the way: AgX washes out flat toon colours → **Standard** view transform; world light must be dimmed for lighting so toon shadows show; realistic f/2.8 close-ups blur half a kitten's face → high f-stops.
 
-## QUESTIONS for the lead (recommendation first)
-(Q-01 to Q-09 from v1.0 still stand unless noted: Q-01 collar raspberry; Q-04 lamb scale 1.3×; Q-06 append `.blend`: **now implemented**; Q-03 eyes: **now the default** (toon eye objects + squash blink at T1).)
+## ANSWERED by lead: Q-01, Q-04, Q-05, Q-07, Q-10, Q-11 (a), Q-12 (a), Q-13 (a), Q-14 (a) all accepted
+(Original list kept for reference. Q-01 to Q-09 from v1.0 still stand unless noted: Q-01 collar raspberry; Q-04 lamb scale 1.3×; Q-06 append `.blend`: **now implemented**; Q-03 eyes: **now the default** (toon eye objects + squash blink at T1).)
 1. **Q-10 Character colours: cleaner and brighter than the reference.** (a) Use the new base hexes: Justin plum-black `#352B3D` instead of true black (a toon shadow step can't show on black), Toffee brighter chestnut `#9C4A1C`, collars/eyes more saturated *(recommended)*; (b) keep the reference's darker, dull values; (c) pure black Justin with strong rim only.
 2. **Q-11 Lamb wool.** (a) 12-20 big rounded cloud clumps, smooth *(recommended: reads as wool, rigs and renders cleanly)*; (b) fully smooth "toy lamb" with painted wool pattern; (c) small curls (risks the look Tommie dislikes).
 3. **Q-12 Render look.** (a) EEVEE + emission-based toon shader, Standard view, rim lights *(recommended, tested)*; (b) EEVEE with Principled BSDF and a toon-ish ramp (more realistic light response); (c) Cycles (slow, not toon).

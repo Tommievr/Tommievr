@@ -1,4 +1,4 @@
-# Common character specs (proposed v1.1: stylised, simple fur)
+# Common character specs (approved v1.1: stylised, simple fur)
 
 Applies to all four characters and new ones unless a sheet overrides. Style source of truth: `../STYLE_GUIDE.md` section 2.
 

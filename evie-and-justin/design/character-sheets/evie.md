@@ -1,4 +1,4 @@
-# Evie — character sheet (proposed v1.1, stylised simple fur)
+# Evie — character sheet (approved v1.1, stylised simple fur)
 Canon: `lead/CHARACTERS.md`. Colour/markings reference only (NOT the style): `assets/characters/evie-and-justin-reference.png`, left kitten. Shared: `COMMON.md`.
 **Personality:** the dreamer; wonders out loud, notices small beautiful details. **Acting:** wide-eyed wonder, head tilts, ears forward, softer smaller movements than Justin.
 
@@ -13,7 +13,7 @@ Canon: `lead/CHARACTERS.md`. Colour/markings reference only (NOT the style): `as
 | **Iris (BLUE)** | `#07659B` / `#069AC7` | **`#1E7FD6`**, rim `#1566B8`, inner glow `#4DB5F5` | big, simple radial gradient |
 | Pupil | | `#0A0A12` | large, round, 2 catchlights (white) |
 | Paw pads | | `#FFB7B0` | flat |
-| **Collar** | `#AA1E37` | **`#D01F4B`** raspberry pink | see Q-01 (raspberry vs pastel pink) |
+| **Collar** | `#AA1E37` | **`#D01F4B`** raspberry pink | raspberry, approved (Q-01) |
 | **Tag** | `#E78E0C` | **`#FFB520`** gold, emboss `#E0901A` | toon gold: highlight band, `evg.toon.gold_material` |
 
 ## Markings

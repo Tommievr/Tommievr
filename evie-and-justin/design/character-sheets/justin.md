@@ -1,4 +1,4 @@
-# Justin — character sheet (proposed v1.1, stylised simple fur)
+# Justin — character sheet (approved v1.1, stylised simple fur)
 Canon: `lead/CHARACTERS.md`. Colour/markings reference only (NOT the style): `assets/characters/evie-and-justin-reference.png`, right kitten. Shared: `COMMON.md`.
 **Personality:** explorer/skeptic; bold, funny, a little dramatic, secretly loves facts. **Acting:** cheeky smirks, one raised brow, big dramatic reactions, mock-grumbles; bouncier than Evie.
 

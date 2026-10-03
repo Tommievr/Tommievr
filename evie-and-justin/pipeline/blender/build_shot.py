@@ -18,7 +18,7 @@ import sys
 import bpy
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from evg import cameras, characters, lights, scene  # noqa: E402
+from evg import cameras, characters, fx, lights, scene  # noqa: E402
 from evg.palette import VARIANTS  # noqa: E402
 
 
@@ -74,6 +74,7 @@ def build(spec, aspect=None, variant=None):
         if c.get("lipsync") and os.path.exists(c["lipsync"]):
             n = characters.apply_lipsync(rt, characters.read_rhubarb(c["lipsync"]), spec.get("fps", 24), c.get("lipsync_offset_s", 0.0))
             print(f"[evg] lip-sync: {n} cues for {c['name']}")
+    fx.apply_fx(spec.get("fx"), {c["name"]: rt for c, rt in zip(spec["characters"], roots)}, spec.get("fps", 24))
     if spec.get("tag_glow"):
         g = spec["tag_glow"]
         lights.add_tag_glow(tuple(g["pos"]), frame_in=g.get("frame_in", 1), frame_peak=g.get("frame_peak", 12), frame_out=g.get("frame_out", 36),

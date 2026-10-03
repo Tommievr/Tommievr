@@ -1,4 +1,4 @@
-# Backgrounds (proposed v1.1: simple, bold, clean 3D cartoon)
+# Backgrounds (v1.1: simple, bold, clean 3D cartoon)
 One brief per episode location. Palette hexes come from `../STYLE_GUIDE.md` section 2.2; rig and cameras from sections 3-4.
 
 **Prompt packs (copy-paste, per location): `prompt-packs/NN-*.md`** (background/sky/far image prompts for day/golden/dusk, Meshy prop prompts + settings, what to build by hand). Generator: `tools/build_prompt_packs.py`.

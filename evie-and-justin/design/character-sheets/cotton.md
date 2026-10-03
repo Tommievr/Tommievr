@@ -1,4 +1,4 @@
-# Cotton — character sheet (proposed v1.1, stylised simple wool)
+# Cotton — character sheet (approved v1.1, stylised simple wool)
 Working name (`lead/CHARACTERS.md`). Debuts end of Ep.4, joins Ep.5. Colour/markings reference only (NOT the style): `assets/characters/lambs-reference.png`, left lamb. Shared: `COMMON.md`.
 **Personality:** gentle, a little shy, peacemaker, local guide. **Signature: her bell ring** (bell must be a clear, animatable separate object). **Acting:** soft small movements, head dips when shy, happy skips.
 
@@ -26,7 +26,7 @@ Working name (`lead/CHARACTERS.md`). Debuts end of Ep.4, joins Ep.5. Colour/mark
 | Legs | slimmer and longer than the kittens', **chunky hooves** |
 | Tail | round pom ≈ 0.3 HU |
 | Wool | **12-20 big rounded clumps** as simple bumps on body, head crown and chest; no curls |
-Metres: shoulder 0.30, body length 0.40, head width 0.17 (1.3 x kitten; Q-04).
+Metres: shoulder 0.30, body length 0.40, head width 0.17 (1.3 x kitten; approved Q-04).
 
 ## Silhouette
 Cloud of rounded clumps on four slim legs, wide floppy ears, round pom. Light-toned (cream).

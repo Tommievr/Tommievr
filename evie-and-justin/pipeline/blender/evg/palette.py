@@ -11,6 +11,10 @@ CHARACTERS = {
     "toffee":  {"wool": "#9C4A1C", "cream": "#FFE9CF", "ear_out": "#7A3A16", "ear": "#FF9C90", "nose": "#FF9FA8", "iris": "#5CC236", "collar": "#43A047", "bell": GOLD, "hoof": "#4A2E26"},
 }
 
+# special drink (Ep.1 lore, design/props/SPECIAL_DRINK.md): lilac + gold, deliberately not green/red (poison/medicine) or amber (alcohol)
+DRINK = {"liquid": "#B9A2FF", "liquid_deep": "#7A5FE0", "sparkle": "#FFE08A", "petal": "#E9D8FF", "stem": "#6CC070",
+         "acorn": "#B9763A", "glass": "#DDEBFF", "cork": "#C99A5B"}
+
 # lighting variants (see STYLE_GUIDE section 3.5). azimuth: degrees from the camera axis (0 = behind camera, + = to the right).
 VARIANTS = {
     "day":    {"sun_elev": 45, "sun_az": 40, "key": "#FFE9C4", "key_w": 4.0, "fill": "#9EC5FF", "fill_w": 1.4, "rim": "#FFF1D6", "rim_w": 5,

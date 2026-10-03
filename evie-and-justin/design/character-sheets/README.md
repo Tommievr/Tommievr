@@ -1,4 +1,4 @@
-# Character sheets (proposed v1.1 — stylised, simple fur; awaiting lead approval)
+# Character sheets (APPROVED v1.1 — stylised, simple fur)
 
 | File | What |
 |---|---|
@@ -14,4 +14,4 @@
 - The v1.0 hexes were **sampled from the references**; those were warm-lit and shaded, so they were dull. They stay in each sheet as **"Reference (sampled)"** for traceability.
 - v1.1 **"Base"** hexes are what we use now: the same hues, **cleaner, brighter and more saturated** for flat toon shading. Toon shading adds a plum-tinted shadow by multiplying `#B8A4D8` into the base (`blender/SHADING.md`), so there is no separate "shade" hex.
 - Base hexes live in code too: `pipeline/blender/evg/palette.py`. If you change one, change both.
-- Pure black is avoided (Justin = plum-black `#352B3D`) because a toon shadow step cannot show on black. See Q-10.
+- Pure black is avoided (Justin = plum-black `#352B3D`) because a toon shadow step cannot show on black. Approved by the lead (Q-10).

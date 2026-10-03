@@ -1,6 +1,6 @@
-# Style Guide v1.1 — PROPOSED, awaiting lead approval
+# Style Guide v1.1 — APPROVED by lead
 
-> Status: **proposed – awaiting lead approval.** v1.1 replaces v1.0 after the lead's direction change:
+> Status: **approved v1.1** (lead decisions: Q-01, Q-04, Q-05, Q-07, Q-10 to Q-14 accepted). v1.1 replaces v1.0 after the lead's direction change:
 > **Tommie does not like the realistic/Pixar-fur look of the reference images. New direction = STYLISED 3D CARTOON with SIMPLE fur.**
 > The reference images in `assets/characters/` are now **colour and markings reference only, NOT the rendering style.**
 > Colour hexes: `character-sheets/`. Locations: `backgrounds/`. Copy-paste prompts: `meshy/`. Blender recipes: `blender/`.
@@ -55,7 +55,7 @@ Shadows are **plum/violet, never grey or black**. World whites are **cream** (`#
 | Justin | plum-black `#352B3D` | ears `#FF9FA0`, ear backs `#FFEBDD` | green `#3FB52A` | dark `#17121C` | `#FFB520` |
 | Cotton | cream `#FFF3DF` | ears `#FFA8A0`, hooves `#5A4040` | blue `#1E7FD6` | light blue `#7FB8F0` | `#FFB520` |
 | Toffee | chestnut `#9C4A1C` | cream `#FFE9CF`, hooves `#4A2E26` | green `#5CC236` | leaf green `#43A047` | `#FFB520` |
-These are **brighter and cleaner than the reference art** on purpose (toon shading needs room to show a shadow step; pure black cannot). See Q-10 in the inbox.
+These are **brighter and cleaner than the reference art** on purpose (toon shading needs room to show a shadow step; pure black cannot). Approved (Q-10).
 
 ### 3.3 Per-episode palette (one accent each)
 Swatches: sky-top / sky-horizon / ground / secondary / **ACCENT** / structure / shadow / highlight. Accent covers ~10-15 % of the frame, plus thumbnail border and title card. All values are **flat colours** for simple materials.
@@ -121,7 +121,7 @@ Horizon at the lower third for sky-heavy wides, middle for dialogue. Never throu
 ---
 
 ## 6. Scale
-- Characters at real kitten scale: shoulder ≈ 0.22 m, body length ≈ 0.36 m, head width ≈ 0.14 m. Lambs 1.3× (shoulder ≈ 0.30 m). *(Q-04)*
+- Characters at real kitten scale: shoulder ≈ 0.22 m, body length ≈ 0.36 m, head width ≈ 0.14 m. Lambs 1.3× (shoulder ≈ 0.30 m). *(Q-04, approved)*
 - World modelled at **1.5× real size** relative to the characters. 1 Blender unit = 1 m. Apply scale before export.
 
 ---
@@ -159,6 +159,6 @@ Blur test: characters must still be the first thing seen.
 ---
 
 ## 9. Change log
-- **v1.1 (proposed):** direction change to stylised 3D cartoon with simple fur; toon shading recipe, cleaner saturated character colours, simpler worlds; references demoted to colour/markings only; lighting and cameras kept but toon-adapted.
+- **v1.1 (approved by lead):** direction change to stylised 3D cartoon with simple fur; toon shading recipe, cleaner saturated character colours, simpler worlds; references demoted to colour/markings only; lighting and cameras kept but toon-adapted.
 - v1.0 (superseded): realistic soft-fur Pixar look.
 - v0.1: initial direction (lead).

@@ -31,6 +31,10 @@ Style (decided): **stylised 3D cartoon, simple fur.** The reference PNGs are col
 - [ ] Blender: road/guard-rail modules, water planes → `pipeline/scenes/afsluitdijk.blend` (collections `AFSLUITDIJK_SKY/_FAR/_MID/_GROUND/_FG`)
 - [ ] Render the **cold-open frame**: `wide_establish`, background `afsluitdijk`, both cats tiny, sky 50 %
 
+## 4b. OPTIONAL, after Evie and Justin: the special drink (Ep.1 lore) → `design/props/SPECIAL_DRINK.md`
+- [ ] Meshy prop: **Moondew Blossom** (recommended option A; cup only, glow is a Blender sphere) → QA → toon → `pipeline/props/drink.blend`
+- [ ] Render the **discovery moment** with the recipe in `design/blender/FX_GLOW.md` (tags glow + sparkles); try `extreme_close_tag` and the 9:16 version
+
 ## 5. Later (not day 1)
 - [ ] Cotton and Toffee (needed before Ep.5; same recipe, `--kind lamb`)
 - [ ] Rhubarb lip-sync test with one Kokoro line (`design/blender/RIGGING.md` section 5)

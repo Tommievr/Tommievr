@@ -1,4 +1,4 @@
-# Toffee — character sheet (proposed v1.1, stylised simple wool)
+# Toffee — character sheet (approved v1.1, stylised simple wool)
 Working name. Debuts end of Ep.4, joins Ep.5. Colour/markings reference only (NOT the style): `assets/characters/lambs-reference.png`, right lamb. Shared: `COMMON.md`.
 **Personality:** bouncy, silly, fearless but clumsy. **Acting:** big hops, overshoot stops, wobbly landings, head leads the body, faster timing than Cotton.
 
