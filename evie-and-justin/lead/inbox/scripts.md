@@ -1,15 +1,15 @@
 # Script writer inbox → lead
 
-## (a) Status
+## (a) Status (spoken words; target 1,000-1,300)
 | Ep | Script | Research | Status |
 |---|---|---|---|
-| 1 Afsluitdijk | existing, unchanged | re-checked (statue/tower + river-feed wording flagged) | ready-for-review |
-| 2 Schokland | written (expansion to 1,000+ words in progress) | done | ready-for-review |
-| 3 Giethoorn | written (expansion in progress) | done | ready-for-review |
-| 4 Hunebedden | written, bell cliffhanger (expansion in progress) | done | ready-for-review |
-| 5–7 Kootwijkerzand / Delta Works / Wadden | written (expansion in progress) | done | ready-for-review |
-
-Word counts: first drafts were ~430–680 spoken words (Ep.1 is ~470); the expansion pass targets 1,050–1,250. Final counts will be added here.
+| 1 Afsluitdijk | existing, unchanged (474 words, short) | re-checked; Lely statue/tower + river-feed wording flagged | ready-for-review |
+| 2 Schokland | 1,139 | done | ready-for-review |
+| 3 Giethoorn | 1,165 | done | ready-for-review |
+| 4 Hunebedden | 1,232, bell cliffhanger | done | ready-for-review |
+| 5 Kootwijkerzand | 1,117, lambs introduced | done | ready-for-review |
+| 6 Delta Works | 1,091 | done | ready-for-review |
+| 7 Wadden Sea | 1,111 | done | ready-for-review |
 
 ## (b) Questions for the lead
 1. **Verification level.** Wikipedia, Rijkswaterstaat and museum sites were blocked, so facts are confirmed from search snippets only. Options: (A) accept and spot-check unchecked ☐ rows before production — recommended; (B) re-run research with open network; (C) cut every ☐ claim.
