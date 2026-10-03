@@ -25,3 +25,5 @@
 16. **Paw in Shorts:** yes, always with the tag close-up (9:16 framing).
 17. **Lamb birthday visual:** flower crown + lilac bell glow (no cake). Celebration, not ageing.
 18. **Release timing:** day-numbered 28-day plan; shorts at **16:30**, episodes at **18:30** local time; test for 2 cycles. Start date: set once Episode 1 is rendered.
+
+19. **Evie pouch colour:** soft lilac #CDB8F2 with cream drawstring and raspberry strap (ties to the drink; cream would vanish on white fur). Hand-built in Blender on the collar bone. Pouch glow in episodes only, never in Shorts.
