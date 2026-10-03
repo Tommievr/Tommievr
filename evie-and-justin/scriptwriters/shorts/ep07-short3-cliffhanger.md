@@ -13,7 +13,7 @@ script_aligned: yes
 **BODY:**
 COTTON: Is that the sea?
 [Both tags turn RED: low hum + X.]
-EVIE: Red. Low hum, X sign. Time to turn back.
+EVIE: The paw's red. Time to turn back.
 GUIDE (off-screen): The tide, coming in. Time to turn back.
 TOFFEE: Is it chasing us?
 GUIDE: No. It's doing what it does, twice a day.

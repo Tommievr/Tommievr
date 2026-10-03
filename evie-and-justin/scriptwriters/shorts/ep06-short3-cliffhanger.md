@@ -16,7 +16,7 @@ JUSTIN: A dog. Okay.
 EVIE: Most days it plays. In a storm, it gets the zoomies!
 TOFFEE: Can I peek at the water?
 [Paw symbol turns RED: hum + X.]
-EVIE: Red! Low hum, X sign. Pause!
+EVIE: The paw's red!
 COTTON AND JUSTIN: Back from the edge!
 
 **FRAMING (9:16):** Vertical 9:16. Evie & Justin centred in the middle third; big text in the top safe zone (keep clear of the bottom ~20% for app UI and the sides ~8%). Colours per CHARACTERS.md.

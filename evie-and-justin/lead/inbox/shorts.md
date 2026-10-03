@@ -16,6 +16,7 @@ RELEASE_CALENDAR.md: rebuilt as a 28-day, day-numbered plan (4-day rotation) wit
 
 Applied lead answers: lambs shown only in Ep.5 cliffhanger; Ep.3 faint chime; ~45–60 spoken words; no 1953 casualty numbers; end cards say "Full episode on Day 4!".
 
+Round 4 (DECISIONS 12-14): later shorts (Ep.3/6/7) now just say 'the paw's red / green paw' with the sound+icon cue on screen; full explanation only in Ep.1. Ep.7 shorts stay spoiler-free (no Blossom handover). Will re-check after the scripts session's next push.
 Round 3: re-checked against scripts f3635a3 (Ep.1 v3 + tag signal); all 21 shorts ready-for-review.
 Round 2 applied: Ep.1 hook/cliffhanger use Moondew Blossom and the green paw; Ep.6 cliffhanger and Ep.7 hook/cliffhanger use green/red paw (sound + icon cue); safety line 'Real kids: never taste things you find, ask a grown-up' on Ep.1 shorts and captions; no Ep.7 lamb-drink spoiler anywhere; no casualty numbers (confirmed Ep.6 script v2 has none - my earlier note was based on an old copy).
 
