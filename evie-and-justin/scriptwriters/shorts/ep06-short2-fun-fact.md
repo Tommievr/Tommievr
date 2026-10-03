@@ -1,24 +1,28 @@
 ---
 episode: 06
 type: fun-fact
-status: draft
+status: ready-for-review
 runtime_target: 0:30
-fact_check: sourced via web search 2026-10-03; items marked (verify) pending
+fact_check: snippet-verified 2026-10-03 (primary pages blocked); (verify) items pending
+script_aligned: yes
 ---
-**ON-SCREEN TEXT (big, top safe zone):** "9 KM, 65 PILLARS"
+**ON-SCREEN TEXT (big, top safe zone):** "65 PILLARS, ONE BIG IDEA"
 
-**HOOK (0–3 s):** Animated counter ticks up to 65 over a stylised barrier.
+**HOOK (0–3 s):** Animated pillars appear one by one; Toffee 'counting' and losing count.
 
 **BODY:**
-EVIE: This barrier is about nine kilometres long.
-JUSTIN: How many pillars?
-EVIE: Sixty-five! And gates between them that can close.
-JUSTIN: Sixty-five pillars. I can't even count my toes.
+TOFFEE: One, two, three… seventeen… oh no, I lost count!
+EVIE: Sixty-five pillars, with huge gates between them.
+JUSTIN: They stay open most days, so the sea and its animals can come and go.
+COTTON: And close only when a big storm pushes the sea up high.
+JUSTIN: Engineering with manners.
 
 **FRAMING (9:16):** Vertical 9:16. Evie & Justin centred in the middle third; big text in the top safe zone (keep clear of the bottom ~20% for app UI and the sides ~8%). Colours per CHARACTERS.md.
 
-**END CARD:** "Full adventure on the channel!" (paw-tag glow, subscribe cue, episode title)
+**END CARD:** "Full episode on Day 4!" (paw-tag glow, subscribe cue; countdown variants in RELEASE_CALENDAR)
 
 **FACTS & SOURCES:**
-- 9 km long, 65 piers, built 1976–1986, opened 4 Oct 1986: https://www.holland.com/global/tourism/discover-the-netherlands/visit-the-regions/zeeland/oosterschelde-storm-surge-barrier
-- Gates ~42 m wide: https://www.sensesatlas.com/the-delta-works-the-oosterscheldekering/
+- 65 pillars; opened 4 Oct 1986: https://www.holland.com/global/tourism/discover-the-netherlands/visit-the-regions/zeeland/oosterschelde-storm-surge-barrier
+- Designed with gates after public protests about nature/fishing: https://en.wikipedia.org/wiki/Oosterscheldekering
+
+**NOTES:** Do NOT mention the 1953 flood or any casualty numbers in shorts (lead decision #4).

@@ -1,26 +1,27 @@
 ---
 episode: 04
 type: cliffhanger
-status: draft
+status: ready-for-review
 runtime_target: 0:25
-fact_check: sourced via web search 2026-10-03; items marked (verify) pending
+fact_check: snippet-verified 2026-10-03 (primary pages blocked); (verify) items pending
+script_aligned: yes
 ---
-**ON-SCREEN TEXT (big, top safe zone):** "WHAT'S THAT SOUND…?"
+**ON-SCREEN TEXT (big, top safe zone):** "A BELL IN THE HEATH…"
 
-**HOOK (0–3 s):** Dusk on the heath. Kittens centred, ears up. NO lambs on screen - only two small shadows far away at most.
+**HOOK (0–3 s):** Dusk, fog over purple heather. Kittens centred, ears up. Far away: two small shadows with glinting bells, NO faces or colours.
 
 **BODY:**
-JUSTIN: Did you hear that?
-EVIE: A tiny bell… out in the heath.
-JUSTIN: Bells don't ring by themselves.
-EVIE: Look! Something's moving.
-[Ding-ding. Two shadows. Cut to black.]
+EVIE (whisper): Justin. That's the same sound.
+JUSTIN (whisper): From the island… and the village…
+[Ting… ting… close now.]
+JUSTIN (whisper): Evie. There are two of them.
+[Cut to black.]
 
 **FRAMING (9:16):** Vertical 9:16. Evie & Justin centred in the middle third; big text in the top safe zone (keep clear of the bottom ~20% for app UI and the sides ~8%). Colours per CHARACTERS.md.
 
-**END CARD:** "Full adventure on the channel!" (paw-tag glow, subscribe cue, episode title)
+**END CARD:** "Full episode on Day 4!" (paw-tag glow, subscribe cue; countdown variants in RELEASE_CALENDAR)
 
 **FACTS & SOURCES:**
-- Heath/hunebedden setting (verify against Ep.4 script): (verify)
+- Hunebedden are in Drenthe (Borger, D27): https://www.visitdrenthe.com/culture-heritage/hunebeds
 
-**NOTES:** Per brief: tease the bell and shadows only. Do not show Cotton/Toffee faces.
+**NOTES:** Per brief/lead: tease only. Silhouettes at most; do not reveal lamb colours or faces.

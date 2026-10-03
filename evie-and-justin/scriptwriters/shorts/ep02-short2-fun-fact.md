@@ -1,24 +1,27 @@
 ---
 episode: 02
 type: fun-fact
-status: draft
+status: ready-for-review
 runtime_target: 0:30
-fact_check: sourced via web search 2026-10-03; items marked (verify) pending
+fact_check: snippet-verified 2026-10-03 (primary pages blocked); (verify) items pending
+script_aligned: yes
 ---
-**ON-SCREEN TEXT (big, top safe zone):** "PEOPLE LEFT THIS ISLAND IN 1859"
+**ON-SCREEN TEXT (big, top safe zone):** "THEY TOOK THEIR HOUSES WITH THEM"
 
-**HOOK (0–3 s):** Close-up of the old church mound, Evie pointing to the date on a sign.
+**HOOK (0–3 s):** Storybook flashback: families carrying planks and a window frame to a little boat.
 
 **BODY:**
-EVIE: Long ago, the sea kept flooding Schokland. In 1859 everyone had to move away.
-JUSTIN: Whoa. Then what?
-EVIE: Later the sea around it was drained. Today it's in the middle of farmland!
-JUSTIN: An island that got stuck on land. Relatable.
+EVIE: In 1859 the people of Schokland had to leave their island. About six hundred and fifty of them.
+JUSTIN: They took their houses?!
+EVIE: They took them apart and reused the wood and bricks.
+JUSTIN: The biggest packing job ever. Where do you put a roof?
 
 **FRAMING (9:16):** Vertical 9:16. Evie & Justin centred in the middle third; big text in the top safe zone (keep clear of the bottom ~20% for app UI and the sides ~8%). Colours per CHARACTERS.md.
 
-**END CARD:** "Full adventure on the channel!" (paw-tag glow, subscribe cue, episode title)
+**END CARD:** "Full episode on Day 4!" (paw-tag glow, subscribe cue; countdown variants in RELEASE_CALENDAR)
 
 **FACTS & SOURCES:**
-- Evacuated in 1859 because of the threat of the sea: https://www.friesland.nl/en/locations/1316750924/unesco-world-heritage-schokland
-- Surrounding sea reclaimed as Noordoostpolder in 1942; UNESCO World Heritage since 1995: https://www.canonnoordoostpolder.nl/en/sea/schokland
+- Evacuation 1859; ~650 people; homes taken apart and reused (single secondary source - verify count): https://www.opreismetco.nl/en/the-netherlands/schokland-hidden-island-in-the-netherlands/
+- Island was threatened by the sea: https://www.friesland.nl/en/locations/1316750924/unesco-world-heritage-schokland
+
+**NOTES:** Keep tone gentle (sad day, not scary).

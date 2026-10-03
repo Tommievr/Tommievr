@@ -1,26 +1,27 @@
 ---
 episode: 01
 type: fun-fact
-status: draft
+status: ready-for-review
 runtime_target: 0:30
-fact_check: sourced via web search 2026-10-03; items marked (verify) pending
+fact_check: snippet-verified 2026-10-03 (primary pages blocked); (verify) items pending
+script_aligned: yes
 ---
 **ON-SCREEN TEXT (big, top safe zone):** "A SEA BECAME A LAKE"
 
-**HOOK (0–3 s):** Justin dips a paw in the water, licks it, and makes a face.
+**HOOK (0–3 s):** Justin dips a paw in the calm water, licks it, makes a face.
 
 **BODY:**
 JUSTIN: Blegh! Not salty!
-EVIE: This used to be a salty sea, the Zuiderzee.
-EVIE: In 1932 the last gap in the dike was closed. Rivers slowly flushed out the salt.
-JUSTIN: A sea turned into a lake? Biggest glow-up ever!
+EVIE: This used to be a salty sea. Then a dike shut it in.
+EVIE: In 1932 the last gap was closed. Rivers filled it with fresh water.
+JUSTIN: A whole sea turned into a lake, by a wall. Biggest glow-up ever!
 
 **FRAMING (9:16):** Vertical 9:16. Evie & Justin centred in the middle third; big text in the top safe zone (keep clear of the bottom ~20% for app UI and the sides ~8%). Colours per CHARACTERS.md.
 
-**END CARD:** "Full adventure on the channel!" (paw-tag glow, subscribe cue, episode title)
+**END CARD:** "Full episode on Day 4!" (paw-tag glow, subscribe cue; countdown variants in RELEASE_CALENDAR)
 
 **FACTS & SOURCES:**
-- The last gap was closed on 28 May 1932: https://en.wikipedia.org/wiki/Afsluitdijk
-- Fresh river water flushed out the salt; the Zuiderzee became the IJsselmeer: https://www.rijkswaterstaat.nl/en/projects/iconic-structures/the-afsluitdijk
+- Last gap closed 28 May 1932; Zuiderzee became the IJsselmeer: https://www.rijkswaterstaat.nl/en/projects/iconic-structures/the-afsluitdijk
+- Fresh river water flushed out the salt (wording flagged in scripts inbox - re-check): https://en.wikipedia.org/wiki/IJsselmeer
 
-**NOTES:** Safety: show Justin touching water only at a safe, flat shoreline shot (cartoon); no kids copying near dike edges.
+**NOTES:** Matches existing Ep.1 script scene 3. Safety: cartoon shoreline only.

@@ -1,26 +1,28 @@
 ---
 episode: 05
 type: hook
-status: draft
+status: ready-for-review
 runtime_target: 0:25
-fact_check: sourced via web search 2026-10-03; items marked (verify) pending
+fact_check: snippet-verified 2026-10-03 (primary pages blocked); (verify) items pending
+script_aligned: yes
 ---
-**ON-SCREEN TEXT (big, top safe zone):** "A DESERT IN THE NETHERLANDS?"
+**ON-SCREEN TEXT (big, top safe zone):** "A DESERT… IN THE NETHERLANDS?"
 
-**HOOK (0–3 s):** Wide golden sand, kittens squinting in the sun.
+**HOOK (0–3 s):** Pale rolling dunes under a huge sky; kittens squinting; small hoofprints in the sand.
 
 **BODY:**
-JUSTIN: Evie, why is it a desert? This is Holland!
-EVIE: It's drifting sand. It really moves in the wind.
-JUSTIN: Ha. Sand that wanders off?
-EVIE: And look - tiny pawprints. Not ours.
-JUSTIN: ...Whose?
+JUSTIN: A desert. In the Netherlands. Where are the camels?
+EVIE: This is Kootwijkerzand. Sand that moves!
+JUSTIN: Sand that wanders off?
+EVIE: Look. Tiny prints in the sand. Not ours.
+[Faint ting…]
+JUSTIN: …Whose are they?
 
 **FRAMING (9:16):** Vertical 9:16. Evie & Justin centred in the middle third; big text in the top safe zone (keep clear of the bottom ~20% for app UI and the sides ~8%). Colours per CHARACTERS.md.
 
-**END CARD:** "Full adventure on the channel!" (paw-tag glow, subscribe cue, episode title)
+**END CARD:** "Full episode on Day 4!" (paw-tag glow, subscribe cue; countdown variants in RELEASE_CALENDAR)
 
 **FACTS & SOURCES:**
-- Kootwijkerzand is the largest active drift-sand area in Western Europe (~700 ha): https://veluwe.nl/en/location/kootwijkerzand-2/
+- Kootwijkerzand: drift-sand area on the Veluwe, ~700 ha, largest in Western Europe: https://veluwe.nl/en/location/kootwijkerzand-2/
 
-**NOTES:** Hint of lamb pawprints (hoofprints) is OK; do not show lambs before the reveal.
+**NOTES:** Hoofprints/bell only - no lambs yet (lead decision).

@@ -1,25 +1,28 @@
 ---
 episode: 02
 type: cliffhanger
-status: draft
+status: ready-for-review
 runtime_target: 0:25
-fact_check: sourced via web search 2026-10-03; items marked (verify) pending
+fact_check: snippet-verified 2026-10-03 (primary pages blocked); (verify) items pending
+script_aligned: yes
 ---
 **ON-SCREEN TEXT (big, top safe zone):** "WHERE DID THE SEA GO?"
 
-**HOOK (0–3 s):** Wide shot, kittens at the old harbour wall that now faces fields.
+**HOOK (0–3 s):** Kittens on the lookout over a quilt of fields; Evie's ear twitches at a faint bell.
 
 **BODY:**
-JUSTIN: Evie. This is a harbour. Where are the boats?
-EVIE: Look at the posts… the water used to come all the way here.
-JUSTIN: So where did all that water GO?
-EVIE: Pumps, Justin. Very big pumps.
-[Sound: a deep hum. Tags glow.]
+JUSTIN: Okay. Big question. You said this was a sea. Where is it?
+EVIE: Not gone. Moved.
+JUSTIN: Moved?!
+EVIE: First a giant wall in a circle, like a hug. Then pumps.
+[Faint ting… Evie's ear twitches. Tags glow.]
 
 **FRAMING (9:16):** Vertical 9:16. Evie & Justin centred in the middle third; big text in the top safe zone (keep clear of the bottom ~20% for app UI and the sides ~8%). Colours per CHARACTERS.md.
 
-**END CARD:** "Full adventure on the channel!" (paw-tag glow, subscribe cue, episode title)
+**END CARD:** "Full episode on Day 4!" (paw-tag glow, subscribe cue; countdown variants in RELEASE_CALENDAR)
 
 **FACTS & SOURCES:**
-- Surrounding sea was drained/reclaimed (Noordoostpolder, 1942): https://www.canonnoordoostpolder.nl/en/sea/schokland
-- Harbour wall/posts detail (verify on-site layout against Ep.2 script): (verify)
+- Noordoostpolder reclaimed/drained 1942: https://www.canonnoordoostpolder.nl/en/sea/schokland
+- Ring dike + pumping (generic; script keeps it simple) (verify): https://en.wikipedia.org/wiki/Zuiderzee_Works
+
+**NOTES:** Bell seed: very faint, mixed low (Ep.2 canon).

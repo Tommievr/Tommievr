@@ -1,26 +1,28 @@
 ---
 episode: 06
 type: cliffhanger
-status: draft
+status: ready-for-review
 runtime_target: 0:25
-fact_check: sourced via web search 2026-10-03; items marked (verify) pending
+fact_check: snippet-verified 2026-10-03 (primary pages blocked); (verify) items pending
+script_aligned: yes
 ---
-**ON-SCREEN TEXT (big, top safe zone):** "CAN THE GATES REALLY CLOSE?"
+**ON-SCREEN TEXT (big, top safe zone):** "WHEN THE STORM COMES…"
 
-**HOOK (0–3 s):** Dark clouds, wind. Justin's fur ruffles. Cotton & Toffee in frame (team of four).
+**HOOK (0–3 s):** Dark clouds, wind, rising waves; the four friends safely behind a railing.
 
 **BODY:**
-TOFFEE: The water's rising!
-COTTON: Look at the gates…
-JUSTIN: Please close. Please close.
-EVIE: Together. One… two…
-[Low rumble. Cut to black. Bell ring.]
+EVIE: What if the sea is like a big friendly dog?
+JUSTIN: A dog. Okay.
+EVIE: Most days it plays. In a storm, it gets the zoomies!
+COTTON: So the gate is a baby gate.
+TOFFEE: Can I try one?
+COTTON AND JUSTIN: No!
 
 **FRAMING (9:16):** Vertical 9:16. Evie & Justin centred in the middle third; big text in the top safe zone (keep clear of the bottom ~20% for app UI and the sides ~8%). Colours per CHARACTERS.md.
 
-**END CARD:** "Full adventure on the channel!" (paw-tag glow, subscribe cue, episode title)
+**END CARD:** "Full episode on Day 4!" (paw-tag glow, subscribe cue; countdown variants in RELEASE_CALENDAR)
 
 **FACTS & SOURCES:**
-- Barrier closes at storm surge: https://www.rijkswaterstaat.nl/en/projects/iconic-structures/eastern-scheldt-barrier
+- Gates close at storm surge (~3 m above NAP); closed only ~30 times so far (count grows - verify): https://en.wikipedia.org/wiki/Oosterscheldekering
 
-**NOTES:** Don't show an actual closing - leave for the episode. Keep dialogue to four short lines.
+**NOTES:** No flood imagery, no casualty numbers. Everyone behind railings. Fun, light tone.

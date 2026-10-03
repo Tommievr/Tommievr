@@ -1,56 +1,88 @@
-# Release Calendar — Shorts
+# Release Calendar — Shorts + Episodes (4-day rotation, 28 days)
 
-Pattern: each episode's 3 shorts drop **Mon (Hook) / Wed (Fun fact) / Fri (Cliffhanger)** of its release week; the long episode goes live **Saturday** (suggested; lead decides). Premiere-week shorts link to the episode in the pinned comment / 'Related video'. Kid-safe: no personal data, comments off / 'made for kids' per lead decision.
+Lead decision (DECISIONS.md #5): **Day 1 = Hook, Day 2 = Fun fact, Day 3 = Cliffhanger, Day 4 = full episode**, then rotate to the next episode. 7 episodes = **28 days**. No fixed weekday.
 
-**Note:** 7 weekly episodes need 7 weeks. The requested **5-week schedule covers Ep.1–5**; weeks 6–7 continue the same pattern (see inbox QUESTION 3 for compressing).
+## Day plan
+| Day | Post | Day | Post |
+|---|---|---|---|
+| 1 | Ep1 **Hook** short | 15 | Ep4 **Cliffhanger** short |
+| 2 | Ep1 **Fun fact** short | 16 | **Ep4 FULL EPISODE** — The Sleeping Giants |
+| 3 | Ep1 **Cliffhanger** short | 17 | Ep5 **Hook** short |
+| 4 | **Ep1 FULL EPISODE** — The Land Below the Sea | 18 | Ep5 **Fun fact** short |
+| 5 | Ep2 **Hook** short | 19 | Ep5 **Cliffhanger** short |
+| 6 | Ep2 **Fun fact** short | 20 | **Ep5 FULL EPISODE** — The Dutch Desert |
+| 7 | Ep2 **Cliffhanger** short | 21 | Ep6 **Hook** short |
+| 8 | **Ep2 FULL EPISODE** — The Island That Disappeared | 22 | Ep6 **Fun fact** short |
+| 9 | Ep3 **Hook** short | 23 | Ep6 **Cliffhanger** short |
+| 10 | Ep3 **Fun fact** short | 24 | **Ep6 FULL EPISODE** — The Gates Against the Sea |
+| 11 | Ep3 **Cliffhanger** short | 25 | Ep7 **Hook** short |
+| 12 | **Ep3 FULL EPISODE** — The Village With No Roads | 26 | Ep7 **Fun fact** short |
+| 13 | Ep4 **Hook** short | 27 | Ep7 **Cliffhanger** short |
+| 14 | Ep4 **Fun fact** short | 28 | **Ep7 FULL EPISODE** — Walking on the Sea Floor |
 
-| Week | Mon | Wed | Fri | Sat (long episode) |
-|---|---|---|---|---|
-| 1 | Ep1 Hook | Ep1 Fun fact | Ep1 Cliffhanger | Ep1: The Land Below the Sea |
-| 2 | Ep2 Hook | Ep2 Fun fact | Ep2 Cliffhanger | Ep2: The Island That Disappeared |
-| 3 | Ep3 Hook | Ep3 Fun fact | Ep3 Cliffhanger | Ep3: The Village With No Roads |
-| 4 | Ep4 Hook | Ep4 Fun fact | Ep4 Cliffhanger | Ep4: The Sleeping Giants |
-| 5 | Ep5 Hook | Ep5 Fun fact | Ep5 Cliffhanger | Ep5: The Dutch Desert |
-| 6 (ext.) | Ep6 Hook | Ep6 Fun fact | Ep6 Cliffhanger | Ep6: The Gates Against the Sea |
-| 7 (ext.) | Ep7 Hook | Ep7 Fun fact | Ep7 Cliffhanger | Ep7: Walking on the Sea Floor |
+## Mapping day numbers to real dates
+`date(Day n) = start date + (n − 1) days`. Fill in once the start date is chosen:
+| Start date (Day 1) | _TBD_ |
+|---|---|
+Then Day 4/8/12/…/28 are the episode dates; Day 28 = season finale (Ep.7). Optional: keep a spreadsheet column `date = start + n − 1`. Since the rotation is 4 days, weekdays shift each cycle — fine, since no fixed weekday is used. Tip: pick a start date so that Ep.1 (Day 4) is not a public holiday week.
 
-Optional: from Week 2 also re-post the previous episode's best short on Sun as a 'catch up' (no new content needed).
+## Posting time slots (suggestion — test and adjust with analytics)
+- **Shorts: 16:30 local** (after school/before dinner; kids + parents scrolling). Alternate with **11:30** if retention is low.
+- **Full episodes: 18:30 local**, right before the calm bedtime window (fits the "goodnight" brand beat). Premiere with a 2-minute countdown if desired.
+- Keep the clock time stable across days; no fixed weekday. Use the same time every day so the rhythm is learnable ("a new thing every day at 16:30").
+
+## End cards
+Canonical text: **"Full episode on Day 4!"** Countdown variants per short:
+- Day 1 short: "Full episode in 3 days (Day 4)" · Day 2: "in 2 days (Day 4)" · Day 3: "TOMORROW (Day 4)". Platform mapping: pin the Ep. link in the first comment; use the 'Related video' field.
 
 ## Titles / captions / hashtags
+Rules: ≤ 60 chars, English, one emoji, no clickbait that isn't true in the video, kid-safe, no personal data. Lore: the kittens-don't-age drink is clearly fantasy.
 
-### Ep.1 — The Land Below the Sea (Afsluitdijk)
-- **Short 1 (hook):** title *Is the SEA above you? 🌊🐱* · caption: Justin just found out the sea is higher than the land. Evie has an answer! Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Afsluitdijk #Dikes
-- **Short 2 (fun-fact):** title *A sea that became a LAKE! 🐾* · caption: Salty sea → freshwater lake. How? Evie and Justin explain! Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Afsluitdijk #Dikes
-- **Short 3 (cliffhanger):** title *Evie & Justin walk 32 km… 😹* · caption: Evie and Justin are on the longest walk ever… what's at the end? Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Afsluitdijk #Dikes
 
-### Ep.2 — The Island That Disappeared (Schokland)
-- **Short 1 (hook):** title *An island in the middle of a field? 🏝️* · caption: An island with no sea around it? Evie and Justin investigate Schokland! Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Schokland #Flevoland
-- **Short 2 (fun-fact):** title *This island was left in 1859 🐱* · caption: Schokland's people moved away in 1859. Today it's surrounded by farmland! Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Schokland #Flevoland
-- **Short 3 (cliffhanger):** title *Where did the sea GO? 🌊* · caption: Where did all the water go? Big pumps, big story! Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Schokland #Flevoland
+### Ep.1 — The Land Below the Sea (Afsluitdijk) · Days 1–4
+- **Day 1 — Hook:** title *What if you never grew up? 🐱✨* · caption: Evie and Justin never grow up… and tonight they explore a sea wall! Full episode in 3 days (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Afsluitdijk #Dikes
+- **Day 2 — Fun fact:** title *A sea that became a LAKE! 🌊* · caption: Salty sea → freshwater lake. How did it happen? Full episode in 2 days (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Afsluitdijk #Dikes
+- **Day 3 — Cliffhanger:** title *32 km… and a glowing mystery 😮* · caption: A very long walk, and something glowing at the end… Full episode TOMORROW (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Afsluitdijk #Dikes
+- **Day 4 — FULL EPISODE:** title *The Land Below the Sea | Evie & Justin's Little Adventures* · caption: Two kittens ask how a country can live below the sea. Dikes, gates and one very long wall. Goodnight beat included. 🌙 · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Afsluitdijk #Dikes #Cartoon
 
-### Ep.3 — The Village With No Roads (Giethoorn)
-- **Short 1 (hook):** title *A village with NO ROADS! 🚤* · caption: No streets, only canals! Evie and Justin visit Giethoorn. Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Giethoorn #Canals
-- **Short 2 (fun-fact):** title *Why is it called Goat Horn? 🐐* · caption: The name Giethoorn is said to mean 'goat horn'. Why? Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Giethoorn #Canals
-- **Short 3 (cliffhanger):** title *Who dug all these canals? 🛶* · caption: Canals dug for peat… and then, a mysterious sound. Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Giethoorn #Canals
+### Ep.2 — The Island That Disappeared (Schokland) · Days 5–8
+- **Day 5 — Hook:** title *An island… in a field?! 🏝️* · caption: No sea, but an island? Evie and Justin investigate Schokland! Full episode in 3 days (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Schokland #Flevoland
+- **Day 6 — Fun fact:** title *They took their houses with them 🏠* · caption: In 1859 Schokland's people left and took their houses apart. Gentle history for curious kids. Full episode in 2 days (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Schokland #Flevoland
+- **Day 7 — Cliffhanger:** title *Where did the sea GO? 🌊* · caption: Where did all the water go? Hug-shaped walls and big pumps! Full episode TOMORROW (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Schokland #Flevoland
+- **Day 8 — FULL EPISODE:** title *The Island That Disappeared | Evie & Justin's Little Adventures* · caption: An island with no sea! Land reclamation explained for curious kids. · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Schokland #Flevoland #Cartoon
 
-### Ep.4 — The Sleeping Giants (Hunebedden)
-- **Short 1 (hook):** title *Who moved these giant rocks? 🪨* · caption: 5,000-year-old giant stones. Who moved them? Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Hunebedden #Drenthe
-- **Short 2 (fun-fact):** title *Rocks delivered by ICE! ❄️* · caption: Glaciers carried these boulders here in the Ice Age! Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Hunebedden #Drenthe
-- **Short 3 (cliffhanger):** title *What is that sound…? 🔔* · caption: A bell in the heath… and two shadows. 🔔 Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Hunebedden #Drenthe
+### Ep.3 — The Village With No Roads (Giethoorn) · Days 9–12
+- **Day 9 — Hook:** title *A village with NO roads! 🚤* · caption: No streets, only canals! Whose idea was that? Full episode in 3 days (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Giethoorn #Canals
+- **Day 10 — Fun fact:** title *Why is it called Goat Horn? 🐐* · caption: The name Giethoorn is said to come from goat horns. Legend or true? Full episode in 2 days (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Giethoorn #Canals
+- **Day 11 — Cliffhanger:** title *Who dug all this water? 🛶* · caption: Peat was the very first passenger… and what was that tiny sound? Full episode TOMORROW (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Giethoorn #Canals
+- **Day 12 — FULL EPISODE:** title *The Village With No Roads | Evie & Justin's Little Adventures* · caption: Peat, canals and a village with water for streets. · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Giethoorn #Canals #Cartoon
 
-### Ep.5 — The Dutch Desert (Kootwijkerzand)
-- **Short 1 (hook):** title *A DESERT in the Netherlands?! 🏜️* · caption: Drifting sand in the Netherlands? Evie and Justin explore Kootwijkerzand! Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Kootwijkerzand #Veluwe
-- **Short 2 (fun-fact):** title *Did people make this desert? 🌲* · caption: Forest cut down + wind = a desert in the Veluwe. Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Kootwijkerzand #Veluwe
-- **Short 3 (cliffhanger):** title *Meet Cotton & Toffee! 🐑🐑* · caption: New friends! Cotton and Toffee join the adventure. Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Kootwijkerzand #Veluwe
+### Ep.4 — The Sleeping Giants (Hunebedden) · Days 13–16
+- **Day 13 — Hook:** title *How do you move a giant stone? 🪨* · caption: 5,000-year-old stones, no cranes. How? Full episode in 3 days (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Hunebedden #Drenthe
+- **Day 14 — Fun fact:** title *The stones came by ICE! ❄️* · caption: Glaciers carried these boulders here in the Ice Age! Full episode in 2 days (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Hunebedden #Drenthe
+- **Day 15 — Cliffhanger:** title *What is that bell…? 🔔* · caption: A bell in the heath… and two shadows. 🔔 Full episode TOMORROW (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Hunebedden #Drenthe
+- **Day 16 — FULL EPISODE:** title *The Sleeping Giants | Evie & Justin's Little Adventures* · caption: How did people move 5,000-year-old stones? Ice, ropes, and teamwork. And then… a bell. · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Hunebedden #Drenthe #Cartoon
 
-### Ep.6 — The Gates Against the Sea (Delta Works)
-- **Short 1 (hook):** title *A door for the SEA? 🚪🌊* · caption: A giant storm barrier! How does it work? Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #DeltaWorks #Zeeland
-- **Short 2 (fun-fact):** title *9 km. 65 pillars. 🤯* · caption: Sixty-five pillars protect Zeeland. Count them with Justin! Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #DeltaWorks #Zeeland
-- **Short 3 (cliffhanger):** title *Can the gates really close? ⛈️* · caption: Storm clouds. Rising water. Four friends. Teamwork! Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #DeltaWorks #Zeeland
+### Ep.5 — The Dutch Desert (Kootwijkerzand) · Days 17–20
+- **Day 17 — Hook:** title *A desert in the Netherlands?! 🏜️* · caption: Drifting sand in the Netherlands? Tiny prints appear… Full episode in 3 days (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Kootwijkerzand #Veluwe
+- **Day 18 — Fun fact:** title *Sand that HOPS! ⏳* · caption: Hop, land, knock! How wind makes dunes walk. Full episode in 2 days (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Kootwijkerzand #Veluwe
+- **Day 19 — Cliffhanger:** title *Meet Cotton & Toffee! 🐑* · caption: Two new friends join the adventure! Full episode TOMORROW (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Kootwijkerzand #Veluwe
+- **Day 20 — FULL EPISODE:** title *The Dutch Desert | Evie & Justin's Little Adventures* · caption: A desert in the Netherlands! Meet Cotton & Toffee and learn how wind moves sand. · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #Kootwijkerzand #Veluwe #Cartoon
 
-### Ep.7 — Walking on the Sea Floor (Wadden Sea)
-- **Short 1 (hook):** title *Walk on the SEA FLOOR? 🐚* · caption: Where does the sea go? Evie, Justin, Cotton & Toffee explore the Wadden Sea. Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #WaddenSea #Tides
-- **Short 2 (fun-fact):** title *The sea breathes twice a day 🌊* · caption: Tides in, tides out, twice a day. Always with a guide! Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #WaddenSea #Tides
-- **Short 3 (cliffhanger):** title *Goodnight, sea 🌙* · caption: A calm goodnight at the sea. Sleep tight! Full adventure on the channel! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #WaddenSea #Tides
+### Ep.6 — The Gates Against the Sea (Delta Works) · Days 21–24
+- **Day 21 — Hook:** title *Why leave gaps in a sea wall? 🌊* · caption: A sea wall with gaps? Four friends find out why. Full episode in 3 days (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #DeltaWorks #Zeeland
+- **Day 22 — Fun fact:** title *65 pillars, one big idea 🚪* · caption: Sixty-five pillars protect Zeeland. Count with Toffee (good luck)! Full episode in 2 days (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #DeltaWorks #Zeeland
+- **Day 23 — Cliffhanger:** title *The sea gets the zoomies! ⛈️* · caption: Storm clouds, rising waves and a very clever gate. Full episode TOMORROW (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #DeltaWorks #Zeeland
+- **Day 24 — FULL EPISODE:** title *The Gates Against the Sea | Evie & Justin's Little Adventures* · caption: Why does a sea barrier have gates that stay open? Storm surges explained gently. · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #DeltaWorks #Zeeland #Cartoon
 
-Title rules: ≤ 60 chars, English, one emoji, no clickbait that isn't true in the video.
+### Ep.7 — Walking on the Sea Floor (Wadden Sea) · Days 25–28
+- **Day 25 — Hook:** title *Where did the sea go? 🐚* · caption: Four friends walk on the sea floor (with a guide!). Full episode in 3 days (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #WaddenSea #Tides
+- **Day 26 — Fun fact:** title *The sea breathes twice a day 🌙* · caption: The moon tugs the sea: out, in, out, in. Full episode in 2 days (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #WaddenSea #Tides
+- **Day 27 — Cliffhanger:** title *The tide is coming back! 🌊* · caption: A calm walk back before the water returns. Always with a guide! Full episode TOMORROW (Day 4)! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #WaddenSea #Tides
+- **Day 28 — FULL EPISODE:** title *Walking on the Sea Floor | Evie & Justin's Little Adventures* · caption: Walk on the sea floor with a guide and learn why the sea breathes twice a day. Season finale! · #EvieAndJustin #Shorts #KidsCartoon #Netherlands #BedtimeStories #LearnWithKittens #WaddenSea #Tides #Cartoon
+
+### Ep.6 caution
+No mention of the 1953 flood or casualty numbers in any short or caption (lead decision #4).
+### Ep.4 caution
+Day 15 cliffhanger: silhouettes only, no lamb faces; Ep.5 Day 19 is the only short that shows the lambs.
+

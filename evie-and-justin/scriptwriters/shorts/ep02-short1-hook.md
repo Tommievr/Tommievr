@@ -1,24 +1,27 @@
 ---
 episode: 02
 type: hook
-status: draft
+status: ready-for-review
 runtime_target: 0:25
-fact_check: sourced via web search 2026-10-03; items marked (verify) pending
+fact_check: snippet-verified 2026-10-03 (primary pages blocked); (verify) items pending
+script_aligned: yes
 ---
 **ON-SCREEN TEXT (big, top safe zone):** "AN ISLAND… IN A FIELD?"
 
-**HOOK (0–3 s):** Evie stands on a small hill surrounded by green farmland; Justin scratches his head.
+**HOOK (0–3 s):** Kittens on a low green ridge; flat fields to every horizon; a tractor far away.
 
 **BODY:**
-JUSTIN: Evie, where's the water? This is an island!
-EVIE: Look around. Just fields. Cows. Bikes.
-JUSTIN: An island with no sea?! Did the sea run away?
-EVIE: Maybe somebody sent it away…
-JUSTIN: Who?!
+JUSTIN: Evie. There are gulls. Where's the sea?
+EVIE: Look at the signs. They say… island.
+JUSTIN: An island. In a field. I packed my swimming goggles for nothing!
+EVIE: Where did the sea go, Justin?
+JUSTIN: Let's find out!
 
 **FRAMING (9:16):** Vertical 9:16. Evie & Justin centred in the middle third; big text in the top safe zone (keep clear of the bottom ~20% for app UI and the sides ~8%). Colours per CHARACTERS.md.
 
-**END CARD:** "Full adventure on the channel!" (paw-tag glow, subscribe cue, episode title)
+**END CARD:** "Full episode on Day 4!" (paw-tag glow, subscribe cue; countdown variants in RELEASE_CALENDAR)
 
 **FACTS & SOURCES:**
-- Schokland was an island, now surrounded by farmland (Noordoostpolder): https://www.canonnoordoostpolder.nl/en/sea/schokland
+- Schokland: former island, now in the Noordoostpolder farmland: https://www.canonnoordoostpolder.nl/en/sea/schokland
+
+**NOTES:** Script cold open + question card.

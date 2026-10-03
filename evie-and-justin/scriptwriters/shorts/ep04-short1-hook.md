@@ -1,25 +1,28 @@
 ---
 episode: 04
 type: hook
-status: draft
+status: ready-for-review
 runtime_target: 0:25
-fact_check: sourced via web search 2026-10-03; items marked (verify) pending
+fact_check: snippet-verified 2026-10-03 (primary pages blocked); (verify) items pending
+script_aligned: yes
 ---
-**ON-SCREEN TEXT (big, top safe zone):** "WHO MOVED THESE GIANT ROCKS?"
+**ON-SCREEN TEXT (big, top safe zone):** "HOW DO YOU MOVE A GIANT STONE?"
 
-**HOOK (0–3 s):** Low angle: the kittens tiny beside a hunebed.
+**HOOK (0–3 s):** Low angle: kittens tiny beside a hunebed under old oak trees.
 
 **BODY:**
-JUSTIN: Evie. These rocks are bigger than a bus!
-EVIE: And they're over five thousand years old.
-JUSTIN: No cranes? No trucks?
-EVIE: Nope. Just clever people… or maybe something older.
-JUSTIN: Okay, I need the full story.
+JUSTIN: Evie. Those rocks are huge.
+EVIE: And they're about five thousand years old.
+JUSTIN: No trucks. No cranes. Not even wheels on big carts.
+EVIE: Some weigh around twenty thousand kilograms.
+JUSTIN: So how did they move them?!
 
 **FRAMING (9:16):** Vertical 9:16. Evie & Justin centred in the middle third; big text in the top safe zone (keep clear of the bottom ~20% for app UI and the sides ~8%). Colours per CHARACTERS.md.
 
-**END CARD:** "Full adventure on the channel!" (paw-tag glow, subscribe cue, episode title)
+**END CARD:** "Full episode on Day 4!" (paw-tag glow, subscribe cue; countdown variants in RELEASE_CALENDAR)
 
 **FACTS & SOURCES:**
-- Built by the Funnel Beaker people over 5,000 years ago (3350–3030 BCE): https://www.visitdrenthe.com/culture-heritage/hunebeds
-- 'Bigger than a bus' - size claim (verify with D27 dimensions; D27 is nearly 23 m long): https://www.ibecomingdutch.com/drenthe/d27-hunebed-centre/
+- Built c.3350-3030 BCE by Funnelbeaker farmers: https://www.visitdrenthe.com/culture-heritage/hunebeds
+- Heaviest stones ~20,000 kg: https://epod.usra.edu/blog/2023/09/hunebeds-the-prehistoric-megaliths-of-the-netherlands.html
+
+**NOTES:** Kittens stay on the path, never on the stones.

@@ -1,27 +1,28 @@
 ---
 episode: 03
 type: cliffhanger
-status: draft
+status: ready-for-review
 runtime_target: 0:25
-fact_check: sourced via web search 2026-10-03; items marked (verify) pending
+fact_check: snippet-verified 2026-10-03 (primary pages blocked); (verify) items pending
+script_aligned: yes
 ---
-**ON-SCREEN TEXT (big, top safe zone):** "THE CANALS WERE DUG BY HAND…"
+**ON-SCREEN TEXT (big, top safe zone):** "WHO DUG ALL THIS WATER?"
 
-**HOOK (0–3 s):** Kittens drift under a bridge; faint, soft chime far away (optional bell seed for Ep.4 - lead to decide).
+**HOOK (0–3 s):** Whisper boat gliding under a bridge; life jackets visible on both kittens.
 
 **BODY:**
-JUSTIN: Wait. Somebody DUG all these canals?
-EVIE: For peat, to burn for warmth. And then the holes filled with water.
-JUSTIN: So the village is made of… holes?
-EVIE: Shh. Listen. What's that sound?
-[Water ripples. Tags glow.]
+JUSTIN: So the canals are the streets because they were the roads for peat?
+EVIE: Peat was the very first passenger!
+JUSTIN: And the holes filled with water…
+[A tiny ting drifts across the reeds. Evie smiles. Justin points at a swan.]
+EVIE: Shh. Quiet guests.
 
 **FRAMING (9:16):** Vertical 9:16. Evie & Justin centred in the middle third; big text in the top safe zone (keep clear of the bottom ~20% for app UI and the sides ~8%). Colours per CHARACTERS.md.
 
-**END CARD:** "Full adventure on the channel!" (paw-tag glow, subscribe cue, episode title)
+**END CARD:** "Full episode on Day 4!" (paw-tag glow, subscribe cue; countdown variants in RELEASE_CALENDAR)
 
 **FACTS & SOURCES:**
-- Peat digging formed the canals and lakes: https://en.wikipedia.org/wiki/Giethoorn
-- Peat was used as fuel (verify): (verify)
+- Peat digging made lakes; peat ditches became canals: https://en.wikipedia.org/wiki/Giethoorn
+- Whisper boats are electric and quiet: https://www.swallowsnotes.com/blog/giethoorn-the-village-with-no-roads
 
-**NOTES:** Optional faint bell: see QUESTION 2 in inbox.
+**NOTES:** Bell seed: faint chime, Evie notices, Justin is distracted (lead-approved).

@@ -1,26 +1,28 @@
 ---
 episode: 07
 type: hook
-status: draft
+status: ready-for-review
 runtime_target: 0:25
-fact_check: sourced via web search 2026-10-03; items marked (verify) pending
+fact_check: snippet-verified 2026-10-03 (primary pages blocked); (verify) items pending
+script_aligned: yes
 ---
-**ON-SCREEN TEXT (big, top safe zone):** "WALK ON THE SEA FLOOR?"
+**ON-SCREEN TEXT (big, top safe zone):** "WHERE DID THE SEA GO?"
 
-**HOOK (0–3 s):** Kittens stand on wet sand; water far, far away.
+**HOOK (0–3 s):** Endless shining mudflat under a pink sky; four small figures on a firm path, a guide's shadow ahead.
 
 **BODY:**
-JUSTIN: Where did the sea go?!
-EVIE: It goes out and comes back, twice a day.
-TOFFEE: Can we walk to the horizon?
-COTTON: With a grown-up guide only!
-EVIE: Good rule.
+TOFFEE: Where did the water go?
+COTTON: It went… out.
+EVIE: We're walking on the sea floor!
+JUSTIN: With a guide. Don't try this at home.
+TOFFEE: Or at the beach. Or anywhere without a guide.
+JUSTIN: Wow. Toffee listened.
 
 **FRAMING (9:16):** Vertical 9:16. Evie & Justin centred in the middle third; big text in the top safe zone (keep clear of the bottom ~20% for app UI and the sides ~8%). Colours per CHARACTERS.md.
 
-**END CARD:** "Full adventure on the channel!" (paw-tag glow, subscribe cue, episode title)
+**END CARD:** "Full episode on Day 4!" (paw-tag glow, subscribe cue; countdown variants in RELEASE_CALENDAR)
 
 **FACTS & SOURCES:**
-- Tidal flats are exposed twice a day; guided mudflat walking exists (wadlopen): https://www.holland.com/global/tourism/discover-the-netherlands/visit-the-regions/wadden-islands/mud-flat-walking
+- Wadlopen = guided walk across the seabed at low tide: https://www.holland.com/global/tourism/discover-the-netherlands/visit-the-regions/wadden-islands/mud-flat-walking
 
-**NOTES:** Safety: always say 'with a guide'.
+**NOTES:** Safety: guide must be heard/seen (shadow, boots). Never imply walking out alone.

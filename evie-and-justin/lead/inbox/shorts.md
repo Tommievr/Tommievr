@@ -4,22 +4,24 @@ Updated: 2026-10-03 · branch `claude/evie-justin-shorts`
 ## Status
 | Ep | Title | Shorts | Notes |
 |---|---|---|---|
-| 1 | The Land Below the Sea | 3/3 draft | rewritten to template; polish pending ep1 script |
-| 2 | The Island That Disappeared | 3/3 draft | aligned to slate; script branch not found yet |
-| 3 | The Village With No Roads | 3/3 draft | aligned to slate; script branch not found yet |
-| 4 | The Sleeping Giants | 3/3 draft | aligned to slate; script branch not found yet |
-| 5 | The Dutch Desert | 3/3 draft | aligned to slate; script branch not found yet |
-| 6 | The Gates Against the Sea | 3/3 draft | aligned to slate; script branch not found yet |
-| 7 | Walking on the Sea Floor | 3/3 draft | aligned to slate; script branch not found yet |
-RELEASE_CALENDAR.md: done (5 weeks Ep1–5 + 2-week extension).
+| 1 | The Land Below the Sea | 2 ready-for-review (fun-fact), 2 draft (hook, cliffhanger) | waiting for rewritten Ep.1 script (drink lore); hook+cliffhanger placeholders |
+| 2 | The Island That Disappeared | 3/3 ready-for-review | aligned to script on claude/evie-justin-scripts |
+| 3 | The Village With No Roads | 3/3 ready-for-review | aligned to script on claude/evie-justin-scripts |
+| 4 | The Sleeping Giants | 3/3 ready-for-review | aligned to script on claude/evie-justin-scripts |
+| 5 | The Dutch Desert | 3/3 ready-for-review | aligned to script on claude/evie-justin-scripts |
+| 6 | The Gates Against the Sea | 3/3 ready-for-review | aligned to script on claude/evie-justin-scripts |
+| 7 | Walking on the Sea Floor | 3/3 ready-for-review | aligned to script on claude/evie-justin-scripts |
+
+RELEASE_CALENDAR.md: rebuilt as a 28-day, day-numbered plan (4-day rotation) with titles/captions/hashtags for 21 shorts + 7 episodes, date-mapping note and time-slot suggestion.
+
+Applied lead answers: lambs shown only in Ep.5 cliffhanger; Ep.3 faint chime; ~45–60 spoken words; no 1953 casualty numbers; end cards say "Full episode on Day 4!".
 
 ## QUESTIONS
-1. **Lamb reveal in Ep.5 shorts.** (a) Recommended: reveal in Ep5 *cliffhanger* only (hook/fun-fact show hoofprints/bell). (b) Never show lambs in shorts before the episode. (c) Show them freely.
-2. **Bell seed in Ep.3 cliffhanger?** (a) Recommended: yes, faint chime, pays off Ep.4. (b) No, only Ep.4.
-3. **Schedule length.** 7 weekly episodes need 7 weeks; brief said 5. (a) Recommended: 7-week plan (calendar already extends). (b) Double-release Ep6+7 in week 5. (c) Compress to 2 episodes in some weeks.
-4. **Word count.** Spoken lines are ~45–60 words (≈20–30 s at calm pace), below the 60–110 guide, matching the Ep.1 shorts. (a) Recommended: keep tight; (b) pad to ≥60.
-5. **Episode day.** (a) Saturday long episode, Mon/Wed/Fri shorts (recommended); (b) Sunday; (c) Friday.
+1. **Ep.1 shorts timing.** Hook/cliffhanger teaser the "special drink" with placeholders. (a) Recommended: scripts session pings me when the rewritten Ep.1 lands, then I finalise. (b) Finalise now with generic wording. (c) Drop the drink from shorts.
+2. **Start date (Day 1)?** Needed only to fill the date mapping. Recommend choosing a date so Day 4 (Ep.1) isn't in a holiday week.
+3. **Posting slots.** (a) Recommended: shorts 16:30, episodes 18:30 local, tested for 2 cycles. (b) Morning shorts 08:00. (c) Platform 'best time' tool.
 
 ## Blockers
-- Branch `claude/evie-justin-scripts` does not exist on origin yet → shorts stay `draft`; will align once scripts land.
-- en.wikipedia.org is blocked by the sandbox proxy; facts verified through search snippets (Rijkswaterstaat, Visit Drenthe, UNESCO-linked sites). Items marked (verify) remain: Ep1 below-sea-level %, Ep1 'middle' landmark, Ep2 harbour detail, Ep3 peat-as-fuel, Ep4 size comparison, 1953 flood link.
+- Rewritten Ep.1 script not on `claude/evie-justin-scripts` yet (still the 474-word version, no drink).
+- The Ep.6 script on that branch still contains the death toll line (">1,800 people died"); my shorts avoid it. Scripts session should remove it.
+- Primary sources (Wikipedia etc.) are blocked; facts snippet-verified. (verify) items: Ep.2 ~650 people, Ep.2 ring-dike wording, Ep.6 "about thirty closures" count, Ep.7 moon source.
