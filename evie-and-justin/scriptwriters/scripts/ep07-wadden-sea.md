@@ -57,7 +57,7 @@ COTTON: Together.
 EVIE: Nobody wanders off. Not even to look at something pretty.
 GUIDE: Rule three: we watch the tide and the weather.
 [The cats' tags turn GREEN. Soft chime. Check-mark pulse.]
-EVIE: Green. With a guide, it's safe.
+EVIE: Green! We're good, with a guide.
 TOFFEE: Can I run?
 GUIDE: Walk. Always walk.
 TOFFEE: Walking is… also fun.
@@ -129,7 +129,7 @@ EVIE: And the seals rest, and the birds eat, and everybody takes turns.
 [Mid-shot. Thin sheets of water appear across the flat. Channels widen.]
 COTTON: Is that the sea?
 [The cats' tags turn RED. Low hum. X pulse.]
-EVIE: Red. Low hum, X sign. Time to turn back.
+EVIE: Our paws have gone red. Time to turn back.
 GUIDE: It's the tide, coming in. Time to turn back.
 JUSTIN: Already?
 GUIDE: The tide doesn't ask. It comes in, quietly, but it does come.
@@ -215,22 +215,26 @@ JUSTIN: We'll meet again. (smiles) There's a lot of Netherlands left, and we've 
 [Teaser card: "More little adventures soon."]
 
 **GOODNIGHT OUTRO (0:30)**
-[Dusk on the dike. The water returns slowly. Music slows. Four small figures sit close together. In the grass beside them, one small flower glows pale lilac, holding a floating lilac droplet with a gold star.]
-COTTON: Evie, what's that flower?
+[Dusk on the dike. The water returns slowly. Music slows. Four small figures sit close together.]
+EVIE: Cotton, Toffee… I've been carrying something for you.
+[Evie opens the small pouch on her collar. Inside lies a single lilac petal holding one glowing drop with a gold star.]
+COTTON: What is it?
 [The cats' tags turn GREEN. Soft chime. Check-mark pulse.]
-EVIE: Green. Chime and check-mark. It's a Moondew Blossom.
-JUSTIN: The same kind we found. Look who's growing here.
+EVIE: Green! We're good. It's the last drop of a Moondew Blossom.
+JUSTIN: The same one that made us what we are.
 TOFFEE: Is it for eating? I'm hungry.
 EVIE: A sip stays just as you are. Little, and curious. That's how we stay little.
 COTTON: Stay little… together?
 EVIE: Only if you want to. It's your choice. And our tags say it's safe for you too.
+COTTON: (small voice) How do you know it's enough for two?
+EVIE: One tiny lap each. That's all it needs.
 JUSTIN: And remember, friends watching: real children never taste things they find. Ask a grown-up first. Always.
 COTTON: (softly) I'd like to stay little with my friends.
 TOFFEE: Me too! But can we still have birthdays? With cake?
 EVIE: Of course. Birthdays are for parties, not for growing up.
 JUSTIN: A party every year. Same size. More cake.
 TOFFEE: Best rule ever.
-[Cotton and Toffee each take a tiny lap. Lilac and gold sparkles settle on their wool. The Blossom closes its petals and tucks its glow away.]
+[Cotton and Toffee each take a tiny lap from the petal. Lilac and gold sparkles settle on their wool. The petal's glow fades softly, and Evie tucks it away.]
 COTTON: I feel… exactly the same.
 TOFFEE: I feel sparkly!
 JUSTIN: Welcome to the team. For a very long time.
@@ -249,6 +253,6 @@ EVIE: More adventures soon.
 - Cats wear small boots and tiny packs in the mud; Toffee never runs off; no wandering alone.
 - Seals and birds shown at a respectful distance. Quiet voices.
 - Cards and cutaway diagram: moon + earth + water as simple icons; no real-physics text.
-- Closing: the cats share a Moondew Blossom with the lambs (tags GREEN first, lambs choose, safety line spoken to viewers); ends on "More adventures soon." Nobody ages on screen; birthdays are parties without growing up. Do not use the drink for anything else.
-- Tag signal: GREEN = soft chime + check-mark pulse, RED = low hum + X pulse. Characters always say it aloud; never colour alone.
+- Closing: the cats share the saved petal (Ep.1 pouch) with the lambs; lambs play no part in sourcing it (tags GREEN first, lambs choose, safety line spoken to viewers); ends on "More adventures soon." Nobody ages on screen; birthdays are parties without growing up. Do not use the drink for anything else.
+- Tag signal: GREEN = soft chime + check-mark pulse, RED = low hum + X pulse. Colour is never the only cue: the sound and the symbol carry it. After Ep.1 the characters just mention the paw naturally ("my paw's gone red"), no full explanation.
 - Low-compute friendly: stills + parallax + mouth swap.

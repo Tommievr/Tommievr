@@ -46,10 +46,12 @@ JUSTIN: Which is when we're supposed to be asleep. Keep walking.
 EVIE: Look how the sky goes on forever.
 JUSTIN: Fine. The sky is very good.
 [Justin wanders toward the grassy edge to peek at the water. The gold paw on his tag turns RED. A low hum, and a big X pulses.]
-EVIE: Justin! Red! Low hum, X sign. That means pause.
+EVIE: Justin! Your paw's gone red! Low hum, and an X.
 JUSTIN: Pause. Got it. Stepping back from the edge.
 [He steps back onto the path. The paw turns GREEN. A soft chime, and a check-mark pulses.]
-EVIE: Green. Soft chime, check-mark. Safe.
+EVIE: And green again! Soft chime, and a check-mark.
+JUSTIN: Wait. So green means safe, and red means not safe?
+EVIE: Green means safe: a soft chime and a check-mark. Red means pause: a low hum and an X.
 JUSTIN: Okay, that's actually useful. I can hear it *and* see it.
 EVIE: I wonder what the sea thinks about all of this.
 JUSTIN: The sea thinks: "Why is there a wall in my way?"
@@ -88,7 +90,7 @@ EVIE: (smiling) And speaking of glowing…
 EVIE: Justin. A flower. And it's glowing just like our tags.
 JUSTIN: Flowers don't glow. Not even in this country.
 [The gold paw on each tag turns GREEN. Soft chime. Check-mark pulse.]
-EVIE: Green. Chime and check-mark. It's safe for us.
+EVIE: Green! It's safe for us.
 JUSTIN: Okay. That's a good sign.
 [Evie leans close. The droplet hums a tiny lullaby.]
 EVIE: I know this flower. From our old bedtime stories. It's a Moondew Blossom.
@@ -101,7 +103,9 @@ EVIE: Right. But we're storybook kittens, and the tags say it's safe. And I thin
 [Beat. The two kittens look at each other. The tags pulse in time, like two small heartbeats.]
 JUSTIN: One sip each. Together.
 EVIE: Together.
-[They each take a tiny lap of the droplet. Lilac and gold sparkles rise around them and settle on their fur like tiny stars. The Blossom closes its petals gently and tucks its glow away.]
+[They each take a tiny lap of the droplet. Lilac and gold sparkles rise around them and settle on their fur like tiny stars. The Blossom closes its petals gently and tucks its glow away. One small petal drifts down into Evie's paw, still holding a single tiny glowing drop. She tucks it into a small pouch tied to her collar.]
+EVIE: It left us one last drop.
+JUSTIN: Keep it safe in your pouch.
 JUSTIN (softly): I feel… exactly the same.
 EVIE (smiling): Just a bit sparkly.
 JUSTIN: Tastes like warm milk and a lullaby.
@@ -182,6 +186,7 @@ JUSTIN: Goodnight. And goodnight, sea. Stay on your side.
 - Sea side = silvery-teal, lake side = calmer, brighter. Sky takes ~50% of every wide shot.
 - Flashbacks as flat storybook illustration (cheap to make, clearly different).
 - **Moondew Blossom** (design/props/SPECIAL_DRINK.md, option A): pale-lilac flower cup on a short green stem, with a separate floating glowing lilac droplet and a tiny gold star. No bottle, no label, no text. Kitten-sized treasure. Found growing in the grass at the foot of the monument; nobody left it. After the sip: lilac/gold sparkles settle on the fur, nothing else changes.
+- **Petal + pouch:** a single petal holding one glowing drop; Evie keeps it in a small pouch tied to her collar (needs a design note for the pouch). It is used once, in Ep.7; mentioned lightly in Ep.4.
 - **Paw-tag signal (new device):** gold paw turns GREEN with a soft chime and a check-mark pulse (safe), or RED with a low hum and an X pulse (pause / ask). Never colour alone: always sound plus shape, and the characters say it aloud.
 - Blossom beat is wondrous and warm, not mysterious-scary: golden hour, gentle music, no jump cuts.
 - Kid-safety beat is spoken by Justin first (rule), then Evie (ask a grown-up), then repeated lightly in the recap. Keep both in the final cut.

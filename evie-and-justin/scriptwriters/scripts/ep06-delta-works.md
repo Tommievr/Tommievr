@@ -119,14 +119,14 @@ JUSTIN: We noticed.
 *Scene 4 — Toffee's wobble (0:30)*
 [They stand at a safe lookout behind a railing. Toffee leans over to peek at the water.]
 [Evie's tag turns RED. Low hum. X pulse.]
-EVIE: Red! Low hum, X sign. Pause!
+EVIE: My paw's gone red! Toffee, wait!
 TOFFEE: Look at the waves, they're so—
 COTTON: Toffee, back from the edge!
 [Toffee wobbles, Cotton pulls him back with her wool. Her bell rings.]
 TOFFEE: Phew. Thanks.
 COTTON: Stay behind the railing. The sea is stronger than it looks.
 [Evie's tag turns GREEN. Soft chime. Check-mark pulse.]
-EVIE: Green. Behind the railing is safe.
+EVIE: Green! Behind the railing is safe.
 TOFFEE: I only wanted to say hello to it.
 JUSTIN: You can wave from here.
 TOFFEE: [waving] Hello, sea!

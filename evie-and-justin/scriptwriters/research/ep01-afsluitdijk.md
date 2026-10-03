@@ -18,5 +18,6 @@ Re-checked by script writer session. Method note: primary pages (Wikipedia, Rijk
 | Moondew Blossom, ageless kittens, glowing tags that turn green/red | Story canon (lead decisions 8-10, 2026-10-03) | n/a — fiction, not a fact about the Afsluitdijk |
 | Flowers growing in the grass near the monument | Site visit/photos | ☐ visual only; a generic dike-grass flower, no species claimed |
 | "Happy Dutch people cheering / boats tooting on closing day" | Imagined flashback, no source | ☐ story flourish — keep illustrated, do not present as documented |
+| Saved petal with one glowing drop, carried in a pouch (used in Ep.7) | Story canon (lead decision 12) | n/a — fiction |
 
 Rule: if a claim can't be verified, cut it or soften it ("about", "many").

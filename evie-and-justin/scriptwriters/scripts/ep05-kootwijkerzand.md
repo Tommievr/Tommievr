@@ -115,7 +115,7 @@ JUSTIN: Then it's lucky you're a kitten. You never sit still either.
 [Toffee spots a steep slope.]
 TOFFEE: I'm going to jump down that!
 [Justin's tag turns RED. Low hum. X pulse.]
-JUSTIN: Red! Low hum, X sign. Pause, Toffee!
+JUSTIN: My paw's gone red! Wait, Toffee!
 COTTON: Toffee, no! The tiny plants are growing there.
 TOFFEE: Oh. Oh no. Sorry, plants!
 [Toffee skids and tumbles sideways, landing on the path. Dust puff.]
@@ -129,7 +129,7 @@ TOFFEE: Phew. Sorry again, plants.
 JUSTIN: Stay on the path, everybody. Tiny plants need us to be careful.
 COTTON: This place is a nature reserve. Staying on the marked path keeps it safe.
 [Justin's tag turns GREEN. Soft chime. Check-mark pulse.]
-JUSTIN: Green. The path is the safe place.
+JUSTIN: Green again. The path is the safe place.
 EVIE: Little plants have little homes. We should be gentle.
 JUSTIN: Big paws, small plants. Careful steps.
 TOFFEE: Gentle. I can do gentle. Watch.

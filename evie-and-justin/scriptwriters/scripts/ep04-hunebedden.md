@@ -135,6 +135,9 @@ JUSTIN: Hold on. So the ice is way back there, the farmers are somewhere in the 
 EVIE: Yes. And the ribbon between each card is longer than you'd think.
 JUSTIN: Five thousand years. That's eighty lifetimes, one after another.
 EVIE: Good thing we've got all the time in the world.
+[Evie touches the small pouch on her collar, checking it.]
+JUSTIN: Still saving that last drop?
+EVIE: For someone special. One day.
 EVIE: Imagine eighty grandmas in a row, each handing the story to the next.
 JUSTIN: And my grandma still forgets where she put her glasses.
 EVIE: And the stones are still here. Still sleeping.

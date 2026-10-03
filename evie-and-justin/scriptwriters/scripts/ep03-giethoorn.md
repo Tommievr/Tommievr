@@ -45,7 +45,7 @@ JUSTIN: Hello, sir. Do you know who dug the water? No? Rude.
 *Scene 1 — Whisper boat (1:15)*
 [They climb into a small electric boat. Life jackets clearly on. Soft hum.]
 [Their tags turn GREEN. Soft chime. Check-mark pulse.]
-EVIE: Green. Life jackets on, so it's safe to sail.
+EVIE: Green! Life jackets on, so it's safe to sail.
 JUSTIN: Why is it so quiet?
 EVIE: It's called a whisper boat. It runs on electricity, so it doesn't make a lot of noise.
 JUSTIN: So no rumbling engine. Just a little hum, like a very sleepy fridge.
