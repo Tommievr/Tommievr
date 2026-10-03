@@ -110,7 +110,7 @@ Implemented in `pipeline/blender/evg/cameras.py`. Sensor 36 mm, **horizontal fit
 | `medium_two` | 40 | 60 | 0.25 m | 1.8 m | two characters talking |
 | `medium_single` | 50 | 70 | 0.22 m | 1.25 m | one speaker |
 | `close_up` | 85 | 110 | 0.20 m | 0.8 m | emotion, reaction |
-| `extreme_close_tag` | 100 | 135 | 0.15 m | 0.4 m | glowing tag/bell |
+| `extreme_close_tag` | 100 | 135 | 0.15 m | 0.4 m (f/22, focus on the tag) | glowing tag/bell |
 | `low_hero` | 28 | 40 | 0.08 m | 1.2 m (tilt up 10°) | brave moment, landmark behind |
 | `over_shoulder` | 50 | 70 | 0.25 m | 1.0 m | "look at that" reveal |
 Horizon at the lower third for sky-heavy wides, middle for dialogue. Never through a head.

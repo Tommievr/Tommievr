@@ -1,7 +1,16 @@
 # Design team → Lead inbox
 Branch `claude/evie-justin-design` (no PR). Updated after the lead's answers (Q-10 to Q-14 + earlier defaults accepted) and the **special drink** request.
 
-## Latest (round 3)
+## Latest (round 4): lead answers Q-15..17 applied
+- **Q-15 locked:** Moondew Blossom; `design/props/SPECIAL_DRINK.md` marked approved (origin: found by the cats).
+- **Green/red paw tag (Q-16 replaced)** → `design/blender/FX_GLOW.md` section 8 + `evg/fx.py` `tag_state` (`safe` / `unsafe` / `off`). **Tested** (render `design/blender/example_tag_states.png`). Colours: **SAFE mint-aqua `#4DFFC4`, UNSAFE deep red `#D81B2A`** (colour-blind check by CVD simulation: deuteranopia ΔE 52, protanopia 58; plain green/red would be ΔE 9). **Non-colour cues, always all together:** white **check mark ✓ vs X ✕** on the paw, **solid vs dashed rotating ring**, **slow smooth pulse vs fast hard 3-flash pulse**, soft light, captions. **Sound table for audio** (soft rising chime vs low hum + 3 low bonks; calm, never a siren) is in section 8.3.
+- **How the tag is built so it can switch state** (Meshy/Blender note): Meshy's baked paw can't change, so each tag is rebuilt as a plain gold disc + separate paw symbol (`fx.make_tag_disc`); documented in FX_GLOW 8.4, RIGGING 5b, QA_AND_FIXES. **Green/red paw sections added to the Evie and Justin sheets.**
+- **Q-17 applied:** lambs get the drink in **Ep.7**: `fx.bell_glow` (lilac/gold bell swell, 3 lilac rings, lilac+gold sparkles; render `example_bell_glow.png`; recipe FX_GLOW section 9). **Spoiler guard:** shot specs can carry `"spoiler": "ep07"`; `build_shot.py` warns, loudly for 9:16 Shorts. Bell sections added to Cotton/Toffee sheets.
+- Day 1 checklist updated (tag discs, greyscale check of the safety signal, Ep.7 bell test as later/spoiler).
+- Fixed while testing: tag shots need focus on the tag and f/22 (`extreme_close_tag`), glow strengths ≤ ~1.7 so mint/red don't clip to cyan/white, bell ring parented under a non-uniformly scaled bell shrank to invisible (now constraint-follow).
+- **New questions:** **Q-18** safety-signal timing in the edit: (a) hold the tag close-up ≥ 1.5 s with caption "[soft chime]/[low hum]" every time *(recommended)*; (b) shorter, sound only; (c) icon-only HUD overlay instead of tag glow. **Q-19** do the cats' tags go green/red in Shorts too (9:16 framing: tag close-up needed): (a) yes, always with the close-up *(recommended)*; (b) only in episodes. **Q-20** lamb birthday visual (writers/lead): flower crown + lilac bell glow *(suggested)*, cake, or just music.
+
+## Round 3 (kept for reference)
 - **Approved v1.1 marked** in `design/STYLE_GUIDE.md` and `design/character-sheets/` (design files only).
 - **Special drink designed** → `design/props/SPECIAL_DRINK.md`: 3 options, **recommended A: "Moondew Blossom"** (pale-lilac flower cup holding a floating glowing lilac droplet with a gold star: no bottle, so the least like alcohol/medicine). B Star Acorn Cup, C Dewdrop Flask (closest to a potion bottle: not recommended). Colours: glow `#B9A2FF`, sparkles `#FFE08A`. Safety rules, Meshy prompts (≤600 chars, cup only; glow is a Blender sphere) and negatives included.
 - **Glow/sparkle recipe + paw-tag discovery moment** → `design/blender/FX_GLOW.md` + code `pipeline/blender/evg/fx.py` (`"fx"` list in the shot JSON: `drink`, `tag_glow`, `sparkles`). **Tested headless**: tags pulse gold, blossom lights the ground, 4-point sparkle burst; render `design/blender/example_discovery.png`. Bloom = compositor Glare (manual, 2 min).

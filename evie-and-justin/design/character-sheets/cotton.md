@@ -43,3 +43,6 @@ happy: soft smile, blush, ears bounce · curious: head tilt, one ear lifts · su
 ## On-model / off-model
 **ON ✔** [ ] cream clump wool + smooth cream face · [ ] BLUE eyes, very big · [ ] big floppy pink-inside ears · [ ] light-blue collar + gold heart bell · [ ] dark chunky hooves · [ ] round pom · [ ] gentle look · [ ] **simple clumps, no curl detail**
 **OFF ✘** [ ] white/grey/yellow wool · [ ] eyes not blue · [ ] collar not blue, bell missing/no heart · [ ] pink hooves/cat paws · [ ] pointed upright ears · [ ] curly-wool texture detail, photoreal/Pixar-fur · [ ] realistic sheep proportions
+
+## Bell glow (Ep.7, SPOILER)
+The gold heart bell **glows lilac/gold when the lamb receives the Moondew Blossom drink in Ep.7**; keep this out of everything published before Ep.7. Recipe: `../blender/FX_GLOW.md` section 9. The bell is a separate object named `<name>_bell` (emissive-capable toon gold). Lambs do **not** use the green/red paw (that is the cats' tag mechanic).

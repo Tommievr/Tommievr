@@ -1,5 +1,7 @@
-# The Special Drink (Ep.1 lore): prop design, proposed v1.1
+# The Special Drink (Ep.1 lore): prop design, **APPROVED v1.1 (option A: Moondew Blossom, locked by lead)**
 Lore (lead): in Ep.1 the kittens find a **special drink that stops them ageing**. This is why Evie and Justin stay small forever. Needed: a clear **fantasy** prop, **kid-safe**, **not resembling real alcohol or medicine**, plus a glow that links to the **paw-tag discovery moment**.
+
+**Locked by the lead:** option **A, Moondew Blossom**. Origin: **nobody left it, the cats found it themselves** on their adventure (Ep.1). The paw tags turn **green over the Blossom = safe for them** (`../blender/FX_GLOW.md` section 8). Eventually all animals get it; **the lambs receive it in Ep.7** (`FX_GLOW.md` section 9). B and C below are kept only as discarded alternatives.
 
 ## 1. Design rules (safety first)
 - **No bottle-and-label look, no amber/red/green liquid, no dropper, spoon, pill, syringe, cross, skull, fizz like soda or champagne.** Those read as alcohol, medicine, poison or a soft drink.
@@ -10,7 +12,7 @@ Lore (lead): in Ep.1 the kittens find a **special drink that stops them ageing**
 ## 2. Options (recommendation first)
 | | Option | Look | Why / risk |
 |---|---|---|---|
-| **A (recommended)** | **Moondew Blossom** (`blossom`) | six pale-lilac petals open like a small cup on a short green stem, holding a **floating glowing droplet** of lilac light with a tiny gold star | **Least like alcohol or medicine** (no bottle at all), natural fantasy, cats can sniff/lap it, easy silhouette, ties to the Dutch landscape (flowers on the dike). Glow is a separate sphere, so it is easy to animate |
+| **A (APPROVED)** | **Moondew Blossom** (`blossom`) | six pale-lilac petals open like a small cup on a short green stem, holding a **floating glowing droplet** of lilac light with a tiny gold star | **Least like alcohol or medicine** (no bottle at all), natural fantasy, cats can sniff/lap it, easy silhouette, ties to the Dutch landscape (flowers on the dike). Glow is a separate sphere, so it is easy to animate |
 | B | **Star Acorn Cup** (`acorn`) | a big acorn cap used as a chalice, glowing lilac liquid, a gold star floating | Cute and nature-based; slightly reads as a "cup of drink", fine for a fantasy cup; harder to see liquid from the side |
 | C | **Dewdrop Flask** (`flask`) | tiny round pale-blue glass flask with cork, glowing lilac liquid | Strongest read as "the potion", but **closest to a medicine/drink bottle**; only use with the safety rules above (no label, no dropper). Not recommended |
 Placeholders of all three exist in code (`fx.make_drink_placeholder`, example `pipeline/shots/example_discovery_placeholder.json`, render `blender/example_discovery.png`).

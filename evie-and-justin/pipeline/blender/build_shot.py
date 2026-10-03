@@ -74,6 +74,9 @@ def build(spec, aspect=None, variant=None):
         if c.get("lipsync") and os.path.exists(c["lipsync"]):
             n = characters.apply_lipsync(rt, characters.read_rhubarb(c["lipsync"]), spec.get("fps", 24), c.get("lipsync_offset_s", 0.0))
             print(f"[evg] lip-sync: {n} cues for {c['name']}")
+    if spec.get("spoiler"):
+        msg = f"this shot is a SPOILER for {spec['spoiler']}"
+        print(f"[evg] WARNING: {msg}" + (": do NOT publish it as a Short/thumbnail before release!" if aspect == "9:16" else ""))
     fx.apply_fx(spec.get("fx"), {c["name"]: rt for c, rt in zip(spec["characters"], roots)}, spec.get("fps", 24))
     if spec.get("tag_glow"):
         g = spec["tag_glow"]

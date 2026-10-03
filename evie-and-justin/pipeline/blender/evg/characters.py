@@ -159,7 +159,7 @@ def make_placeholder(name):
         _prim("sphere", f"PLACEHOLDER_{name}_iris", (ex, -0.254 * s, 0.255 * s), (0.017 * s, 0.006 * s, 0.021 * s), iris, P)
         _prim("sphere", f"PLACEHOLDER_{name}_pupil", (ex, -0.258 * s, 0.255 * s), (0.009 * s, 0.004 * s, 0.012 * s), pupil, P)
     _prim("torus", f"PLACEHOLDER_{name}_collar", (0, -0.15 * s, 0.19 * s), (0.075 * s, 0.075 * s, 0.075 * s), collar_m, P, minor=0.14)
-    _prim("cyl", f"PLACEHOLDER_{name}_tag", (0, -0.23 * s, 0.17 * s), (0.016 * s, 0.016 * s, 0.004 * s), gold, P, rot=(math.pi / 2, 0, 0))
+    _prim("cyl", f"PLACEHOLDER_{name}_{'bell' if lamb else 'tag'}", (0, -0.23 * s, 0.17 * s), (0.016 * s, 0.016 * s, 0.004 * s), gold, P, rot=(math.pi / 2, 0, 0))
     if lamb:
         _prim("sphere", f"PLACEHOLDER_{name}_tail", (0, 0.2 * s, 0.17 * s), (0.04 * s,) * 3, body_m, P)
     else:

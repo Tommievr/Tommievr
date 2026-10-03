@@ -16,7 +16,7 @@ PRESETS = {
     "medium_two":        (40, 60, 0.25, 1.8, 11.0, "dialogue, two characters"),
     "medium_single":     (50, 70, 0.22, 1.25, 11.0, "one speaker"),
     "close_up":          (85, 110, 0.20, 0.8, 11.0, "emotion / reaction"),
-    "extreme_close_tag": (100, 135, 0.15, 0.4, 8.0, "glowing tag / bell"),
+    "extreme_close_tag": (100, 135, 0.15, 0.4, 22.0, "glowing tag / bell"),
     "low_hero":          (28, 40, 0.08, 1.2, 11.0, "brave moment, landmark behind (tilts up ~10 deg)"),
     "over_shoulder":     (50, 70, 0.25, 1.0, 11.0, "look at the place"),
 }
@@ -64,7 +64,7 @@ def place_camera(preset, subject=(0, 0, 0.15), yaw_deg=0.0, aspect="16:9", name=
         cam_data.dof.use_dof = True
         focus = bpy.data.objects.new(f"{name}_focus", None)
         bpy.context.scene.collection.objects.link(focus)
-        focus.location = target + Vector((0, -0.08, 0.07))  # on the face, not the belly
+        focus.location = target + (Vector((0, 0, 0)) if preset == "extreme_close_tag" else Vector((0, -0.08, 0.07)))  # on the face (tag shots: on the subject itself)
         cam_data.dof.focus_object = focus
         cam_data.dof.aperture_fstop = fstop
     bpy.context.scene.camera = cam

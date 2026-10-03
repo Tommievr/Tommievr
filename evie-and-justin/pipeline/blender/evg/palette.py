@@ -15,6 +15,12 @@ CHARACTERS = {
 DRINK = {"liquid": "#B9A2FF", "liquid_deep": "#7A5FE0", "sparkle": "#FFE08A", "petal": "#E9D8FF", "stem": "#6CC070",
          "acorn": "#B9763A", "glass": "#DDEBFF", "cork": "#C99A5B"}
 
+# paw-tag safety signal (series mechanic): gold = neutral, MINT-AQUA = safe, DEEP RED = unsafe.
+# Chosen for colour-blind viewers: big brightness gap (luminance 0.77 vs 0.16) and CVD-simulated deltaE 52 (deutan) / 58 (protan);
+# plain green #2ECC40 vs red #FF4136 collapses to deltaE 9 for deuteranopia. Never rely on colour alone: glyph + pulse + ring + sound too.
+TAG_STATE = {"safe": "#4DFFC4", "unsafe": "#D81B2A", "off": GOLD, "glyph": "#FFFFFF"}
+BELL_DRINK = {"lilac": "#B9A2FF", "gold": GOLD}   # lamb bells when they receive the drink (Ep.7)
+
 # lighting variants (see STYLE_GUIDE section 3.5). azimuth: degrees from the camera axis (0 = behind camera, + = to the right).
 VARIANTS = {
     "day":    {"sun_elev": 45, "sun_az": 40, "key": "#FFE9C4", "key_w": 4.0, "fill": "#9EC5FF", "fill_w": 1.4, "rim": "#FFF1D6", "rim_w": 5,

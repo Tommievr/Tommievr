@@ -40,6 +40,16 @@ Round head, two rounded-triangle ears, plump body, stubby legs, fat curled-up ta
 ## Collar / tag
 Thin raspberry band at the neck, small gold stud dots (optional flat dots), buckle at the back. **Gold paw-print tag**: chunky round disc, ≈ 2.5 cm, hangs at the front centre; glows at discovery (`TAG_glow`). Matching tag with Justin = the adventure badge.
 
+## Green / red paw (series mechanic, approved)
+The gold paw symbol on Evie's tag turns **GREEN (safe) / RED (unsafe)**. Both cats' tags do it together or separately.
+| State | Paw colour | Glyph on the paw | Ring | Pulse | Sound |
+|---|---|---|---|---|---|
+| rest | dark gold `#C77F0E` on the gold disc `#FFB520` | none | none | none | none |
+| **SAFE** | mint-aqua `#4DFFC4` | white **check mark ✓** | **solid** ring `#4DFFC4` | slow smooth swell | soft rising chime |
+| **UNSAFE** | deep red `#D81B2A` | white **X ✕** | **dashed** rotating ring `#D81B2A` | fast hard 3-flash | low hum / 3 low bonks |
+Colours are chosen for colour-blind viewers (deuteranopia ΔE 52); **never colour alone**: glyph + ring + pulse + sound always accompany it. Recipe, code and sound table: `../blender/FX_GLOW.md` sections 8.1-8.3.
+**Build note:** the tag must be a plain gold disc with a **separate paw symbol** (Meshy's baked paw print cannot change colour): `fx.make_tag_disc(...)`, details in `FX_GLOW.md` section 8.4. On-model check: at rest the tag looks like the reference (gold disc, darker gold paw print).
+
 ## Expression notes (`COMMON.md` section 3)
 happy: big shining eyes, blush, tiny fangs · curious: head tilt to the patch side · surprised: huge eyes, thin iris ring · scared_but_brave: ears flat, shining eyes, little chin up · sleepy: slow lids, tail wrapped · laughing: arcs, wide mouth.
 
@@ -47,5 +57,5 @@ happy: big shining eyes, blush, tiny fangs · curious: head tilt to the patch si
 `COMMON.md` section 5. Show the patch in the front view; the side view shows her **left (patch) side**. Background `#EDEDED`.
 
 ## On-model / off-model
-**ON ✔** [ ] white fur · [ ] exactly one black patch top-left · [ ] BLUE eyes, very big, 2 catchlights · [ ] raspberry-pink collar + gold paw tag · [ ] pink ears/nose · [ ] big round head, stubby legs, fat curled tail · [ ] **smooth, simple, chunky: no fur detail**
+**ON ✔** [ ] tag paw can show green ✓ / red ✕ states (separate paw symbol) · [ ] white fur · [ ] exactly one black patch top-left · [ ] BLUE eyes, very big, 2 catchlights · [ ] raspberry-pink collar + gold paw tag · [ ] pink ears/nose · [ ] big round head, stubby legs, fat curled tail · [ ] **smooth, simple, chunky: no fur detail**
 **OFF ✘** [ ] patch missing/wrong side/two patches · [ ] eyes not blue or small · [ ] collar wrong colour, tag missing/not gold · [ ] grey/cream fur · [ ] long muzzle / realistic cat · [ ] fur strands, fuzz halo, photoreal or Pixar-fur look · [ ] extra/fused limbs

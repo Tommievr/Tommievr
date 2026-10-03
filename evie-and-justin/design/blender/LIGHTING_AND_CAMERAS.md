@@ -34,7 +34,7 @@ Presets (metres, storybook scale; `distance_scale` 1.3 is applied automatically 
 | `medium_two` | 40 | 60 | 0.25 | 1.8 | 11 | dialogue |
 | `medium_single` | 50 | 70 | 0.22 | 1.25 | 11 | one speaker |
 | `close_up` | 85 | 110 | 0.20 | 0.8 | 11 | emotion |
-| `extreme_close_tag` | 100 | 135 | 0.15 | 0.4 | 8 | tag/bell glow |
+| `extreme_close_tag` | 100 | 135 | 0.15 | 0.4 | 22 | tag/bell glow |
 | `low_hero` | 28 | 40 | 0.08 | 1.2 | 11 | brave moment, tilts up 10° |
 | `over_shoulder` | 50 | 70 | 0.25 | 1.0 | 11 | reveal the place |
 - Sensor 36 mm, **horizontal fit**: the same lens means the same width in both aspects; the 9:16 lenses are longer so characters stay big in vertical.

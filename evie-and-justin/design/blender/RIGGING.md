@@ -42,6 +42,9 @@ Minimum for Ep.1 (T1): `jaw` bone open/close from audio amplitude + mouth **text
 3. In the shot spec: `"lipsync": "pipeline/renders/audio/line.json"` on that character. `build_shot.py` calls `characters.read_rhubarb` + `apply_lipsync`, keyframing `vis_*` by name (TSV output also works).
 4. Without `vis_*` keys: skipped with a note (jaw tier is manual for now).
 
+## 5b. Tag and bell (the safety signal needs them)
+Cats: delete Meshy's tag; build `fx.make_tag_disc("<name>", location, radius=0.012, parent=<rig>, parent_bone="tag.01")` (plain gold disc + `<name>_tag_face` anchor). The paw symbol, ✓/✕ glyphs and rings are created by `fx.tag_state` (`FX_GLOW.md` section 8). Lambs: keep the bell as a separate object named `<name>_bell` on `tag.01` (heart slot visible); its glow is `fx.bell_glow` (section 9, Ep.7 spoiler).
+
 ## 6. Expressions and animation from the shot spec
 `"expression": "happy"` sets `expr_happy` (others zero). Animate over time from Python: `characters.apply_expression(root, "surprised", 1.0, frame=48)` (keyframes). Actions: `"anim": "idle_breathe"` assigns the Action to the armature; missing = placeholder bob.
 Tail wag, ear flop, bell swing: secondary motion: add Damped Track/Copy Rotation constraints on `tail.0n`, `ear.*.0n`, `tag.01` later (T3). Bell sound is triggered by the audio team, not by Blender.

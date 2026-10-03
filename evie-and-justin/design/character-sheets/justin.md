@@ -39,6 +39,16 @@ Same family as Evie but **stockier, with fuller cheeks and a short plump tail cu
 ## Collar / tag
 Thin plain dark collar, low on the neck; add a **small highlight band** (toon spec) so it reads on dark fur. **Gold paw tag identical to Evie's** (the bright accent on his chest).
 
+## Green / red paw (series mechanic, approved)
+The gold paw symbol on Justin's tag turns **GREEN (safe) / RED (unsafe)**. Both cats' tags do it together or separately.
+| State | Paw colour | Glyph on the paw | Ring | Pulse | Sound |
+|---|---|---|---|---|---|
+| rest | dark gold `#C77F0E` on the gold disc `#FFB520` | none | none | none | none |
+| **SAFE** | mint-aqua `#4DFFC4` | white **check mark ✓** | **solid** ring `#4DFFC4` | slow smooth swell | soft rising chime |
+| **UNSAFE** | deep red `#D81B2A` | white **X ✕** | **dashed** rotating ring `#D81B2A` | fast hard 3-flash | low hum / 3 low bonks |
+Colours are chosen for colour-blind viewers (deuteranopia ΔE 52); **never colour alone**: glyph + ring + pulse + sound always accompany it. Recipe, code and sound table: `../blender/FX_GLOW.md` sections 8.1-8.3.
+**Build note:** the tag must be a plain gold disc with a **separate paw symbol** (Meshy's baked paw print cannot change colour): `fx.make_tag_disc(...)`, details in `FX_GLOW.md` section 8.4. On-model check: at rest the tag looks like the reference (gold disc, darker gold paw print).
+
 ## Expression notes
 happy: cheeky half-smirk, one corner higher · curious: single raised brow (always the same side) · surprised: dramatic, whites show all round, wide mouth · scared_but_brave: puffed cheeks, bristled tail tip, jaw set · sleepy: grumbly half-lids · laughing: head back, arcs · extra `grumble`: flat mouth, brows down.
 
@@ -46,5 +56,5 @@ happy: cheeky half-smirk, one corner higher · curious: single raised brow (alwa
 `COMMON.md` section 5. **Light the image brightly and evenly; do not underexpose**; keep eye whites and ear backs clear. Plain **white `#FFFFFF`** or light grey `#EDEDED` background (dark fur separates from either).
 
 ## On-model / off-model
-**ON ✔** [ ] dark plum-black fur with visible form · [ ] GREEN eyes, very big, visible whites · [ ] cream-white ear backs, pink inside · [ ] plain dark collar + gold paw tag · [ ] short plump tail over back · [ ] stocky, full cheeks · [ ] **smooth, simple, chunky**
+**ON ✔** [ ] tag paw can show green ✓ / red ✕ states (separate paw symbol) · [ ] dark plum-black fur with visible form · [ ] GREEN eyes, very big, visible whites · [ ] cream-white ear backs, pink inside · [ ] plain dark collar + gold paw tag · [ ] short plump tail over back · [ ] stocky, full cheeks · [ ] **smooth, simple, chunky**
 **OFF ✘** [ ] eyes not green / small · [ ] collar coloured or with dots, tag missing/not gold · [ ] pure flat black blob · [ ] stripes/white patches · [ ] looks like Evie recoloured · [ ] fur strands, fuzz halo, photoreal/Pixar-fur · [ ] extra/fused limbs

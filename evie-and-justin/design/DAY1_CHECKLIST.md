@@ -33,10 +33,13 @@ Style (decided): **stylised 3D cartoon, simple fur.** The reference PNGs are col
 
 ## 4b. OPTIONAL, after Evie and Justin: the special drink (Ep.1 lore) → `design/props/SPECIAL_DRINK.md`
 - [ ] Meshy prop: **Moondew Blossom** (recommended option A; cup only, glow is a Blender sphere) → QA → toon → `pipeline/props/drink.blend`
+- [ ] Build each cat's **tag as a plain gold disc** with `fx.make_tag_disc` (Meshy's baked paw can't change colour), parent to `tag.01`
+- [ ] Render the **green/red paw** test: `pipeline/shots/example_tag_state_placeholder.json` style `tag_state` safe + unsafe; check it in greyscale (✓ vs ✕, solid vs dashed ring still read)
 - [ ] Render the **discovery moment** with the recipe in `design/blender/FX_GLOW.md` (tags glow + sparkles); try `extreme_close_tag` and the 9:16 version
 
 ## 5. Later (not day 1)
 - [ ] Cotton and Toffee (needed before Ep.5; same recipe, `--kind lamb`)
+- [ ] Ep.7 only (SPOILER, not before): lamb `bell_glow` test (`design/blender/FX_GLOW.md` section 9; shot spec `"spoiler": "ep07"`)
 - [ ] Rhubarb lip-sync test with one Kokoro line (`design/blender/RIGGING.md` section 5)
 - [ ] Sculpt face shape keys (tier T2) once Ep.1 is moving
 - [ ] Backgrounds 02-07 (`design/backgrounds/prompt-packs/`)
