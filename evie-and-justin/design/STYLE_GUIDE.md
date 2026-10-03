@@ -1,3 +1,5 @@
+> **SUPERSEDED DIRECTION:** Tommie rejected the realistic/Pixar-fur look. Use stylised 3D cartoon with simpler fur (see lead/CHANNEL_BIBLE.md). The design session is rewriting this file.
+
 # Style Guide (v0.1 — draft, not locked)
 
 **Direction:** cartoony 3D-storybook. Keep the kittens' current soft-fur Pixar look; make worlds *simpler and more painterly* than the cats so the cats always pop.

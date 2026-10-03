@@ -2,6 +2,9 @@
 
 **Channel name (decided):** Evie & Justin's Little Adventures
 
+## Visual style (decided by Tommie)
+**Stylised 3D cartoon with simpler fur** — NOT realistic/Pixar-fur. Smooth short fur or simple wool shapes, bold chunky forms, big expressive eyes, clean bright colours, toon-ish shading. Reference images in `assets/characters/` are for colours/markings only, not the rendering style. Models are made by Tommie on his own hardware (Meshy → Blender); design team supplies prompt packs.
+
 ## Premise
 Evie and Justin were the stars of bedtime stories. Now they're awake, curious, and exploring
 the Netherlands. Each episode visits one unusual place and unpacks **one concept** there
