@@ -27,4 +27,6 @@ COTTON AND JUSTIN: Back from the edge!
 - Gates close at storm surge (~3 m above NAP); closed only ~30 times so far (count grows - verify): https://en.wikipedia.org/wiki/Oosterscheldekering
 - Green/red paw: lead/DECISIONS.md item 10: evie-and-justin/lead/DECISIONS.md
 
+**PAW CUE:** every colour change gets a tag close-up held at least 1.5 s with an on-screen caption [soft chime] (green, check-mark) or [low hum] (red, X). Sound + shape, never colour alone. Full explanation only in Ep.1; elsewhere a natural line ("the paw's red!").
+
 **NOTES:** No flood imagery, no casualty numbers (confirmed none in current Ep.6 script). Everyone behind railings; paw turns GREEN again with a chime once behind the rail.

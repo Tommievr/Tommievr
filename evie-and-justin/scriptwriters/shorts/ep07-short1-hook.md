@@ -27,4 +27,6 @@ JUSTIN: Wow. Toffee listened.
 - Wadlopen = guided walk across the seabed at low tide: https://www.holland.com/global/tourism/discover-the-netherlands/visit-the-regions/wadden-islands/mud-flat-walking
 - Green/red paw: lead/DECISIONS.md item 10: evie-and-justin/lead/DECISIONS.md
 
+**PAW CUE:** every colour change gets a tag close-up held at least 1.5 s with an on-screen caption [soft chime] (green, check-mark) or [low hum] (red, X). Sound + shape, never colour alone. Full explanation only in Ep.1; elsewhere a natural line ("the paw's red!").
+
 **NOTES:** Safety: guide must be heard/seen (shadow, boots). Never imply walking out alone. No lamb-drink content (Ep.7 spoiler rule).

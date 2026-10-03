@@ -27,4 +27,6 @@ EVIE: Shh. Quiet guests.
 - Peat digging made lakes; peat ditches became canals: https://en.wikipedia.org/wiki/Giethoorn
 - Whisper boats are electric and quiet: https://www.swallowsnotes.com/blog/giethoorn-the-village-with-no-roads
 
+**PAW CUE:** every colour change gets a tag close-up held at least 1.5 s with an on-screen caption [soft chime] (green, check-mark) or [low hum] (red, X). Sound + shape, never colour alone. Full explanation only in Ep.1; elsewhere a natural line ("the paw's red!").
+
 **NOTES:** Bell seed: faint chime, Evie notices, Justin is distracted (lead-approved).

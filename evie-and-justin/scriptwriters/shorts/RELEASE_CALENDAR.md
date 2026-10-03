@@ -22,12 +22,12 @@ Lead decision (DECISIONS.md #5): **Day 1 = Hook, Day 2 = Fun fact, Day 3 = Cliff
 
 ## Mapping day numbers to real dates
 `date(Day n) = start date + (n − 1) days`. Fill in once the start date is chosen:
-| Start date (Day 1) | _TBD_ |
+| Start date (Day 1) | _TBD — set once Episode 1 is rendered (DECISIONS #18)_ |
 |---|---|
 Then Day 4/8/12/…/28 are the episode dates; Day 28 = season finale (Ep.7). Optional: keep a spreadsheet column `date = start + n − 1`. Since the rotation is 4 days, weekdays shift each cycle — fine, since no fixed weekday is used. Tip: pick a start date so that Ep.1 (Day 4) is not a public holiday week.
 
-## Posting time slots (suggestion — test and adjust with analytics)
-- **Shorts: 16:30 local** (after school/before dinner; kids + parents scrolling). Alternate with **11:30** if retention is low.
+## Posting time slots (lead-approved, DECISIONS #18; test for 2 cycles = 8 days, then review analytics)
+- **Shorts: 16:30 local** (after school/before dinner; kids + parents scrolling).
 - **Full episodes: 18:30 local**, right before the calm bedtime window (fits the "goodnight" brand beat). Premiere with a 2-minute countdown if desired.
 - Keep the clock time stable across days; no fixed weekday. Use the same time every day so the rhythm is learnable ("a new thing every day at 16:30").
 

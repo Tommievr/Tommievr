@@ -28,4 +28,6 @@ GUIDE: Walk.
 - Groups walk back before the tide returns: https://www.sylt.de/en/veranstaltungen/wattwanderungen
 - Green/red paw: lead/DECISIONS.md item 10: evie-and-justin/lead/DECISIONS.md
 
+**PAW CUE:** every colour change gets a tag close-up held at least 1.5 s with an on-screen caption [soft chime] (green, check-mark) or [low hum] (red, X). Sound + shape, never colour alone. Full explanation only in Ep.1; elsewhere a natural line ("the paw's red!").
+
 **NOTES:** Calm, never scary. Guide is a voice only. Do not spoil the Ep.7 ending (no drink/birthday content).

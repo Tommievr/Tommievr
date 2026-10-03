@@ -26,4 +26,6 @@ JUSTIN: But real children always ask a grown-up first!
 - Green/red paw safety signal: lead/DECISIONS.md item 10 (always sound + shape cue, never colour alone): evie-and-justin/lead/DECISIONS.md
 - Moondew Blossom: DECISIONS.md items 8-9: evie-and-justin/lead/DECISIONS.md
 
+**PAW CUE:** every colour change gets a tag close-up held at least 1.5 s with an on-screen caption [soft chime] (green, check-mark) or [low hum] (red, X). Sound + shape, never colour alone. Full explanation only in Ep.1; elsewhere a natural line ("the paw's red!").
+
 **NOTES:** Do not show the drinking or the full effect. On-screen tiny line (bottom of text zone): 'Real kids: never taste things you find. Ask a grown-up!' Aligned to Ep.1 v3 (scene 4).
