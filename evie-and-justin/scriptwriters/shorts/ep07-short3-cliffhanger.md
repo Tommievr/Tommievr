@@ -8,11 +8,12 @@ script_aligned: yes
 ---
 **ON-SCREEN TEXT (big, top safe zone):** "THE TIDE IS COMING BACK!"
 
-**HOOK (0–3 s):** Thin sheets of water slide across the flat; Evie's paw symbol turns RED (hum + X) as the water appears, then the group heads calmly to the dike and it turns GREEN.
+**HOOK (0–3 s):** Thin sheets of water slide across the flat; both cats' paw symbols turn RED (hum + X) as the water appears, then the group heads calmly to the dike and it turns GREEN.
 
 **BODY:**
 COTTON: Is that the sea?
-[Paw symbol: RED, hum + X.]
+[Both tags turn RED: low hum + X.]
+EVIE: Red. Low hum, X sign. Time to turn back.
 GUIDE (off-screen): The tide, coming in. Time to turn back.
 TOFFEE: Is it chasing us?
 GUIDE: No. It's doing what it does, twice a day.

@@ -11,6 +11,8 @@ script_aligned: yes
 **HOOK (0–3 s):** Whisper boat gliding under a bridge; life jackets visible on both kittens.
 
 **BODY:**
+[Tags turn GREEN: soft chime + check-mark.]
+EVIE: Green. Life jackets on, so it's safe to sail.
 JUSTIN: So the canals are the streets because they were the roads for peat?
 EVIE: Peat was the very first passenger!
 JUSTIN: And the holes filled with water…
