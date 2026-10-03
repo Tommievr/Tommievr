@@ -3,11 +3,27 @@ episode: 01
 type: cliffhanger
 status: ready-for-review
 runtime_target: 0:25
+fact_check: snippet-verified 2026-10-03 (primary pages blocked); (verify) items pending
+script_aligned: yes
 ---
-**HOOK (0–3 s):** [On-screen: "How long is this dike?"] The kittens look down an endless road.
-JUSTIN: Evie, how long have we been walking?
-EVIE: About thirty-two kilometres… (verify)
-JUSTIN: My paws. My poor paws.
-EVIE: Wait until you see what's at the end.
-[Cut to black. Glowing paw tags.]
-**END CARD:** "Full adventure on the channel!"
+**ON-SCREEN TEXT (big, top safe zone):** "A GLOWING FLOWER ON THE DIKE…"
+
+**HOOK (0–3 s):** Dusk on the dike. A pale-lilac blossom glows in the grass at the foot of the monument; the cats' gold paw symbols glow.
+
+**BODY:**
+EVIE: Justin. Look. A flower that glows!
+JUSTIN: Flowers don't glow. Not even in this country.
+EVIE: Our paw tags are glowing too…
+[The paw symbol turns GREEN: soft chime + check mark.]
+EVIE: Green. Chime and check-mark. It's safe for us.
+JUSTIN: But real children always ask a grown-up first!
+
+**FRAMING (9:16):** Vertical 9:16. Evie & Justin centred in the middle third; big text in the top safe zone (keep clear of the bottom ~20% for app UI and the sides ~8%). Colours per CHARACTERS.md.
+
+**END CARD:** "Full episode on Day 4!" (paw-tag glow, subscribe cue; countdown variants in RELEASE_CALENDAR)
+
+**FACTS & SOURCES:**
+- Green/red paw safety signal: lead/DECISIONS.md item 10 (always sound + shape cue, never colour alone): evie-and-justin/lead/DECISIONS.md
+- Moondew Blossom: DECISIONS.md items 8-9: evie-and-justin/lead/DECISIONS.md
+
+**NOTES:** Do not show the drinking or the full effect. On-screen tiny line (bottom of text zone): 'Real kids: never taste things you find. Ask a grown-up!' Aligned to Ep.1 v3 (scene 4).
