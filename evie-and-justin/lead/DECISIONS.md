@@ -19,3 +19,9 @@
 12. **Second Blossom for the lambs (Ep.7):** the lambs are not in every episode, so the **cats** supply it: they either find another one or saved one earlier and share it. Lambs play no part in sourcing it. Scripts pick the cleanest option; if "saved", plant it lightly in Ep.1 and mention it once mid-season.
 13. **Lamb consent framing approved:** each lamb says yes aloud, cats say it's their choice, tiny sip, tags green first, plus the "only works in stories / ask a grown-up" line.
 14. **Paw signal wording:** show and explain it **fully once in Ep.1** (green = safe with chime + check-mark, red = unsafe with hum + X). After that, just *mention the paw whenever something happens and it changes colour* (short, natural lines like "Justin, your paw's red!"), no repeated full explanation. The non-colour cues (sound + symbol) stay on screen/audio for accessibility.
+
+## 2026-10-03 (round 4)
+15. **Paw signal timing:** tag close-up held **≥ 1.5 s** with a caption ([soft chime] / [low hum]) every time.
+16. **Paw in Shorts:** yes, always with the tag close-up (9:16 framing).
+17. **Lamb birthday visual:** flower crown + lilac bell glow (no cake). Celebration, not ageing.
+18. **Release timing:** day-numbered 28-day plan; shorts at **16:30**, episodes at **18:30** local time; test for 2 cycles. Start date: set once Episode 1 is rendered.
