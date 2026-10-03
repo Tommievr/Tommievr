@@ -44,6 +44,8 @@ JUSTIN: Hello, sir. Do you know who dug the water? No? Rude.
 **EXPLORE & DISCOVER (5:00)**
 *Scene 1 — Whisper boat (1:15)*
 [They climb into a small electric boat. Life jackets clearly on. Soft hum.]
+[Their tags turn GREEN. Soft chime. Check-mark pulse.]
+EVIE: Green. Life jackets on, so it's safe to sail.
 JUSTIN: Why is it so quiet?
 EVIE: It's called a whisper boat. It runs on electricity, so it doesn't make a lot of noise.
 JUSTIN: So no rumbling engine. Just a little hum, like a very sleepy fridge.
@@ -176,3 +178,4 @@ JUSTIN: Goodnight, ducks. Goodnight, bridges.
 - Flashbacks flat storybook style; peat in dark brown, water in soft blue.
 - The bell: the faintest "ting" again, off-screen. Evie notices; Justin gets distracted (a duck). Do not explain.
 - Low-compute friendly: stills + parallax + mouth swap.
+- Tag signal (GREEN = chime + check-mark, RED = low hum + X): green when life jackets are on.

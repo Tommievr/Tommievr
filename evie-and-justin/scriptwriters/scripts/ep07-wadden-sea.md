@@ -56,6 +56,8 @@ GUIDE: Rule two: stay together.
 COTTON: Together.
 EVIE: Nobody wanders off. Not even to look at something pretty.
 GUIDE: Rule three: we watch the tide and the weather.
+[The cats' tags turn GREEN. Soft chime. Check-mark pulse.]
+EVIE: Green. With a guide, it's safe.
 TOFFEE: Can I run?
 GUIDE: Walk. Always walk.
 TOFFEE: Walking is… also fun.
@@ -126,6 +128,8 @@ EVIE: And the seals rest, and the birds eat, and everybody takes turns.
 *Scene 4 — The sea comes back (1:30)*
 [Mid-shot. Thin sheets of water appear across the flat. Channels widen.]
 COTTON: Is that the sea?
+[The cats' tags turn RED. Low hum. X pulse.]
+EVIE: Red. Low hum, X sign. Time to turn back.
 GUIDE: It's the tide, coming in. Time to turn back.
 JUSTIN: Already?
 GUIDE: The tide doesn't ask. It comes in, quietly, but it does come.
@@ -211,22 +215,32 @@ JUSTIN: We'll meet again. (smiles) There's a lot of Netherlands left, and we've 
 [Teaser card: "More little adventures soon."]
 
 **GOODNIGHT OUTRO (0:30)**
-[Dusk on the dike. The water returns slowly. Music slows. Four small figures sit close together.]
-COTTON: It's so peaceful.
-TOFFEE (yawning): I can hear the sea.
-COTTON: It sounds like a very slow lullaby.
+[Dusk on the dike. The water returns slowly. Music slows. Four small figures sit close together. In the grass beside them, one small flower glows pale lilac, holding a floating lilac droplet with a gold star.]
+COTTON: Evie, what's that flower?
+[The cats' tags turn GREEN. Soft chime. Check-mark pulse.]
+EVIE: Green. Chime and check-mark. It's a Moondew Blossom.
+JUSTIN: The same kind we found. Look who's growing here.
+TOFFEE: Is it for eating? I'm hungry.
+EVIE: A sip stays just as you are. Little, and curious. That's how we stay little.
+COTTON: Stay little… together?
+EVIE: Only if you want to. It's your choice. And our tags say it's safe for you too.
+JUSTIN: And remember, friends watching: real children never taste things they find. Ask a grown-up first. Always.
+COTTON: (softly) I'd like to stay little with my friends.
+TOFFEE: Me too! But can we still have birthdays? With cake?
+EVIE: Of course. Birthdays are for parties, not for growing up.
+JUSTIN: A party every year. Same size. More cake.
+TOFFEE: Best rule ever.
+[Cotton and Toffee each take a tiny lap. Lilac and gold sparkles settle on their wool. The Blossom closes its petals and tucks its glow away.]
+COTTON: I feel… exactly the same.
+TOFFEE: I feel sparkly!
+JUSTIN: Welcome to the team. For a very long time.
+COTTON: Listen. The sea sounds like a slow lullaby.
 EVIE: It's saying goodnight.
-JUSTIN: This was a good first season.
-COTTON: So many places. So many new friends.
-TOFFEE: And so much mud.
-EVIE: The best. Because we did it together.
-COTTON: Thank you for walking with us, friends.
-TOFFEE: Thank you for squishing with us.
 JUSTIN: Goodnight, sea. Goodnight, mud. Goodnight, worms.
 EVIE: Goodnight, seals. Goodnight, birds.
 COTTON: Goodnight, everybody who watched.
 TOFFEE (sleepy): Gnight. See you… soon.
-EVIE: Sleep tight, little adventurers.
+EVIE: More adventures soon.
 [Paw tags glow, then dim. Bell *ting…* Fade out.]
 
 ## Shot notes / visual ideas
@@ -235,5 +249,6 @@ EVIE: Sleep tight, little adventurers.
 - Cats wear small boots and tiny packs in the mud; Toffee never runs off; no wandering alone.
 - Seals and birds shown at a respectful distance. Quiet voices.
 - Cards and cutaway diagram: moon + earth + water as simple icons; no real-physics text.
-- Closing: Justin hints at "more adventures soon" to leave the series open.
+- Closing: the cats share a Moondew Blossom with the lambs (tags GREEN first, lambs choose, safety line spoken to viewers); ends on "More adventures soon." Nobody ages on screen; birthdays are parties without growing up. Do not use the drink for anything else.
+- Tag signal: GREEN = soft chime + check-mark pulse, RED = low hum + X pulse. Characters always say it aloud; never colour alone.
 - Low-compute friendly: stills + parallax + mouth swap.

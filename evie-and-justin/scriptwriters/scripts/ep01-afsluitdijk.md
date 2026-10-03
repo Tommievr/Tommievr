@@ -6,11 +6,11 @@ concept: How the Dutch live below sea level — dikes keep the sea out
 status: ready-for-review
 runtime_target: 9:30
 fact_check: see ../research/ep01-afsluitdijk.md (snippet-level verification; ☐ rows flagged)
-revision: v2 — rewritten per lead decision (2026-10-03): origin story of the ageless kittens (the Moonmilk drink); lengthened to ~1,100 spoken words
+revision: v3 — per lead decisions 8-10 (2026-10-03): the ageless-kittens origin is the Moondew Blossom (found, no giver); introduces the paw-tag green/red safety signal
 ---
 
 ## Logline
-Two kittens ask how a country can sit below the sea, and on the long dike that answers them they find a little bottle of bedtime magic that lets them stay little and keep exploring.
+Two kittens ask how a country can sit below the sea, and near the end of the long dike that answers them they find a glowing flower of bedtime magic that lets them stay little and keep exploring.
 
 ## Script
 
@@ -45,6 +45,12 @@ EVIE: Longer. We'd be here till bedtime.
 JUSTIN: Which is when we're supposed to be asleep. Keep walking.
 EVIE: Look how the sky goes on forever.
 JUSTIN: Fine. The sky is very good.
+[Justin wanders toward the grassy edge to peek at the water. The gold paw on his tag turns RED. A low hum, and a big X pulses.]
+EVIE: Justin! Red! Low hum, X sign. That means pause.
+JUSTIN: Pause. Got it. Stepping back from the edge.
+[He steps back onto the path. The paw turns GREEN. A soft chime, and a check-mark pulses.]
+EVIE: Green. Soft chime, check-mark. Safe.
+JUSTIN: Okay, that's actually useful. I can hear it *and* see it.
 EVIE: I wonder what the sea thinks about all of this.
 JUSTIN: The sea thinks: "Why is there a wall in my way?"
 EVIE: Or maybe: "What a lovely path for two small cats."
@@ -75,24 +81,27 @@ JUSTIN: A whole sea turned into a lake. By a wall. That's the most dramatic glow
 EVIE: The water changed its whole story, just because it moved to a new side of the wall.
 JUSTIN: Water has a very long bedtime story.
 EVIE: (smiling) And speaking of glowing…
-[The paw tags glow brighter. A soft silver light appears at the foot of the monument.]
+[The paw tags glow brighter. Among the grass at the foot of the monument, one small flower glows pale lilac.]
 
-*Scene 4 — The little bottle (1:15)*
-[A tiny glass bottle rests in the grass, glowing like moonlight. A little paper label hangs from its neck.]
-EVIE: Justin. It's a bottle. And it's glowing just like our tags.
-JUSTIN: Okay, that's suspicious. Bottles don't glow. Not even in this country.
-[Evie reads the label, slowly, with a wondering voice.]
-EVIE: "Moonmilk. For kind and curious explorers. Two sips: stay as you are, and keep exploring."
-JUSTIN: Stay as we are?
-EVIE: Little. And curious. For a very long time.
-JUSTIN: Hold on. Rule one of being an explorer: you NEVER drink something you find. Never ever.
-EVIE: That's very true, Justin. And real friends must always ask a grown-up first. Always.
-JUSTIN: This is a *story*. It's bedtime-story magic. In real life, we don't taste mystery bottles.
-EVIE: Right. But we're storybook kittens. And I think… this bottle was left for us.
+*Scene 4 — The Moondew Blossom (1:15)*
+[The flower's petals form a small cup. Inside floats a tiny glowing lilac droplet with a gold star.]
+EVIE: Justin. A flower. And it's glowing just like our tags.
+JUSTIN: Flowers don't glow. Not even in this country.
+[The gold paw on each tag turns GREEN. Soft chime. Check-mark pulse.]
+EVIE: Green. Chime and check-mark. It's safe for us.
+JUSTIN: Okay. That's a good sign.
+[Evie leans close. The droplet hums a tiny lullaby.]
+EVIE: I know this flower. From our old bedtime stories. It's a Moondew Blossom.
+JUSTIN: And it does…?
+EVIE: Whoever shares a sip stays just as they are. Little. And curious. For a very long time.
+JUSTIN: Hold on. Rule one of being an explorer: you NEVER taste something you find. Not ever.
+EVIE: That's very true. Real children must always ask a grown-up first. Always.
+JUSTIN: Our tags are story magic. Real children don't have them. So real children: never taste.
+EVIE: Right. But we're storybook kittens, and the tags say it's safe. And I think… this flower was waiting for us.
 [Beat. The two kittens look at each other. The tags pulse in time, like two small heartbeats.]
 JUSTIN: One sip each. Together.
 EVIE: Together.
-[They sip. Silver sparkles rise around them, then settle on their fur like tiny stars. The bottle fades to empty glass; a little light floats up and away.]
+[They each take a tiny lap of the droplet. Lilac and gold sparkles rise around them and settle on their fur like tiny stars. The Blossom closes its petals gently and tucks its glow away.]
 JUSTIN (softly): I feel… exactly the same.
 EVIE (smiling): Just a bit sparkly.
 JUSTIN: Tastes like warm milk and a lullaby.
@@ -146,7 +155,7 @@ JUSTIN: Okay, quick recap. What did we learn?
 EVIE: Dikes keep the sea out…
 JUSTIN: …gates let water out…
 EVIE: …and the Dutch keep watching and caring for it together!
-JUSTIN: And bottles that glow are for *stories*, not for real life.
+JUSTIN: And glowing flowers are for *stories*, not for real life.
 EVIE: Never taste a mystery. Ask a grown-up first!
 JUSTIN: Not even a tiny one.
 EVIE: Not even a tiny one. Not even a glowing one.
@@ -156,14 +165,14 @@ JUSTIN: (grinning) Maybe.
 [Teaser card: "Next: The Island That Disappeared".]
 
 **GOODNIGHT OUTRO (0:30)**
-[Sun low and golden. Music slows. The kittens sit together at the dike's edge, tiny silver sparkles still in their fur.]
+[Sun low and golden. Music slows. The kittens sit together at the dike's edge, tiny lilac sparkles still in their fur.]
 EVIE (yawning): That was a big adventure for little cats.
 JUSTIN: And we'll *stay* little cats. With a lot more adventures.
 EVIE: A new place every time. A new question every time.
 JUSTIN: And I'll ask the questions. You'll do the wondering.
 EVIE: That sounds just right.
 EVIE: Even the biggest wall started with one little stone.
-JUSTIN: And the best stories start with one little bottle.
+JUSTIN: And the best stories start with one little flower.
 EVIE: Goodnight, friends.
 JUSTIN: Goodnight. And goodnight, sea. Stay on your side.
 [Paw tags glow, then dim. Fade out.]
@@ -172,9 +181,10 @@ JUSTIN: Goodnight. And goodnight, sea. Stay on your side.
 - Keep the dike as a strong horizontal line; cats small in frame for scale.
 - Sea side = silvery-teal, lake side = calmer, brighter. Sky takes ~50% of every wide shot.
 - Flashbacks as flat storybook illustration (cheap to make, clearly different).
-- **Moonmilk bottle (canon proposal):** tiny rounded glass bottle, pearl-white glow like moonlight, cork shaped like a paw print, paper label tied with a thin blue ribbon. The paw tags glow in the same silver-white when it is near. After drinking: soft silver sparkles on the fur for a moment, nothing else changes. No transformation, no dark mood.
-- Moonmilk beat is wondrous and warm, not mysterious-scary: golden hour, gentle music, no jump cuts.
+- **Moondew Blossom** (design/props/SPECIAL_DRINK.md, option A): pale-lilac flower cup on a short green stem, with a separate floating glowing lilac droplet and a tiny gold star. No bottle, no label, no text. Kitten-sized treasure. Found growing in the grass at the foot of the monument; nobody left it. After the sip: lilac/gold sparkles settle on the fur, nothing else changes.
+- **Paw-tag signal (new device):** gold paw turns GREEN with a soft chime and a check-mark pulse (safe), or RED with a low hum and an X pulse (pause / ask). Never colour alone: always sound plus shape, and the characters say it aloud.
+- Blossom beat is wondrous and warm, not mysterious-scary: golden hour, gentle music, no jump cuts.
 - Kid-safety beat is spoken by Justin first (rule), then Evie (ask a grown-up), then repeated lightly in the recap. Keep both in the final cut.
-- Do not show the cats climbing on the monument; the bottle rests in the grass at its foot.
+- Do not show the cats climbing on the monument; the Blossom grows in the grass at its foot. Justin steps back from the water's edge on the red signal.
 - Concept cards: simple icons, large paw-stamp animation, no text-heavy slides.
 - Low-compute friendly: most scenes are stills + parallax + mouth swap.

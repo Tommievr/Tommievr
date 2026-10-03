@@ -118,11 +118,15 @@ JUSTIN: We noticed.
 
 *Scene 4 — Toffee's wobble (0:30)*
 [They stand at a safe lookout behind a railing. Toffee leans over to peek at the water.]
+[Evie's tag turns RED. Low hum. X pulse.]
+EVIE: Red! Low hum, X sign. Pause!
 TOFFEE: Look at the waves, they're so—
 COTTON: Toffee, back from the edge!
 [Toffee wobbles, Cotton pulls him back with her wool. Her bell rings.]
 TOFFEE: Phew. Thanks.
 COTTON: Stay behind the railing. The sea is stronger than it looks.
+[Evie's tag turns GREEN. Soft chime. Check-mark pulse.]
+EVIE: Green. Behind the railing is safe.
 TOFFEE: I only wanted to say hello to it.
 JUSTIN: You can wave from here.
 TOFFEE: [waving] Hello, sea!
@@ -197,6 +201,9 @@ JUSTIN: And a very big bath.
 COTTON: It's strong, but it feels gentle.
 EVIE: Like a very big blanket.
 TOFFEE (yawning): With big doors.
+TOFFEE: My birthday is soon. Can the party be here?
+COTTON: I'd like to stay little at the party. Just a bit longer.
+EVIE: (smiling) We'll see.
 JUSTIN: Goodnight, sea. Thanks for waiting outside.
 EVIE: Goodnight, oysters and seals and birds.
 COTTON: Goodnight, gates. Thank you for watching over us.
@@ -210,3 +217,4 @@ TOFFEE: Goodnight, long wall. I mean, gentle guard.
 - Four-voice scenes: one short line per speaker; Cotton gentle, Toffee excited, Justin dry, Evie soft.
 - Safety: all four stay behind railings and on visitor paths; Toffee's wobble is corrected immediately.
 - Low-compute friendly: stills + parallax + mouth swap.
+- Tag signal (GREEN = chime + check-mark, RED = low hum + X): red at the water's edge, green behind the railing. Birthday/stay-little foreshadow in the outro (light, unresolved). No casualty numbers anywhere in this script.

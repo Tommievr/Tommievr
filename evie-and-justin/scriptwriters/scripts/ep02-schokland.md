@@ -158,7 +158,7 @@ JUSTIN: Finally, a place where my goggles come in handy.
 [Sunset over the fields. Music slows. The kittens sit on the little hill.]
 EVIE (yawning): Imagine the ships, long ago, sailing right here.
 JUSTIN: Imagine the tractors, long from now, still here.
-EVIE: We might even see them. A little bit of Moonmilk goes a long way.
+EVIE: We might even see them. A little bit of Moondew goes a long way.
 EVIE: And imagine all the people who walked here before us.
 JUSTIN: And all the fish who are very, very confused.
 EVIE: Goodnight, Schokland.

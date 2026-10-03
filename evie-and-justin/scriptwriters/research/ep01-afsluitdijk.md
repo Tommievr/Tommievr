@@ -15,7 +15,8 @@ Re-checked by script writer session. Method note: primary pages (Wikipedia, Rijk
 | Dike was strengthened recently (Levvel consortium, work 2019–2023) | https://www.rijkswaterstaat.nl/en/news/archive/2025/10/second-place-2025-jan-agema-award-for-afsluitdijk-causeway-reinforcement ; https://www.vanoord.com/en/updates/rijkswaterstaat-awards-afsluitdijk-project-levvel-consortium/ | ✅ (snippet) — not used in script |
 | IJsselmeer is fed by rivers (script: "rivers kept filling it with fresh water") | Rijkswaterstaat / IJsselmeer overview | ☐ not seen in a snippet — widely known (IJssel); verify wording |
 | Quick-fact in script: "a lot of the Netherlands is very low" | same as 26% row | ✅ |
-| Moonmilk bottle, ageless kittens, glowing tags | Story canon (lead decision 2026-10-03) | n/a — fiction, not a fact about the Afsluitdijk |
+| Moondew Blossom, ageless kittens, glowing tags that turn green/red | Story canon (lead decisions 8-10, 2026-10-03) | n/a — fiction, not a fact about the Afsluitdijk |
+| Flowers growing in the grass near the monument | Site visit/photos | ☐ visual only; a generic dike-grass flower, no species claimed |
 | "Happy Dutch people cheering / boats tooting on closing day" | Imagined flashback, no source | ☐ story flourish — keep illustrated, do not present as documented |
 
 Rule: if a claim can't be verified, cut it or soften it ("about", "many").

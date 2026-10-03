@@ -114,6 +114,8 @@ JUSTIN: Then it's lucky you're a kitten. You never sit still either.
 *Scene 3 — Toffee's big jump (1:00)*
 [Toffee spots a steep slope.]
 TOFFEE: I'm going to jump down that!
+[Justin's tag turns RED. Low hum. X pulse.]
+JUSTIN: Red! Low hum, X sign. Pause, Toffee!
 COTTON: Toffee, no! The tiny plants are growing there.
 TOFFEE: Oh. Oh no. Sorry, plants!
 [Toffee skids and tumbles sideways, landing on the path. Dust puff.]
@@ -126,6 +128,8 @@ EVIE: I think they're fine. Nobody landed on them.
 TOFFEE: Phew. Sorry again, plants.
 JUSTIN: Stay on the path, everybody. Tiny plants need us to be careful.
 COTTON: This place is a nature reserve. Staying on the marked path keeps it safe.
+[Justin's tag turns GREEN. Soft chime. Check-mark pulse.]
+JUSTIN: Green. The path is the safe place.
 EVIE: Little plants have little homes. We should be gentle.
 JUSTIN: Big paws, small plants. Careful steps.
 TOFFEE: Gentle. I can do gentle. Watch.
@@ -222,6 +226,9 @@ COTTON: I've never had friends from far away before.
 EVIE: Now you do.
 COTTON: Will you come back?
 JUSTIN: Of course. Who else will ask all the questions?
+TOFFEE: Soon it's my birthday! I'll be a whole year bigger.
+COTTON: I like being little. I wish we could stay little together.
+EVIE: (softly) Maybe we can talk about that someday.
 TOFFEE (yawning): Can I sleep on this dune?
 JUSTIN: Not on that one. It might walk off.
 EVIE: Let's find the cosy one.
@@ -238,3 +245,4 @@ TOFFEE: Gnight! (tiny snore)
 - Sand grain animation: simple dots hopping; big dune motion as a slow loop.
 - Respect: cats and lambs stay on marked paths; Toffee's off-path slide is shown as a mistake and corrected right away (no behaviour to copy).
 - Low-compute friendly: stills + parallax + mouth swap.
+- Tag signal (GREEN = chime + check-mark, RED = low hum + X): red when Toffee eyes the plant slope, green on the path. Birthday/stay-little foreshadow in the outro (light, unresolved).
