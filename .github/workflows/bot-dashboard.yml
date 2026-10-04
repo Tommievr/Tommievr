@@ -1,0 +1,37 @@
+name: bot-dashboard
+
+# Hourly phone dashboard of the live 5-coin bot (dashboard/build.py), published on GitHub Pages.
+# Read-only: it reads Tommievr/tradingbot's committed live journal with a read-only token and the
+# public Kraken Futures prices. No Kraken keys, no orders.
+on:
+  schedule:
+    - cron: "7 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: bot-dashboard
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build page
+        env:
+          TRADINGBOT_READ_TOKEN: ${{ secrets.TRADINGBOT_READ_TOKEN }}
+        run: python3 dashboard/build.py
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
