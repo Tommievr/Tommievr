@@ -97,7 +97,7 @@ function render(d){
     if(l.stop_hit)left.append(el("span",{class:"tag",style:"color:var(--down)"}," · past stop"));
     if(l.tp_done)left.append(el("span",{class:"tag"}," · TP1 hit"));
     top.append(left,el("span",{class:"pct num "+cls(l.pnl_pct)},sp(l.pnl_pct)));
-    const pr=el("div",{class:"price num"});pr.append(el("small",{},"Now"));pr.append(fp(l.mark));
+    const pr=el("div",{class:"price num"});pr.append(el("small",{},"Now"));pr.append(el("span",{class:cls(l.pnl_pct)},fp(l.mark)));
     const r1=el("div",{class:"row"});
     const e=el("span");e.append("Entry ");e.append(el("b",{class:"num"},fp(l.entry)));
     const u=el("span",{class:"num "+cls(l.pnl_usd)},(l.pnl_usd>=0?"+$":"−$")+Math.abs(l.pnl_usd||0).toFixed(2));
