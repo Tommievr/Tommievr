@@ -40,7 +40,7 @@ svg.spark{width:100%;height:46px;display:block}
 .row{display:flex;justify-content:space-between;gap:8px;font-size:.82rem;color:var(--muted);flex-wrap:wrap}
 .row b{color:var(--fg);font-weight:600}
 .rail{position:relative;height:12px;border-radius:4px;background:var(--rail);margin-top:2px}
-.rail .ent{position:absolute;top:-3px;width:2px;height:18px;margin-left:-1px;background:var(--fg);z-index:1;opacity:.55}
+.rail .ent{position:absolute;top:-3px;width:2px;height:18px;margin-left:-1px;background:var(--fg);z-index:1;opacity:.7}
 .rail{overflow:visible}.rail .fill{position:absolute;top:0;bottom:0;border-radius:4px}
 .price{font-size:1.5rem;font-weight:600;line-height:1.1}.price small{font-size:.72rem;color:var(--muted);font-weight:400;font-family:var(--display);margin-right:6px}
 .ends{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted)}
@@ -105,7 +105,10 @@ function render(d){
     const rail=el("div",{class:"rail",role:"img","aria-label":"Price between stop and take profit"});
     const en=el("span",{class:"ent"});en.style.left=pos(l.entry)+"%";
     const a=pos(l.entry),b=pos(l.mark),fill=el("span",{class:"fill"});
-    fill.style.left="0%";fill.style.width=Math.max(b,2)+"%";fill.style.background=l.pnl_pct>=0?"var(--up)":"var(--down)";
+    const toTp=(l.mark-l.entry)*(l.tp-l.entry)>=0,goal=toTp?l.tp:l.stop,frac=Math.max(0,Math.min(1,(l.mark-l.entry)/(goal-l.entry)));
+    const col=toTp?"var(--up)":"var(--down)",strong=Math.round(25+75*frac);
+    fill.style.left=Math.min(a,b)+"%";fill.style.width=Math.max(Math.abs(b-a),0.8)+"%";
+    fill.style.background="linear-gradient(to "+(b>=a?"right":"left")+",color-mix(in srgb,"+col+" 12%,transparent),color-mix(in srgb,"+col+" "+strong+"%,transparent))";
     rail.append(fill,en);
     const ends=el("div",{class:"ends num"});
     ends.append(el("span",{},(l.trailing?"Trail ":"Stop ")+fp(l.stop)),el("span",{},(l.tp_done?"TP1 done ":"TP1 ")+fp(l.tp)));
