@@ -28,6 +28,7 @@ Not needed: any account for Blender, Kokoro or DaVinci Resolve (just downloads).
 | **Python 3** | Run helper scripts and Kokoro | Free | Blender has its own Python; this one is for Kokoro/tools |
 | **Git** (+ optional GitHub Desktop) | Get the repo | Free | `git clone https://github.com/tommievr/tommievr` |
 | **FFmpeg** | Encode video | Free | Some scripts fall back to PNG sequences without it |
+| **Claude Code** (Phase B2) | A Claude session on the PC, linked to the lead chat | Included in your Claude plan; check usage limits | Needs Node/installer per Anthropic's docs |
 | **Kokoro TTS** | The voices (Evie, Justin, Cotton, Toffee, narrator) | Free (Apache 2.0, commercial use allowed) | Re-check the licence on the day |
 | **Rhubarb Lip Sync** | Mouth shapes from audio | Free | Check its licence on the day |
 | **DaVinci Resolve (free)** or Shotcut | Assemble episodes, music, subtitles | Free | |
@@ -47,6 +48,32 @@ Not needed: any account for Blender, Kokoro or DaVinci Resolve (just downloads).
 4. Clone the repo and check out the branch.
 5. Install Kokoro (see `lead/VOICES_AND_HARDWARE.md`). Generate one test sentence for each character voice.
 6. Run the **no-model test render** from the Day-1 checklist. Note the time per frame and the Blender version. Send me both.
+
+### Phase B2 — Link Claude to the PC
+The lead chat runs in the cloud and cannot reach the PC. To get hands-on help on the PC, start a Claude session **on the PC itself**. It does the local work (Blender, Meshy files, Kokoro, renders) and pushes results to the repo.
+
+**Option 1 — Remote Control (recommended)**
+1. Install **Claude Code** (the command-line tool) on the PC. Use Anthropic's current install instructions for your operating system.
+2. Sign in with the Claude account that will own the project. (If it is yours, sign out when the session ends. Agree who owns this account.)
+3. Make sure **Git** is installed, then clone the repo into the project folder and check out `claude/youtube-channel-evie-justin-64thoj`.
+4. Open a terminal **in that project folder** and run: `claude remote-control`
+5. The session appears in the **Claude Code app / web**, so you can follow and instruct it from your phone or another computer.
+6. First instruction to give it: "Read `evie-and-justin/lead/SETUP_GUIDE.md` and `evie-and-justin/design/DAY1_CHECKLIST.md`. Run `tools/hardware_check.sh`, report the result, then run the no-model test render and report the time per frame."
+
+**Option 2 — Claude Desktop app**
+Install the Desktop app on the PC, open a session in the project folder, and give the same first instruction. Simpler, but mostly needs someone at the PC.
+
+**How the sessions share work**
+- **Lead chat (cloud):** decisions, questions, work orders, review.
+- **PC session:** runs commands, installs tools, generates and renders, then `git commit` + `git push` to a branch such as `claude/pc-production`.
+- The lead chat reads that branch, reviews, and merges into the main project branch.
+- Large files (models, renders) stay out of git: keep them on the backup drive and commit only specs, logs, small previews and QA printouts.
+
+**Safety**
+- Keep the session inside the project folder; read each permission prompt before approving.
+- Don't paste passwords, API keys or tokens into the session or the repo.
+- It uses your Claude plan's usage; check what your plan includes before long render or batch sessions.
+- When finished: stop the session (`Ctrl+C`), sign out of Claude on the PC if it is your personal account.
 
 ### Phase C — Characters (Day 1)
 1. Follow `design/DAY1_CHECKLIST.md`: **Evie first**. Send me the images, the QA render and the printout before starting Justin.
