@@ -74,13 +74,19 @@ def build():
         })
 
     eq = p["equity_usd"] + eq_move if p.get("equity_usd") is not None else None
+    notional = 0.0
+    for l in legs:
+        if l["open"] and l["mark"]:
+            l["notional"] = l["qty"] * l["mark"]
+            l["lev"] = l["notional"] / eq if eq else None
+            notional += l["notional"]
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     history = [{"utc": r["utc"], "equity": r["payload"].get("equity_usd")} for r in runs[-120:]]
     if eq is not None:
         history.append({"utc": now, "equity": eq})
     doc = {
         "updated_utc": now, "run_utc": last["utc"], "status": p.get("status"), "halted": p.get("halted"),
-        "equity": eq, "start_eq": START_EQ, "reentry_eq": REENTRY_EQ,
+        "equity": eq, "notional": notional, "lev_total": notional / eq if eq else None, "start_eq": START_EQ, "reentry_eq": REENTRY_EQ,
         "vs_start_pct": (eq / START_EQ - 1) * 100 if eq else None,
         "vs_reentry_pct": (eq / REENTRY_EQ - 1) * 100 if eq else None,
         "legs": legs, "history": history,
