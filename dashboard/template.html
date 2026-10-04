@@ -39,9 +39,10 @@ svg.spark{width:100%;height:46px;display:block}
 .pct{font-size:1.25rem;font-weight:600}
 .row{display:flex;justify-content:space-between;gap:8px;font-size:.82rem;color:var(--muted);flex-wrap:wrap}
 .row b{color:var(--fg);font-weight:600}
-.rail{position:relative;height:8px;border-radius:4px;background:var(--rail);margin-top:2px}
-.rail .ent{position:absolute;top:-3px;width:2px;height:14px;background:var(--muted)}
-.rail .dot{position:absolute;top:-3px;width:14px;height:14px;border-radius:50%;margin-left:-7px;border:2px solid var(--card)}
+.rail{position:relative;height:12px;border-radius:4px;background:var(--rail);margin-top:2px}
+.rail .ent{position:absolute;top:-3px;width:2px;height:18px;margin-left:-1px;background:var(--fg);z-index:1;opacity:.55}
+.rail{overflow:visible}.rail .fill{position:absolute;top:0;bottom:0;border-radius:4px}
+.price{font-size:1.5rem;font-weight:600;line-height:1.1}.price small{font-size:.72rem;color:var(--muted);font-weight:400;font-family:var(--display);margin-right:6px}
 .ends{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted)}
 .tag{font-size:.68rem;color:var(--accent);font-weight:700;letter-spacing:.04em;text-transform:uppercase}
 .empty{color:var(--muted);font-size:.9rem;padding:24px 4px;text-align:center}
@@ -94,20 +95,21 @@ function render(d){
     if(l.stop_hit)left.append(el("span",{class:"tag",style:"color:var(--down)"}," · past stop"));
     if(l.tp_done)left.append(el("span",{class:"tag"}," · TP1 hit"));
     top.append(left,el("span",{class:"pct num "+cls(l.pnl_pct)},sp(l.pnl_pct)));
+    const pr=el("div",{class:"price num"});pr.append(el("small",{},"Now"));pr.append(fp(l.mark));
     const r1=el("div",{class:"row"});
-    const p=el("span");p.append("Price ");p.append(el("b",{class:"num"},fp(l.mark)));
     const e=el("span");e.append("Entry ");e.append(el("b",{class:"num"},fp(l.entry)));
     const u=el("span",{class:"num "+cls(l.pnl_usd)},(l.pnl_usd>=0?"+$":"−$")+Math.abs(l.pnl_usd||0).toFixed(2));
-    r1.append(p,e,u);
+    r1.append(e,u);
     // rail from stop to take profit
     const lo=Math.min(l.stop,l.tp),hi=Math.max(l.stop,l.tp),pos=v=>Math.max(0,Math.min(100,(v-lo)/(hi-lo)*100));
     const rail=el("div",{class:"rail",role:"img","aria-label":"Price between stop and take profit"});
     const en=el("span",{class:"ent"});en.style.left=pos(l.entry)+"%";
-    const dot=el("span",{class:"dot"});dot.style.left=pos(l.mark)+"%";dot.style.background=l.pnl_pct>=0?"var(--up)":"var(--down)";
-    rail.append(en,dot);
+    const a=pos(l.entry),b=pos(l.mark),fill=el("span",{class:"fill"});
+    fill.style.left="0%";fill.style.width=Math.max(b,2)+"%";fill.style.background=l.pnl_pct>=0?"var(--up)":"var(--down)";
+    rail.append(fill,en);
     const ends=el("div",{class:"ends num"});
     ends.append(el("span",{},(l.trailing?"Trail ":"Stop ")+fp(l.stop)),el("span",{},(l.tp_done?"TP1 done ":"TP1 ")+fp(l.tp)));
-    card.append(top,r1,rail,ends);box.append(card);
+    card.append(top,pr,r1,rail,ends);box.append(card);
   }
 }
 setInterval(()=>{if(last)render(last)},60000);
