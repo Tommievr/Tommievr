@@ -1,12 +1,12 @@
 # Setup Guide — Evie & Justin's Little Adventures
 Prepared 2026-10-04. Prices were checked on the web on this date but change often: **always confirm on the vendor's own page before paying.**
 
-## 0. The friend's PC: ground rules
-- Ask the owner first, and agree how long you may use it and how much disk space you may fill.
-- Make a **separate Windows/macOS user account** (or at least a separate folder) for this project.
-- **Never save passwords in the browser** and **sign out of every account** when you are done (GitHub, Google, Meshy). Remove saved tokens.
-- Keep project files on an **external drive/USB or cloud** so nothing is stuck on the friend's PC. Models and renders get big (tens of GB).
-- Do not install anything the owner doesn't want. Everything below can be uninstalled.
+## 0. Working together on your friend's PC
+This is a joint project: the friend's PC is the production machine and you both work on it.
+- Make a **separate Windows/macOS user account or folder** for the project so files stay organised.
+- Each person uses **their own logins**. Don't save passwords in the browser, and sign out of personal accounts (GitHub, Google, Meshy) when you finish a session.
+- Keep a **backup of all project files** on an external drive or cloud. Models and renders get big (tens of GB), and the backup means work isn't lost if the PC has a problem.
+- Agree early on **roles and ownership**: who owns the YouTube channel account, who owns the Meshy plan, how any income would be shared. Write it down. It is much easier now than later.
 
 ## 1. Accounts you need
 | # | Account | Why | Who | Cost |
@@ -36,7 +36,7 @@ Not needed: any account for Blender, Kokoro or DaVinci Resolve (just downloads).
 ## 3. Step by step
 
 ### Phase A — Prep (before you touch the PC)
-1. Create/confirm the **Google + YouTube accounts** and **Meshy account** on your own device (so you don't type passwords on the friend's PC more than needed).
+1. Create/confirm the **Google + YouTube accounts** and **Meshy account**, and decide together who holds which (see section 0).
 2. Get the repo link ready: branch `claude/youtube-channel-evie-justin-64thoj`, folder `evie-and-justin/`.
 3. Print or open `design/DAY1_CHECKLIST.md` on your phone.
 
@@ -67,8 +67,8 @@ Not needed: any account for Blender, Kokoro or DaVinci Resolve (just downloads).
 2. Follow the 28-day plan in `scriptwriters/shorts/RELEASE_CALENDAR.md` (shorts 16:30, episodes 18:30).
 3. Add an AI-content disclosure where YouTube asks for it (realistic synthetic voices/visuals; check the current form).
 
-### Phase F — Clean-up on the friend's PC
-Sign out everywhere, remove saved passwords, copy all files to your drive, delete the project folder if agreed, return the PC.
+### Phase F — End of each session
+Sign out of personal accounts, `git commit` and push your work to the repo, and copy the latest project files to the backup drive.
 
 ## 4. Costs (checked 2026-10-04)
 | Item | Cost | Notes |
@@ -80,7 +80,7 @@ Sign out everywhere, remove saved passwords, copy all files to your drive, delet
 | Meshy higher plans | Studio / $40 / $100 tiers exist | Only needed if you run out of credits |
 | Image generator for turnaround images | €0 to ~€20/month | Depends on the tool; many have free tiers. Pick on the day. |
 | Music/sound effects | €0 to a few euros | YouTube Audio Library is free; check each track's licence |
-| Electricity (PC rendering) | a few euros | Offer to cover it for your friend |
+| Electricity (PC rendering) | a few euros | Agree how you split it |
 | Domain/website, trademark | optional | Not needed to start |
 | **Realistic total to make the 7 episodes** | **~€0–€40** | Mostly one month of Meshy Pro (+ maybe an image tool) |
 
