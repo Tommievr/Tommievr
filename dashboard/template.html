@@ -76,7 +76,7 @@ function render(d){
   const st=$("st");
   if(d.halted){st.textContent="halted";st.className="pill bad"}else{st.textContent=d.status==="ok"?"running":(d.status||"unknown");st.className="pill "+(d.status==="ok"?"ok":"bad")}
   const q=$("eq");q.textContent="$"+(d.equity!=null?d.equity.toFixed(2):"–");q.className="big num "+cls(d.vs_start_pct);
-  const c=$("chg");c.textContent=sp(d.vs_start_pct);c.className="chg num "+cls(d.vs_start_pct);
+  const c=$("chg");const dd=d.equity!=null?d.equity-d.start_eq:null;c.textContent=(dd==null?"":(dd>=0?"+$":"−$")+Math.abs(dd).toFixed(2)+" ")+"("+sp(d.vs_start_pct)+")";c.className="chg num "+cls(d.vs_start_pct);
   const sub=$("sub");sub.replaceChildren();
   const s2=el("span",{},"Prices "+ago(d.updated_utc)+" · bot check "+d.run_utc.slice(11,16)+" UTC");
   const s3=el("span");s3.append("Leverage ");s3.append(el("b",{class:"num"},d.lev_total!=null?d.lev_total.toFixed(2)+"x":"–"));
