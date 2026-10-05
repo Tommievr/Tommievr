@@ -101,6 +101,7 @@ def build():
             side = 1 if l["side"] == "Long" else -1
             rates = funding_rates(PERP[l["sym"]])
             l["funding"] = None if rates is None else sum(-side * rel * l["notional"] for ts, rel in rates if ts > since)
+            l["funding_rate"] = max(rates)[1] if rates else None  # latest hourly rate, fraction of notional
             funding = None if funding is None or l["funding"] is None else funding + l["funding"]
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     history = [{"utc": r["utc"], "equity": r["payload"].get("equity_usd")} for r in runs[-120:]]
