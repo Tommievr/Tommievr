@@ -14,6 +14,7 @@ ORDER = ["BTC", "ETH", "SOL", "XRP", "BNB"]
 PERP = {"BTC": "PF_XBTUSD", "ETH": "PF_ETHUSD", "SOL": "PF_SOLUSD", "XRP": "PF_XRPUSD", "BNB": "PF_BNBUSD"}
 START_EQ = 114.74      # 4 Oct 2026 20:58 UTC go-live
 REENTRY_EQ = 114.54    # 4 Oct 2026 21:59 UTC re-entry at 5% risk
+TAKER, MAKER = 0.0005, 0.0002   # Kraken Futures base-tier fees, as in tradingbot ruleb_tp2/config.py
 JOURNAL = "ruleb_tp2/state_live/5coin/ruleb_tp2_live_journal.jsonl"
 HERE = Path(__file__).parent
 
@@ -56,8 +57,26 @@ def funding_rates(perp):
         return None
 
 
+def fees_paid(rows):
+    """Trading fees per coin since bot start, estimated from the journal's fills at Kraken's fee rates."""
+    fees = {c: 0.0 for c in ORDER}
+    flat_runs = {r["run_id"] for r in rows if r["kind"] == "halt"}
+    for r in rows:
+        p, k = r["payload"], r["kind"]
+        if k in ("order_filled", "entry_fallback_filled", "entry_limit_fill", "resting_fill") and p.get("price"):
+            rate = MAKER if k == "entry_limit_fill" or p.get("what") == "tp" else TAKER
+        elif k == "order_send" and r["run_id"] in flat_runs and p.get("reduce_only"):
+            rate = TAKER   # flatten closes: the journal keeps only the order (its IOC limit stands in for the fill)
+        else:
+            continue
+        if p.get("sym") in fees:
+            fees[p["sym"]] += rate * float(p.get("qty") or p.get("size")) * float(p["price"])
+    return fees
+
+
 def build():
     rows = journal_rows()
+    fees = fees_paid(rows)
     entered = {}
     for r in rows:
         if r["kind"] == "entry_filled":
@@ -86,7 +105,7 @@ def build():
             "liq": leg.get("liq"), "tp_done": bool(leg.get("tp_done")), "trailing": leg.get("trail") is not None,
             "stop_hit": bool(mark and stop and (mark - stop) * side <= 0),
             "pnl_pct": (mark / entry - 1) * 100 * side if mark else None,
-            "pnl_usd": (mark - entry) * qty * side if mark else None,
+            "pnl_usd": (mark - entry) * qty * side if mark else None, "fees": fees[sym],
         })
 
     eq = p["equity_usd"] + eq_move if p.get("equity_usd") is not None else None
@@ -109,7 +128,7 @@ def build():
         history.append({"utc": now, "equity": eq})
     doc = {
         "updated_utc": now, "run_utc": last["utc"], "status": p.get("status"), "halted": p.get("halted"),
-        "equity": eq, "notional": notional, "lev_total": notional / eq if eq else None, "funding": funding, "start_eq": START_EQ, "reentry_eq": REENTRY_EQ,
+        "equity": eq, "notional": notional, "lev_total": notional / eq if eq else None, "funding": funding, "fees": sum(fees.values()), "start_eq": START_EQ, "reentry_eq": REENTRY_EQ,
         "vs_start_pct": (eq / START_EQ - 1) * 100 if eq else None,
         "vs_reentry_pct": (eq / REENTRY_EQ - 1) * 100 if eq else None,
         "legs": legs, "history": history,

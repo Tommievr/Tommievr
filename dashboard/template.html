@@ -59,7 +59,7 @@ body{margin:0;font-size:14px}
     <div><svg class="spark" id="spark" viewBox="0 0 300 64" preserveAspectRatio="none" aria-label="Equity over time"></svg><div class="axis num" id="axis"></div></div>
   </section>
   <div class="coins" id="coins"><div class="empty">Coin positions appear here after the next bot check.</div></div>
-  <footer id="foot">Updated every full hour with Kraken Futures mark prices. Equity is estimated from the last bot check plus the price moves since. Positions, stops and take profits are as of the last bot run. Funding is estimated from the Kraken hourly funding rates since each entry (+ received, − paid); Rate is the current hourly funding rate (green when it pays you, red when you pay). ≈ Liq is the bot's own liquidation estimate per coin; on the shared cross-margin account the real level depends on all positions together. P&amp;L % is the price move since entry; leverage multiplies it on the account.</footer>
+  <footer id="foot">Updated every full hour with Kraken Futures mark prices. Equity is estimated from the last bot check plus the price moves since. Positions, stops and take profits are as of the last bot run. Funding is estimated from the Kraken hourly funding rates since each entry (+ received, − paid); Rate is the current hourly funding rate (green when it pays you, red when you pay). ≈ Liq is the bot's own liquidation estimate per coin; on the shared cross-margin account the real level depends on all positions together. Fees are the trading fees paid since bot start (0.05% taker, 0.02% maker), estimated from the bot's fills; the balance is the real Kraken wallet, so it is already after fees and funding. P&amp;L % is the price move since entry; leverage multiplies it on the account.</footer>
 </div>
 <script id="data" type="application/json">__DATA__</script>
 <script>
@@ -82,8 +82,9 @@ function render(d){
   const s3=el("span");s3.append("Leverage ");s3.append(el("b",{class:"num"},d.lev_total!=null?d.lev_total.toFixed(2)+"x":"–"));
   if(d.notional)s3.append(" ($"+Math.round(d.notional)+" in positions)");
   const s4=el("span");s4.append("Funding ");s4.append(el("b",{class:"num "+(Math.abs(d.funding||0)<0.005?"":cls(d.funding))},usd(d.funding)));
+  const s5=el("span");s5.append("Fees ");s5.append(el("b",{class:"num"},"−$"+(d.fees||0).toFixed(2)));
   const s0=el("span",{},"Bot start $"+d.start_eq.toFixed(2));
-  sub.append(s0,s3,s4,s2);
+  sub.append(s0,s3,s4,s5,s2);
   // equity chart: x by time, green above the bot-start value, red below
   const h=(d.history||[]).filter(x=>x.equity!=null),sv=$("spark"),ax=$("axis");sv.replaceChildren();ax.replaceChildren();
   if(h.length>1){const ys=h.map(x=>x.equity),ts=h.map(x=>Date.parse(x.utc)),lo=Math.min(...ys,d.start_eq),hi=Math.max(...ys,d.start_eq),r=(hi-lo)||1;
@@ -118,6 +119,7 @@ function render(d){
     r1.append(e,lv,u);
     const r0=el("div",{class:"row"});const sz=el("span");sz.append("Size ");sz.append(el("b",{class:"num"},(+l.qty.toPrecision(6)).toString()+" "+l.sym));
     if(l.notional!=null)sz.append(" · $"+l.notional.toFixed(0));r0.append(sz);
+    if(l.fees!=null){const fe=el("span");fe.append("Fees ");fe.append(el("b",{class:"num"},"−$"+l.fees.toFixed(2)));r0.append(fe);}
     const r2=el("div",{class:"row"});r2.append(fu);
     // rail from stop to take profit
     const lo=Math.min(l.stop,l.tp),hi=Math.max(l.stop,l.tp),pos=v=>Math.max(0,Math.min(100,(v-lo)/(hi-lo)*100));
