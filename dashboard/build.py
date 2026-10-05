@@ -83,7 +83,7 @@ def build():
         legs.append({
             "sym": sym, "open": True, "side": "Long" if side > 0 else "Short",
             "entry": entry, "mark": mark, "qty": qty, "stop": stop, "tp": leg.get("tp"),
-            "tp_done": bool(leg.get("tp_done")), "trailing": leg.get("trail") is not None,
+            "liq": leg.get("liq"), "tp_done": bool(leg.get("tp_done")), "trailing": leg.get("trail") is not None,
             "stop_hit": bool(mark and stop and (mark - stop) * side <= 0),
             "pnl_pct": (mark / entry - 1) * 100 * side if mark else None,
             "pnl_usd": (mark - entry) * qty * side if mark else None,
