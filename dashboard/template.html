@@ -116,6 +116,8 @@ function render(d){
     if(l.funding_rate!=null){const sd=l.side==="Long"?1:-1,fr=l.funding_rate*100;
       r2rate=el("span");r2rate.append("Rate ");r2rate.append(el("b",{class:"num "+cls(-sd*fr)},(fr>=0?"+":"")+fr.toFixed(4)+"%/h"));}
     r1.append(e,lv,u);
+    const r0=el("div",{class:"row"});const sz=el("span");sz.append("Size ");sz.append(el("b",{class:"num"},(+l.qty.toPrecision(6)).toString()+" "+l.sym));
+    if(l.notional!=null)sz.append(" · $"+l.notional.toFixed(0));r0.append(sz);
     const r2=el("div",{class:"row"});r2.append(fu);
     // rail from stop to take profit
     const lo=Math.min(l.stop,l.tp),hi=Math.max(l.stop,l.tp),pos=v=>Math.max(0,Math.min(100,(v-lo)/(hi-lo)*100));
@@ -130,7 +132,7 @@ function render(d){
     const ends=el("div",{class:"ends num"});
     ends.append(el("span",{},(l.trailing?"Trail ":"Stop ")+fp(l.stop)),el("span",{style:"color:var(--down)"},"≈ Liq "+fp(l.liq)),el("span",{},(l.tp_done?"TP1 done ":"TP1 ")+fp(l.tp)));
     if(r2rate)r2.append(r2rate);
-    card.append(top,pr,r1,r2,rail,ends);box.append(card);
+    card.append(top,pr,r0,r1,r2,rail,ends);box.append(card);
   }
 }
 setInterval(()=>{if(last)render(last)},60000);
