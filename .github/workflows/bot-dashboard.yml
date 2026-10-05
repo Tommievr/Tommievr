@@ -4,11 +4,9 @@ name: bot-dashboard
 # Read-only: it reads Tommievr/tradingbot's committed live journal with a read-only token and the
 # public Kraken Futures prices. No Kraken keys, no orders.
 # GitHub's hourly cron proved unreliable (no scheduled runs at all for hours), so each run also
-# waits until the next full hour and starts the next run itself. The cron stays as a restarter; the
-# concurrency group cancels the older run, so only one chain is ever alive.
+# waits until the next full hour and starts the next run itself; the concurrency group keeps one chain.
+# dashboard-watchdog.yml restarts the chain when a run dies or sits queued without a runner.
 on:
-  schedule:
-    - cron: "0 * * * *"
   workflow_dispatch:
 
 permissions:
