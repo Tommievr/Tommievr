@@ -45,8 +45,24 @@ def kraken_marks():
     return {c: float(by_sym[p]["markPrice"]) for c, p in PERP.items() if p in by_sym and by_sym[p].get("markPrice")}
 
 
+def funding_rates(perp):
+    """Hourly relative funding (fraction of notional) as [(epoch_s, rel)]; None when unavailable."""
+    try:
+        rates = json.loads(get(f"https://futures.kraken.com/derivatives/api/v4/historicalfundingrates?symbol={perp}"))["rates"]
+        return [(datetime.fromisoformat(r["timestamp"].replace("Z", "+00:00")).timestamp(), float(r["relativeFundingRate"]))
+                for r in rates]
+    except Exception as e:
+        print("funding failed:", perp, e)
+        return None
+
+
 def build():
-    runs = [r for r in journal_rows() if r["kind"] == "run_summary"]
+    rows = journal_rows()
+    entered = {}
+    for r in rows:
+        if r["kind"] == "entry_filled":
+            entered[r["payload"]["sym"]] = r["ts"]
+    runs = [r for r in rows if r["kind"] == "run_summary"]
     last = runs[-1]
     p = last["payload"]
     run_marks = p.get("marks") or {}
@@ -74,19 +90,25 @@ def build():
         })
 
     eq = p["equity_usd"] + eq_move if p.get("equity_usd") is not None else None
-    notional = 0.0
+    notional, funding = 0.0, 0.0
     for l in legs:
         if l["open"] and l["mark"]:
             l["notional"] = l["qty"] * l["mark"]
             l["lev"] = l["notional"] / eq if eq else None
             notional += l["notional"]
+            # estimate: longs pay when the rate is positive; current size and price, since this entry
+            since = entered.get(l["sym"], 0)
+            side = 1 if l["side"] == "Long" else -1
+            rates = funding_rates(PERP[l["sym"]])
+            l["funding"] = None if rates is None else sum(-side * rel * l["notional"] for ts, rel in rates if ts > since)
+            funding = None if funding is None or l["funding"] is None else funding + l["funding"]
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     history = [{"utc": r["utc"], "equity": r["payload"].get("equity_usd")} for r in runs[-120:]]
     if eq is not None:
         history.append({"utc": now, "equity": eq})
     doc = {
         "updated_utc": now, "run_utc": last["utc"], "status": p.get("status"), "halted": p.get("halted"),
-        "equity": eq, "notional": notional, "lev_total": notional / eq if eq else None, "start_eq": START_EQ, "reentry_eq": REENTRY_EQ,
+        "equity": eq, "notional": notional, "lev_total": notional / eq if eq else None, "funding": funding, "start_eq": START_EQ, "reentry_eq": REENTRY_EQ,
         "vs_start_pct": (eq / START_EQ - 1) * 100 if eq else None,
         "vs_reentry_pct": (eq / REENTRY_EQ - 1) * 100 if eq else None,
         "legs": legs, "history": history,
