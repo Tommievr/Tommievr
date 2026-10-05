@@ -1,11 +1,15 @@
 name: dashboard-watchdog
 
-# Missed-run safeguard for bot-dashboard.yml's self-starting hourly chain: twice an hour it checks the
-# latest dashboard run and starts a new one when the chain has died (no run active) or a run has sat
-# queued for over 10 minutes (no runner picked it up, as on 5 Oct 20:00 UTC). A healthy chain is left alone.
+# Missed-run safeguard for bot-dashboard.yml's self-starting hourly chain. It runs whenever a dashboard
+# run ends (GitHub cron alone proved unreliable) and every 15 minutes, checks the latest dashboard run and
+# starts a new one when the chain has died (no run active, e.g. 5 Oct 21:00 UTC: "job was not acquired by
+# Runner") or a run has sat queued for over 10 minutes. A healthy chain is left alone.
 on:
+  workflow_run:
+    workflows: [bot-dashboard]
+    types: [completed]
   schedule:
-    - cron: "17,47 * * * *"
+    - cron: "7,22,37,52 * * * *"
   workflow_dispatch:
 
 permissions:
