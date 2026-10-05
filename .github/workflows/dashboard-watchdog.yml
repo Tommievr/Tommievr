@@ -1,0 +1,40 @@
+name: dashboard-watchdog
+
+# Missed-run safeguard for bot-dashboard.yml's self-starting hourly chain: twice an hour it checks the
+# latest dashboard run and starts a new one when the chain has died (no run active) or a run has sat
+# queued for over 10 minutes (no runner picked it up, as on 5 Oct 20:00 UTC). A healthy chain is left alone.
+on:
+  schedule:
+    - cron: "17,47 * * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+concurrency:
+  group: dashboard-watchdog
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Restart the dashboard chain if it is dead or stuck
+        env:
+          GH_TOKEN: ${{ github.token }}
+          R: ${{ github.repository }}
+        run: |
+          read -r id status created < <(gh api "repos/$R/actions/workflows/bot-dashboard.yml/runs?per_page=1" \
+            -q '.workflow_runs[0] | "\(.id) \(.status) \(.created_at)"')
+          age=$(( $(date -u +%s) - $(date -u -d "$created" +%s) ))
+          echo "latest run $id: $status, ${age}s old"
+          case "$status" in
+            in_progress) exit 0 ;;
+            queued|waiting|pending|requested)
+              [ "$age" -lt 600 ] && exit 0
+              gh api -X POST "repos/$R/actions/runs/$id/force-cancel" || true
+              sleep 10 ;;
+          esac
+          gh workflow run bot-dashboard.yml -R "$R" --ref main
+          echo "started a new dashboard run"
