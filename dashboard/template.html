@@ -27,7 +27,7 @@ h1{font-size:1.05rem;margin:0;letter-spacing:.02em;font-weight:800}
 .summary{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px}
 .eq{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .eq .big{font-size:2.1rem;font-weight:600}
-.chg{font-weight:600}
+.chg{font-weight:600;font-size:1.25rem}
 .up{color:var(--up)} .down{color:var(--down)}
 .sub{display:flex;gap:16px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
 svg.spark{width:100%;height:64px;display:block}
@@ -74,14 +74,15 @@ function render(d){
   last=d;
   const st=$("st");
   if(d.halted){st.textContent="halted";st.className="pill bad"}else{st.textContent=d.status==="ok"?"running":(d.status||"unknown");st.className="pill "+(d.status==="ok"?"ok":"bad")}
-  $("eq").textContent="$"+(d.equity!=null?d.equity.toFixed(2):"–");
-  const c=$("chg");c.textContent=sp(d.vs_start_pct)+" since bot start ($"+d.start_eq.toFixed(2)+")";c.className="chg num "+cls(d.vs_start_pct);
+  const q=$("eq");q.textContent="$"+(d.equity!=null?d.equity.toFixed(2):"–");q.className="big num "+cls(d.vs_start_pct);
+  const c=$("chg");c.textContent=sp(d.vs_start_pct);c.className="chg num "+cls(d.vs_start_pct);
   const sub=$("sub");sub.replaceChildren();
   const s2=el("span",{},"Prices "+ago(d.updated_utc)+" · bot check "+d.run_utc.slice(11,16)+" UTC");
   const s3=el("span");s3.append("Leverage ");s3.append(el("b",{class:"num"},d.lev_total!=null?d.lev_total.toFixed(2)+"x":"–"));
   if(d.notional)s3.append(" ($"+Math.round(d.notional)+" in positions)");
   const s4=el("span");s4.append("Funding ");s4.append(el("b",{class:"num "+cls(d.funding)},usd(d.funding)));
-  sub.append(s3,s4,s2);
+  const s0=el("span",{},"Bot start $"+d.start_eq.toFixed(2));
+  sub.append(s0,s3,s4,s2);
   // equity chart: x by time, green above the bot-start value, red below
   const h=(d.history||[]).filter(x=>x.equity!=null),sv=$("spark"),ax=$("axis");sv.replaceChildren();ax.replaceChildren();
   if(h.length>1){const ys=h.map(x=>x.equity),ts=h.map(x=>Date.parse(x.utc)),lo=Math.min(...ys,d.start_eq),hi=Math.max(...ys,d.start_eq),r=(hi-lo)||1;
