@@ -4,11 +4,11 @@ name: bot-dashboard
 # Read-only: it reads Tommievr/tradingbot's committed live journal with a read-only token and the
 # public Kraken Futures prices. No Kraken keys, no orders.
 # GitHub's hourly cron proved unreliable (no scheduled runs at all for hours), so each run also
-# waits until the next :07 and starts the next run itself. The cron stays as a restarter; the
+# waits until the next full hour and starts the next run itself. The cron stays as a restarter; the
 # concurrency group cancels the older run, so only one chain is ever alive.
 on:
   schedule:
-    - cron: "7 * * * *"
+    - cron: "0 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -46,12 +46,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 75
     steps:
-      - name: Wait for the next :07, then start the next run
+      - name: Wait for the next full hour, then start the next run
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           now=$(date -u +%s)
-          next=$(( (now / 3600 + 1) * 3600 + 420 ))
-          if [ $(( next - now )) -gt 3600 ]; then next=$(( next - 3600 )); fi
+          next=$(( (now / 3600 + 1) * 3600 ))
           sleep $(( next - now ))
           gh workflow run bot-dashboard.yml -R "$GITHUB_REPOSITORY" --ref main
