@@ -73,19 +73,18 @@ function render(d){
   const st=$("st");
   if(d.halted){st.textContent="halted";st.className="pill bad"}else{st.textContent=d.status==="ok"?"running":(d.status||"unknown");st.className="pill "+(d.status==="ok"?"ok":"bad")}
   $("eq").textContent="$"+(d.equity!=null?d.equity.toFixed(2):"–");
-  const c=$("chg");c.textContent=sp(d.vs_reentry_pct)+" since re-entry";c.className="chg num "+cls(d.vs_reentry_pct);
+  const c=$("chg");c.textContent=sp(d.vs_start_pct)+" since bot start ($"+d.start_eq.toFixed(2)+")";c.className="chg num "+cls(d.vs_start_pct);
   const sub=$("sub");sub.replaceChildren();
-  const s1=el("span");s1.append("Since start ($"+d.start_eq.toFixed(2)+"): ");const b1=el("b",{class:"num "+cls(d.vs_start_pct)},sp(d.vs_start_pct));s1.append(b1);
   const s2=el("span",{},"Prices "+ago(d.updated_utc)+" · bot check "+d.run_utc.slice(11,16)+" UTC");
   const s3=el("span");s3.append("Leverage ");s3.append(el("b",{class:"num"},d.lev_total!=null?d.lev_total.toFixed(2)+"x":"–"));
   if(d.notional)s3.append(" ($"+Math.round(d.notional)+" in positions)");
-  sub.append(s1,s3,s2);
+  sub.append(s3,s2);
   // sparkline
   const h=(d.history||[]).filter(x=>x.equity!=null),sv=$("spark");sv.replaceChildren();
-  if(h.length>1){const ys=h.map(x=>x.equity),lo=Math.min(...ys,d.reentry_eq),hi=Math.max(...ys,d.reentry_eq),r=(hi-lo)||1;
+  if(h.length>1){const ys=h.map(x=>x.equity),lo=Math.min(...ys,d.start_eq),hi=Math.max(...ys,d.start_eq),r=(hi-lo)||1;
     const X=i=>4+i*(292/(h.length-1)),Y=v=>42-(v-lo)/r*38;
     const NS="http://www.w3.org/2000/svg",base=document.createElementNS(NS,"line");
-    base.setAttribute("x1",0);base.setAttribute("x2",300);base.setAttribute("y1",Y(d.reentry_eq));base.setAttribute("y2",Y(d.reentry_eq));base.setAttribute("stroke","var(--line)");base.setAttribute("stroke-dasharray","3 3");sv.append(base);
+    base.setAttribute("x1",0);base.setAttribute("x2",300);base.setAttribute("y1",Y(d.start_eq));base.setAttribute("y2",Y(d.start_eq));base.setAttribute("stroke","var(--line)");base.setAttribute("stroke-dasharray","3 3");sv.append(base);
     const pl=document.createElementNS(NS,"polyline");pl.setAttribute("points",ys.map((v,i)=>X(i)+","+Y(v)).join(" "));pl.setAttribute("fill","none");pl.setAttribute("stroke","var(--accent)");pl.setAttribute("stroke-width","2");pl.setAttribute("vector-effect","non-scaling-stroke");sv.append(pl);
   }
   const box=$("coins");box.replaceChildren();
