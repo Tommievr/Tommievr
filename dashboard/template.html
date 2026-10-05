@@ -58,7 +58,7 @@ body{margin:0;font-size:14px}
     <div><svg class="spark" id="spark" viewBox="0 0 300 64" preserveAspectRatio="none" aria-label="Equity over time"></svg><div class="axis num" id="axis"></div></div>
   </section>
   <div class="coins" id="coins"><div class="empty">Coin positions appear here after the next bot check.</div></div>
-  <footer id="foot">Updated every hour with Kraken Futures mark prices. Equity is estimated from the last bot check plus the price moves since. Positions, stops and take profits are as of the last bot run. Funding is estimated from the Kraken hourly funding rates since each entry (+ received, − paid). P&amp;L % is the price move since entry; leverage multiplies it on the account.</footer>
+  <footer id="foot">Updated every hour with Kraken Futures mark prices. Equity is estimated from the last bot check plus the price moves since. Positions, stops and take profits are as of the last bot run. Funding is estimated from the Kraken hourly funding rates since each entry (+ received, − paid). ≈ Liq is the bot's own liquidation estimate per coin; on the shared cross-margin account the real level depends on all positions together. P&amp;L % is the price move since entry; leverage multiplies it on the account.</footer>
 </div>
 <script id="data" type="application/json">__DATA__</script>
 <script>
@@ -123,7 +123,7 @@ function render(d){
     fill.style.background="linear-gradient(to "+(b>=a?"right":"left")+",color-mix(in srgb,"+col+" 12%,transparent),color-mix(in srgb,"+col+" "+strong+"%,transparent))";
     rail.append(fill,en);
     const ends=el("div",{class:"ends num"});
-    ends.append(el("span",{},(l.trailing?"Trail ":"Stop ")+fp(l.stop)),el("span",{},(l.tp_done?"TP1 done ":"TP1 ")+fp(l.tp)));
+    ends.append(el("span",{},(l.trailing?"Trail ":"Stop ")+fp(l.stop)),el("span",{style:"color:var(--down)"},"≈ Liq "+fp(l.liq)),el("span",{},(l.tp_done?"TP1 done ":"TP1 ")+fp(l.tp)));
     card.append(top,pr,r1,rail,ends);box.append(card);
   }
 }
