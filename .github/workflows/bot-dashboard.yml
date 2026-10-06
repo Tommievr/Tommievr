@@ -2,7 +2,8 @@ name: bot-dashboard
 
 # Phone dashboard of the live 5-coin bot (dashboard/build.py), published on GitHub Pages.
 # Read-only: it reads Tommievr/tradingbot's committed live journal with a read-only token. No Kraken keys,
-# no orders. The page itself fetches live Kraken Futures prices in the browser, so it only needs a rebuild
+# no orders. The page itself fetches live Kraken prices in the browser (Kraken's spot API; the futures API
+# does not allow browser reads), so it only needs a rebuild
 # when the bot has run. Short jobs only: once an hour a seconds-long check rebuilds the page when the live
 # journal changed since the last build (i.e. after each live bot run) or the last build is over 3 h old
 # (a missed hour is caught up by the next one).
@@ -43,8 +44,6 @@ jobs:
           if [ "$sha" != "$old" ] || [ "$age" -gt 10500 ] || [ "${{ github.event_name }}" = workflow_dispatch ]; then build=true; fi
           echo "build=$build" >> "$GITHUB_OUTPUT"
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
-          echo "::notice::spot $(curl -sS 'https://api.kraken.com/0/public/Ticker?pair=XBTUSD,ETHUSD,SOLUSD,XRPUSD,BNBUSD' | jq -c '{error, k:(.result//{}|to_entries|map({key, c:.value.c[0]}))}')"
-          echo "::notice::fut $(curl -sS https://futures.kraken.com/derivatives/api/v3/tickers | jq -c '[.tickers[]|select(.symbol|test("^PF_(XBT|ETH|SOL|XRP|BNB)USD$"))|{symbol,markPrice}]')"
 
   build-deploy:
     needs: check

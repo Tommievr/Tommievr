@@ -59,7 +59,7 @@ body{margin:0;font-size:14px}
     <div><svg class="spark" id="spark" viewBox="0 0 300 64" preserveAspectRatio="none" aria-label="Equity over time"></svg><div class="axis num" id="axis"></div></div>
   </section>
   <div class="coins" id="coins"><div class="empty">Coin positions appear here after the next bot check.</div></div>
-  <footer id="foot">Prices are live Kraken Futures mark prices, read by this page every minute. Positions, funding and fees refresh after each bot run (checked hourly). Equity is estimated from the last bot check plus the price moves since. Positions, stops and take profits are as of the last bot run. Funding is estimated from the Kraken hourly funding rates since each entry (+ received, − paid); Rate is the current hourly funding rate (green when it pays you, red when you pay). ≈ Liq is the bot's own liquidation estimate per coin; on the shared cross-margin account the real level depends on all positions together. Fees are the trading fees paid since bot start (0.05% taker, 0.02% maker), estimated from the bot's fills; the balance is the real Kraken wallet, so it is already after fees and funding. P&amp;L % is the price move since entry; leverage multiplies it on the account.</footer>
+  <footer id="foot">Prices are live Kraken prices, read by this page every minute (spot, within a few hundredths of a % of the futures mark). Positions, funding and fees refresh after each bot run (checked hourly). Equity is estimated from the last bot check plus the price moves since. Positions, stops and take profits are as of the last bot run. Funding is estimated from the Kraken hourly funding rates since each entry (+ received, − paid); Rate is the current hourly funding rate (green when it pays you, red when you pay). ≈ Liq is the bot's own liquidation estimate per coin; on the shared cross-margin account the real level depends on all positions together. Fees are the trading fees paid since bot start (0.05% taker, 0.02% maker), estimated from the bot's fills; the balance is the real Kraken wallet, so it is already after fees and funding. P&amp;L % is the price move since entry; leverage multiplies it on the account.</footer>
 </div>
 <script id="data" type="application/json">__DATA__</script>
 <script>
@@ -139,14 +139,17 @@ function render(d){
 }
 // live prices: the page itself reads the public Kraken Futures marks and re-prices the last build
 const base=JSON.parse(document.getElementById("data").textContent);
-const PERP={BTC:"PF_XBTUSD",ETH:"PF_ETHUSD",SOL:"PF_SOLUSD",XRP:"PF_XRPUSD",BNB:"PF_BNBUSD"};
+// Kraken's futures API does not allow browser reads; its spot prices (within a few hundredths of a % of the
+// perp marks) do. Result keys: XXBTZUSD, XETHZUSD, SOLUSD, XXRPZUSD, BNBUSD.
+const SPOT={BTC:"XBT",ETH:"ETH",SOL:"SOL",XRP:"XRP",BNB:"BNB"};
 async function live(){
   try{
-    const r=await fetch("https://futures.kraken.com/derivatives/api/v3/tickers",{cache:"no-store"});
-    const by={};for(const t of (await r.json()).tickers)by[t.symbol]=t;
+    const r=await fetch("https://api.kraken.com/0/public/Ticker?pair=XBTUSD,ETHUSD,SOLUSD,XRPUSD,BNBUSD",{cache:"no-store"});
+    const res=(await r.json()).result||{},px={};
+    for(const c in SPOT){const k=Object.keys(res).find(k=>k.replace(/^X/,"").startsWith(SPOT[c])&&k.endsWith("USD"));if(k)px[c]=+res[k].c[0];}
     const d=structuredClone(base);let move=0,notional=0,got=0;
     for(const l of d.legs){
-      const m=+(by[PERP[l.sym]]||{}).markPrice;if(!m)continue;got++;
+      const m=px[l.sym];if(!m)continue;got++;
       if(l.open){const sd=l.side==="Long"?1:-1;move+=(m-l.mark)*l.qty*sd;l.mark=m;
         l.pnl_pct=(m/l.entry-1)*100*sd;l.pnl_usd=(m-l.entry)*l.qty*sd;l.notional=l.qty*m;
         l.stop_hit=!!(l.stop&&(m-l.stop)*sd<=0);}else l.mark=m;
