@@ -43,7 +43,10 @@ jobs:
           if [ "$sha" != "$old" ] || [ "$age" -gt 10500 ] || [ "${{ github.event_name }}" = workflow_dispatch ]; then build=true; fi
           echo "build=$build" >> "$GITHUB_OUTPUT"
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
-          echo "::notice::kraken cors: $(curl -sS -D - -o /dev/null -H 'Origin: https://tommievr.github.io' https://futures.kraken.com/derivatives/api/v3/tickers | grep -i '^access-control-allow-origin' | tr -d '\r')"
+          for u in https://futures.kraken.com/derivatives/api/v3/tickers https://futures.kraken.com/derivatives/api/v3/tickers/PF_XBTUSD "https://futures.kraken.com/api/charts/v1/mark/PF_XBTUSD/1m?count=1" "https://api.kraken.com/0/public/Ticker?pair=XBTUSD"; do
+            h=$(curl -sS -m 15 -D - -o /dev/null -H 'Origin: https://tommievr.github.io' "$u" 2>&1 | grep -iE '^(HTTP|access-control-allow-origin|curl)' | tr -d '\r' | tr '\n' ' ')
+            echo "::notice::cors $u -> $h"
+          done
 
   build-deploy:
     needs: check
