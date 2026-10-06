@@ -1,29 +1,55 @@
 name: bot-dashboard
 
-# Hourly phone dashboard of the live 5-coin bot (dashboard/build.py), published on GitHub Pages.
-# Read-only: it reads Tommievr/tradingbot's committed live journal with a read-only token and the
-# public Kraken Futures prices. No Kraken keys, no orders.
-# GitHub's hourly cron proved unreliable (no scheduled runs at all for hours), so each run also
-# waits until the next full hour and starts the next run itself (in the same job, so each hour needs only
-# one runner); the concurrency group keeps one chain. dashboard-watchdog.yml restarts the chain when a run
-# ends without starting the next one (e.g. GitHub found no runner) or sits queued without a runner.
+# Phone dashboard of the live 5-coin bot (dashboard/build.py), published on GitHub Pages.
+# Read-only: it reads Tommievr/tradingbot's committed live journal with a read-only token. No Kraken keys,
+# no orders. The page itself fetches live Kraken Futures prices in the browser, so it only needs a rebuild
+# when the bot has run. Short jobs only: once an hour a seconds-long check rebuilds the page when the live
+# journal changed since the last build (i.e. after each live bot run) or the last build is over 3 h old
+# (a missed hour is caught up by the next one).
 on:
+  schedule:
+    - cron: "17 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
-  actions: write   # only to start the next run
 
 concurrency:
   group: bot-dashboard
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
-  build-deploy:
+  check:
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 3
+    outputs:
+      build: ${{ steps.gate.outputs.build }}
+      sha: ${{ steps.gate.outputs.sha }}
+    steps:
+      - id: gate
+        name: Rebuild only after a bot run or every 3 h
+        env:
+          GH_TOKEN: ${{ secrets.TRADINGBOT_READ_TOKEN }}
+        run: |
+          sha=$(gh api "repos/Tommievr/tradingbot/commits?path=ruleb_tp2/state_live/5coin/ruleb_tp2_live_journal.jsonl&sha=main&per_page=1" -q '.[0].sha' || echo unknown)
+          meta=$(curl -fsS "https://tommievr.github.io/Tommievr/meta.json" || echo '{}')
+          old=$(echo "$meta" | jq -r '.journal_sha // ""')
+          built=$(echo "$meta" | jq -r '.built_utc // "1970-01-01T00:00:00Z"')
+          age=$(( $(date -u +%s) - $(date -u -d "$built" +%s) ))
+          echo "journal $sha (last build $old), last build ${age}s ago"
+          build=false
+          if [ "$sha" != "$old" ] || [ "$age" -gt 10500 ] || [ "${{ github.event_name }}" = workflow_dispatch ]; then build=true; fi
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "::notice::kraken cors: $(curl -sS -D - -o /dev/null -H 'Origin: https://tommievr.github.io' https://futures.kraken.com/derivatives/api/v3/tickers | grep -i '^access-control-allow-origin' | tr -d '\r')"
+
+  build-deploy:
+    needs: check
+    if: ${{ needs.check.outputs.build == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
@@ -32,18 +58,10 @@ jobs:
       - name: Build page
         env:
           TRADINGBOT_READ_TOKEN: ${{ secrets.TRADINGBOT_READ_TOKEN }}
+          JOURNAL_SHA: ${{ needs.check.outputs.sha }}
         run: python3 dashboard/build.py
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
       - id: deploy
         uses: actions/deploy-pages@v4
-      - name: Wait for the next full hour, then start the next run
-        if: ${{ always() }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          now=$(date -u +%s)
-          next=$(( (now / 3600 + 1) * 3600 ))
-          sleep $(( next - now ))
-          gh workflow run bot-dashboard.yml -R "$GITHUB_REPOSITORY" --ref main

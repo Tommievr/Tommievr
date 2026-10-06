@@ -136,6 +136,7 @@ def build():
     data = json.dumps(doc, separators=(",", ":")).replace("</", "<\\/")
     out = HERE.parent / "site"
     out.mkdir(exist_ok=True)
+    (out / "meta.json").write_text(json.dumps({"built_utc": now, "journal_sha": os.environ.get("JOURNAL_SHA", "")}))
     (out / "index.html").write_text((HERE / "template.html").read_text().replace("__DATA__", data))
     print(f"built: equity {eq}, prices from {'kraken' if live else 'last bot run'}")
 
