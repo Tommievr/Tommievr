@@ -78,7 +78,8 @@ function render(d){
   const q=$("eq");q.textContent="$"+(d.equity!=null?d.equity.toFixed(2):"–");q.className="big num "+cls(d.vs_start_pct);
   const c=$("chg");const dd=d.equity!=null?d.equity-d.start_eq:null;c.textContent=(dd==null?"":(dd>=0?"+$":"−$")+Math.abs(dd).toFixed(2)+" ")+"("+sp(d.vs_start_pct)+")";c.className="chg num "+cls(d.vs_start_pct);
   const sub=$("sub");sub.replaceChildren();
-  const s2=el("span",{},"Prices "+ago(d.updated_utc)+" · bot check "+d.run_utc.slice(11,16)+" UTC");
+  const hm=u=>new Date(u).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",hour12:false});
+  const s2=el("span",{},(d.live?"Live prices "+hm(d.updated_utc):"Prices "+hm(d.updated_utc)+" (not live)")+" · Bot data "+hm(d.run_utc)+" · Page built "+hm(base.updated_utc));
   const s3=el("span");s3.append("Leverage ");s3.append(el("b",{class:"num"},d.lev_total!=null?d.lev_total.toFixed(2)+"x":"–"));
   if(d.notional)s3.append(" ($"+Math.round(d.notional)+" in positions)");
   const s4=el("span");s4.append("Funding ");s4.append(el("b",{class:"num "+(Math.abs(d.funding||0)<0.005?"":cls(d.funding))},usd(d.funding)));
@@ -159,7 +160,7 @@ async function live(){
     if(d.equity!=null){d.equity+=move;d.notional=notional;d.lev_total=notional/d.equity;d.vs_start_pct=(d.equity/d.start_eq-1)*100;
       for(const l of d.legs)if(l.open&&l.notional!=null)l.lev=l.notional/d.equity;
       d.history.push({utc:new Date().toISOString(),equity:d.equity});}
-    d.updated_utc=new Date().toISOString();render(d);
+    d.updated_utc=new Date().toISOString();d.live=true;render(d);
   }catch(e){console.log("live prices failed",e)}
 }
 render(base);live();setInterval(live,60000);setInterval(()=>{if(last)render(last)},60000);
