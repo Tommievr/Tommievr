@@ -43,10 +43,8 @@ jobs:
           if [ "$sha" != "$old" ] || [ "$age" -gt 10500 ] || [ "${{ github.event_name }}" = workflow_dispatch ]; then build=true; fi
           echo "build=$build" >> "$GITHUB_OUTPUT"
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
-          for u in https://futures.kraken.com/derivatives/api/v3/tickers https://futures.kraken.com/derivatives/api/v3/tickers/PF_XBTUSD "https://futures.kraken.com/api/charts/v1/mark/PF_XBTUSD/1m?count=1" "https://api.kraken.com/0/public/Ticker?pair=XBTUSD"; do
-            h=$(curl -sS -m 15 -D - -o /dev/null -H 'Origin: https://tommievr.github.io' "$u" 2>&1 | grep -iE '^(HTTP|access-control-allow-origin|curl)' | tr -d '\r' | tr '\n' ' ')
-            echo "::notice::cors $u -> $h"
-          done
+          echo "::notice::spot $(curl -sS 'https://api.kraken.com/0/public/Ticker?pair=XBTUSD,ETHUSD,SOLUSD,XRPUSD,BNBUSD' | jq -c '{error, k:(.result//{}|to_entries|map({key, c:.value.c[0]}))}')"
+          echo "::notice::fut $(curl -sS https://futures.kraken.com/derivatives/api/v3/tickers | jq -c '[.tickers[]|select(.symbol|test("^PF_(XBT|ETH|SOL|XRP|BNB)USD$"))|{symbol,markPrice}]')"
 
   build-deploy:
     needs: check
