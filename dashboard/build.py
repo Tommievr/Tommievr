@@ -16,6 +16,7 @@ START_EQ = 114.74      # 4 Oct 2026 20:58 UTC go-live
 REENTRY_EQ = 114.54    # 4 Oct 2026 21:59 UTC re-entry at 5% risk
 TAKER, MAKER = 0.0005, 0.0002   # Kraken Futures base-tier fees, as in tradingbot ruleb_tp2/config.py
 JOURNAL = "ruleb_tp2/state_live/5coin/ruleb_tp2_live_journal.jsonl"
+STATE = "ruleb_tp2/state_live/5coin/ruleb_tp2_live_state.json"
 HERE = Path(__file__).parent
 
 
@@ -25,15 +26,33 @@ def get(url, headers=None):
         return r.read()
 
 
+def repo_file(path, env):
+    if os.environ.get(env):
+        return Path(os.environ[env]).read_text()
+    return get(f"https://api.github.com/repos/Tommievr/tradingbot/contents/{path}?ref=main", {
+        "Authorization": f"Bearer {os.environ['TRADINGBOT_READ_TOKEN']}",
+        "Accept": "application/vnd.github.raw",
+    }).decode()
+
+
 def journal_rows():
-    if os.environ.get("JOURNAL_FILE"):
-        text = Path(os.environ["JOURNAL_FILE"]).read_text()
-    else:
-        text = get(f"https://api.github.com/repos/Tommievr/tradingbot/contents/{JOURNAL}?ref=main", {
-            "Authorization": f"Bearer {os.environ['TRADINGBOT_READ_TOKEN']}",
-            "Accept": "application/vnd.github.raw",
-        }).decode()
-    return [json.loads(l) for l in text.splitlines() if l.strip()]
+    return [json.loads(l) for l in repo_file(JOURNAL, "JOURNAL_FILE").splitlines() if l.strip()]
+
+
+def halted_flat(rows, last):
+    """(reason, equity) when the bot was HALTED and flattened after its last run summary (the kill switch writes
+    no run summary), else None. The equity is the book's cash after the flatten (= the Kraken equity it read)."""
+    after = rows[rows.index(last) + 1:]
+    halt = next((r for r in reversed(after) if r["kind"] == "halt"), None)
+    flat = any(r["kind"] == "flatten_done" and not r["payload"].get("left") for r in after)
+    if halt is None or not flat:
+        return None
+    try:
+        eq = float(json.loads(repo_file(STATE, "STATE_FILE"))["engine"]["cash"])
+    except Exception as e:  # keep building on the journal alone
+        print("state read failed:", e)
+        eq = None
+    return halt["payload"].get("reason") or "halted", eq, halt["utc"]
 
 
 def kraken_marks():
@@ -84,6 +103,12 @@ def build():
     runs = [r for r in rows if r["kind"] == "run_summary"]
     last = runs[-1]
     p = last["payload"]
+    stopped = halted_flat(rows, last)
+    if stopped:      # flattened by the kill switch: no legs, the equity after the flatten, the halt's time
+        reason, eq_after, halt_utc = stopped
+        p = {**p, "legs": {}, "status": "halted", "halted": reason,
+             "equity_usd": eq_after if eq_after is not None else p.get("equity_usd")}
+        last = {**last, "utc": halt_utc, "payload": p}
     run_marks = p.get("marks") or {}
     live = kraken_marks()
     marks = {c: live.get(c, run_marks.get(c)) for c in ORDER}
