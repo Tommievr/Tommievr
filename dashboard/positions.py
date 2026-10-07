@@ -3,8 +3,9 @@
 value. No name and no bot data on the page. The browser re-prices the positions every minute from Kraken's public
 spot prices.
 
-The numbers come from the hourly READ-ONLY snapshot positions.json on the positions-data branch of Tommievr/tradingbot
-(its positions-snapshot job reads Kraken there with the read-only key, so no Kraken key is ever in this public repo).
+The numbers come from the READ-ONLY snapshot positions.json (every 3 hours) on the positions-data branch of
+Tommievr/tradingbot (its positions-snapshot job reads Kraken there with the read-only key, so no Kraken key is ever in
+this public repo).
 This build reads that file with the read token TRADINGBOT_READ_TOKEN and copies only the fields the page shows.
 
 Local test: SNAPSHOT_FILE=<positions.json> python3 positions.py
@@ -18,7 +19,7 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 SNAPSHOT = "https://api.github.com/repos/Tommievr/tradingbot/contents/positions.json?ref=positions-data"
-STALE = timedelta(hours=3)
+STALE = timedelta(hours=8)        # the snapshot runs every 3 h and GitHub runs crons late
 
 
 def get(url, headers=None):
@@ -53,7 +54,7 @@ def build():
     else:
         try:
             doc, when = clean(read_snapshot())
-            doc["error"] = "Positions are more than 3 hours old." if now - when > STALE else None
+            doc["error"] = "Positions are more than 8 hours old." if now - when > STALE else None
         except urllib.error.HTTPError as e:     # 404: no snapshot written yet
             print("snapshot read failed: HTTP", e.code)
             doc = {**empty, "error": "Account not connected yet." if e.code == 404 else

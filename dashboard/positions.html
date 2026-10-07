@@ -37,7 +37,7 @@ footer{font-size:.72rem;color:var(--muted);line-height:1.5}
   <h1>Open positions</h1>
   <section class="card" id="acct"></section>
   <div id="list" style="display:flex;flex-direction:column;gap:10px"></div>
-  <footer>Prices are live Kraken prices, read by this page every minute. Positions refresh about every hour. P&amp;L % is the price move since entry; leverage multiplies it on the account.</footer>
+  <footer>Prices are live Kraken prices, read by this page every minute. Positions refresh every few hours. P&amp;L % is the price move since entry; leverage multiplies it on the account.</footer>
 </div>
 <script id="data" type="application/json">__DATA__</script>
 <script>
@@ -48,17 +48,21 @@ function sp(v){return v==null?"–":(v>=0?"+":"")+v.toFixed(2)+"%"}
 function usd(v){if(v==null)return"–";return(v>=0?"+$":"−$")+Math.abs(v).toFixed(2)}
 function cls(v){return v==null?"":v>=0?"up":"down"}
 const hm=u=>new Date(u).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",hour12:false});
+const dhm=u=>new Date(u).toLocaleString([],{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit",hour12:false});
+// the age is checked here too: a page that stops being rebuilt must not show old positions as live
+const STALE_MS=8*3600e3,stale=d=>d.equity!=null&&Date.now()-Date.parse(d.updated_utc)>STALE_MS;
 function render(d){
   const a=$("acct");a.replaceChildren();
-  if(d.error){a.append(el("div",{class:"row"},d.error));}
+  const msg=d.error||(stale(d)?"Positions are more than 8 hours old.":null);
+  if(msg){a.append(el("div",{class:"row"},msg));}
   const upnl=d.positions.reduce((s,p)=>s+(p.pnl_usd||0),0);
   const t=el("div",{class:"top"});t.append(el("span",{class:"row"},"Account value"),el("span",{class:"num "+cls(upnl)},d.positions.length?usd(upnl)+" open P&L":""));
   a.append(t,el("div",{class:"big num"},d.equity!=null?"$"+d.equity.toFixed(2):"–"));
   const r=el("div",{class:"row"});
-  r.append(el("span",{},d.available!=null?"Free margin $"+d.available.toFixed(2):""),el("span",{},(d.live?"Live prices ":"Prices ")+hm(d.priced_utc||d.updated_utc)+" · Positions "+hm(d.updated_utc)));
+  r.append(el("span",{},d.available!=null?"Free margin $"+d.available.toFixed(2):""),el("span",{},(d.live?"Live prices ":"Prices ")+hm(d.priced_utc||d.updated_utc)+" · Positions "+dhm(d.updated_utc)));
   a.append(r);
   const box=$("list");box.replaceChildren();
-  if(!d.positions.length){box.append(el("div",{class:"empty"},"No open positions."));return}
+  if(!d.positions.length){if(d.equity!=null)box.append(el("div",{class:"empty"},"No open positions."));return}
   for(const p of d.positions){
     const sd=p.side==="Long"?1:-1,pct=(p.mark/p.entry-1)*100*sd,notional=p.qty*p.mark;
     const c=el("article",{class:"card"}),top=el("div",{class:"top"}),l=el("div");
@@ -77,6 +81,7 @@ const base=JSON.parse($("data").textContent);
 // Kraken spot names: BTC is XBT, DOGE is XDG; one request per coin, so an unknown pair never blocks the others
 const SPOT={BTC:"XBT",DOGE:"XDG"};
 async function live(){
+  if(stale(base))return;
   const d=structuredClone(base);let move=0,got=0;
   await Promise.all(d.positions.map(async p=>{
     try{

@@ -3,7 +3,7 @@ name: positions-page
 # Public "Open positions" page on GitHub Pages (dashboard/positions.py): every open position of the Kraken Futures
 # account and the account value. No name and no bot data on the page; the browser re-prices the positions every
 # minute from Kraken's public spot prices.
-# The numbers come from the hourly read-only snapshot positions.json on the positions-data branch of
+# The numbers come from the read-only snapshot (every 3 hours) positions.json on the positions-data branch of
 # Tommievr/tradingbot (its positions-snapshot job holds the read-only Kraken key; no Kraken key is in this repo).
 # This build reads it with the read token TRADINGBOT_READ_TOKEN. Without the token, or before the first snapshot,
 # the page says "Account not connected yet." A file dashboard/PAUSED publishes the blank offline page instead.
