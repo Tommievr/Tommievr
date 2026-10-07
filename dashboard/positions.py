@@ -11,6 +11,7 @@ This build reads that file with the read token TRADINGBOT_READ_TOKEN and copies 
 Local test: SNAPSHOT_FILE=<positions.json> python3 positions.py
 """
 import json
+import math
 import os
 import urllib.error
 import urllib.request
@@ -20,6 +21,8 @@ from pathlib import Path
 HERE = Path(__file__).parent
 SNAPSHOT = "https://api.github.com/repos/Tommievr/tradingbot/contents/positions.json?ref=positions-data"
 STALE = timedelta(hours=8)        # the snapshot runs every 3 h and GitHub runs crons late
+FMT = "%Y-%m-%dT%H:%M:%SZ"
+HISTORY_MAX = 1000
 
 
 def get(url, headers=None):
@@ -35,18 +38,49 @@ def read_snapshot():
                                      "Accept": "application/vnd.github.raw"}))
 
 
+def num(v):
+    """A finite number, or an error (the page parses strict JSON: no NaN or Infinity)."""
+    x = float(v)
+    if not math.isfinite(x):
+        raise ValueError("not a finite number")
+    return x
+
+
+def opt(v):
+    """An optional extra: a finite number or None (a bad value only blanks that extra)."""
+    try:
+        return None if v is None else num(v)
+    except (TypeError, ValueError):
+        return None
+
+
+def stamp(v):
+    datetime.strptime(v, FMT)
+    return v
+
+
 def clean(raw):
     """Only the fields the page shows, as numbers and short labels: nothing else in the file reaches the page."""
-    pos = [{"coin": str(p["coin"])[:10], "side": "Long" if p["side"] == "Long" else "Short", "qty": float(p["qty"]),
-            "entry": float(p["entry"]), "mark": float(p["mark"]), "pnl_usd": float(p["pnl_usd"])}
-           for p in raw["positions"]]
-    when = datetime.strptime(raw["snapshot_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
-    return {"equity": float(raw["equity"]), "available": float(raw["available"]), "positions": pos}, when
+    pos = []
+    for p in raw["positions"]:
+        x = {"coin": str(p["coin"])[:10], "side": "Long" if p["side"] == "Long" else "Short", "qty": num(p["qty"]),
+             "entry": num(p["entry"]), "mark": num(p["mark"]), "pnl_usd": num(p["pnl_usd"])}
+        x.update({k: opt(p.get(k)) for k in ("fees", "funding", "funding_rate", "stop", "tp", "liq")})
+        pos.append(x)
+    hist = []
+    for h in (raw.get("history") or [])[-HISTORY_MAX:]:
+        try:
+            hist.append({"utc": stamp(h["utc"]), "equity": num(h["equity"])})
+        except (KeyError, TypeError, ValueError):
+            continue
+    when = datetime.strptime(raw["snapshot_utc"], FMT).replace(tzinfo=timezone.utc)
+    return {"equity": num(raw["equity"]), "available": num(raw["available"]), "positions": pos, "history": hist,
+            "orders_read": raw.get("orders_read") is True}, when     # False: stop / target unknown, not "none"
 
 
 def build():
     now = datetime.now(timezone.utc)
-    empty = {"equity": None, "available": None, "positions": []}
+    empty = {"equity": None, "available": None, "positions": [], "history": []}
     when = now
     if not (os.environ.get("TRADINGBOT_READ_TOKEN") or os.environ.get("SNAPSHOT_FILE")):
         print("no read token set")
@@ -62,11 +96,11 @@ def build():
         except Exception as e:  # never prints the token or a request: only the error type
             print("snapshot read failed:", type(e).__name__)
             doc = {**empty, "error": "Positions not readable at the last update."}
-    doc["updated_utc"] = when.strftime("%Y-%m-%dT%H:%M:%SZ")
-    data = json.dumps(doc, separators=(",", ":")).replace("</", "<\\/")
+    doc["updated_utc"] = when.strftime(FMT)
+    data = json.dumps(doc, separators=(",", ":"), allow_nan=False).replace("</", "<\\/")
     out = HERE.parent / "site"
     out.mkdir(exist_ok=True)
-    (out / "meta.json").write_text(json.dumps({"built_utc": now.strftime("%Y-%m-%dT%H:%M:%SZ")}))
+    (out / "meta.json").write_text(json.dumps({"built_utc": now.strftime(FMT)}))
     (out / "index.html").write_text((HERE / "positions.html").read_text().replace("__DATA__", data))
     print(f"built: {len(doc['positions'])} position(s), error {doc['error']}")
 
