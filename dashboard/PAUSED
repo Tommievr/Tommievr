@@ -1,0 +1,2 @@
+Offline (Tommie, 7 Oct 2026): the build publishes dashboard/paused.html (a blank page) and the workflow has no schedule.
+To bring the dashboard back: delete this file and restore the "17 * * * *" schedule in .github/workflows/bot-dashboard.yml.
