@@ -1,0 +1,52 @@
+name: positions-page
+
+# Public "Open positions" page on GitHub Pages (dashboard/positions.py): every open position of the Kraken Futures
+# account and the account value. No name and no bot data on the page; the browser re-prices the positions every
+# minute from Kraken's public spot prices.
+# The numbers come from the read-only snapshot (every 3 hours) positions.json on the positions-data branch of
+# Tommievr/tradingbot (its positions-snapshot job holds the read-only Kraken key; no Kraken key is in this repo).
+# This build reads it with the read token TRADINGBOT_READ_TOKEN. Without the token, or before the first snapshot,
+# the page says "Account not connected yet." A file dashboard/PAUSED publishes the blank offline page instead.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "dashboard/**"
+      - ".github/workflows/positions-page.yml"
+  schedule:
+    - cron: "17,47 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: positions-page
+  cancel-in-progress: false
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build page
+        env:
+          TRADINGBOT_READ_TOKEN: ${{ secrets.TRADINGBOT_READ_TOKEN }}
+        run: |
+          if [ -f dashboard/PAUSED ]; then
+            mkdir -p site && cp dashboard/paused.html site/index.html
+            echo '{"paused": true}' > site/meta.json
+          else
+            python3 dashboard/positions.py
+          fi
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
