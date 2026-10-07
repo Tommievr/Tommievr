@@ -98,7 +98,7 @@ function render(d){
     if(notional)s3.append(" ($"+Math.round(notional)+" in positions)");
     const s4=el("span");s4.append("Funding ",el("b",{class:"num "+(Math.abs(funding||0)<0.005?"":cls(funding))},usd(funding)));
     const s5=el("span");s5.append("Fees ",el("b",{class:"num"},fees==null?"–":"−$"+fees.toFixed(2)));
-    const s6=el("span");s6.append("Free margin ",el("b",{class:"num"},"$"+d.available.toFixed(2)));
+    const s6=el("span");s6.append("Free margin ",el("b",{class:"num "+(d.available<0?"down":"")},(d.available<0?"−$":"$")+Math.abs(d.available).toFixed(2)));
     sub.append(s3,s4,s5,s6);
   }
   sub.append(el("span",{},(d.live?"Live prices "+hm(d.priced_utc):"Prices "+hm(d.updated_utc)+" (not live)")+" · Positions "+dhm(d.updated_utc)));
