@@ -8,9 +8,8 @@ name: bot-dashboard
 # journal changed since the last build (i.e. after each live bot run) or the last build is over 3 h old
 # (a missed hour is caught up by the next one).
 # A file dashboard/PAUSED makes the build publish the "paused" page instead (remove the schedule too).
+# OFFLINE since 7 Oct 2026 (dashboard/PAUSED): no schedule; a manual run publishes the blank page.
 on:
-  schedule:
-    - cron: "17 * * * *"
   workflow_dispatch:
 
 permissions:
