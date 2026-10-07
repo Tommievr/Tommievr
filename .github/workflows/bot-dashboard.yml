@@ -7,9 +7,8 @@ name: bot-dashboard
 # when the bot has run. Short jobs only: once an hour a seconds-long check rebuilds the page when the live
 # journal changed since the last build (i.e. after each live bot run) or the last build is over 3 h old
 # (a missed hour is caught up by the next one).
+# PAUSED 7 Oct 2026 (dashboard/PAUSED): no schedule; a manual run publishes the "paused" page.
 on:
-  schedule:
-    - cron: "17 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -59,7 +58,13 @@ jobs:
         env:
           TRADINGBOT_READ_TOKEN: ${{ secrets.TRADINGBOT_READ_TOKEN }}
           JOURNAL_SHA: ${{ needs.check.outputs.sha }}
-        run: python3 dashboard/build.py
+        run: |
+          if [ -f dashboard/PAUSED ]; then
+            mkdir -p site && cp dashboard/paused.html site/index.html
+            echo '{"paused": true}' > site/meta.json
+          else
+            python3 dashboard/build.py
+          fi
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site

@@ -1,0 +1,2 @@
+Paused by Tommie on 7 Oct 2026: the live bot is off (all positions closed at 10:37 UTC), the dashboard is paused.
+To bring the dashboard back: delete this file and restore the hourly schedule in .github/workflows/bot-dashboard.yml.
