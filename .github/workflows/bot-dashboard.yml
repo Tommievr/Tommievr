@@ -1,15 +1,14 @@
 name: bot-dashboard
 
-# Phone dashboard of the live 5-coin bot (dashboard/build.py), published on GitHub Pages.
-# Read-only: it reads Tommievr/tradingbot's committed live journal with a read-only token. No Kraken keys,
-# no orders. The page itself fetches live Kraken prices in the browser (Kraken's spot API; the futures API
-# does not allow browser reads), so it only needs a rebuild
-# when the bot has run. Short jobs only: once an hour a seconds-long check rebuilds the page when the live
-# journal changed since the last build (i.e. after each live bot run) or the last build is over 3 h old
-# (a missed hour is caught up by the next one).
-# A file dashboard/PAUSED makes the build publish the "paused" page instead (remove the schedule too).
-# OFFLINE since 7 Oct 2026 (dashboard/PAUSED): no schedule; a manual run publishes the blank page.
+# Public "Open positions" page on GitHub Pages (dashboard/positions.py): every open position of the Kraken
+# Futures account and the account value, read once an hour with a READ-ONLY key (repository secrets
+# KRAKEN_READ_KEY / KRAKEN_READ_SECRET: it can look, never trade or withdraw). No name and no bot data on the
+# page; the browser re-prices the positions every minute from Kraken's public spot prices.
+# Without the key the old bot dashboard (dashboard/build.py) is built. A file dashboard/PAUSED makes the build
+# publish the blank offline page instead (remove the schedule too).
 on:
+  schedule:
+    - cron: "17 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -22,32 +21,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  check:
-    runs-on: ubuntu-latest
-    timeout-minutes: 3
-    outputs:
-      build: ${{ steps.gate.outputs.build }}
-      sha: ${{ steps.gate.outputs.sha }}
-    steps:
-      - id: gate
-        name: Rebuild only after a bot run or every 3 h
-        env:
-          GH_TOKEN: ${{ secrets.TRADINGBOT_READ_TOKEN }}
-        run: |
-          sha=$(gh api "repos/Tommievr/tradingbot/commits?path=ruleb_tp2/state_live/5coin/ruleb_tp2_live_journal.jsonl&sha=main&per_page=1" -q '.[0].sha' || echo unknown)
-          meta=$(curl -fsS "https://tommievr.github.io/Tommievr/meta.json" || echo '{}')
-          old=$(echo "$meta" | jq -r '.journal_sha // ""')
-          built=$(echo "$meta" | jq -r '.built_utc // "1970-01-01T00:00:00Z"')
-          age=$(( $(date -u +%s) - $(date -u -d "$built" +%s) ))
-          echo "journal $sha (last build $old), last build ${age}s ago"
-          build=false
-          if [ "$sha" != "$old" ] || [ "$age" -gt 10500 ] || [ "${{ github.event_name }}" = workflow_dispatch ]; then build=true; fi
-          echo "build=$build" >> "$GITHUB_OUTPUT"
-          echo "sha=$sha" >> "$GITHUB_OUTPUT"
-
   build-deploy:
-    needs: check
-    if: ${{ needs.check.outputs.build == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment:
@@ -57,12 +31,15 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build page
         env:
+          KRAKEN_READ_KEY: ${{ secrets.KRAKEN_READ_KEY }}
+          KRAKEN_READ_SECRET: ${{ secrets.KRAKEN_READ_SECRET }}
           TRADINGBOT_READ_TOKEN: ${{ secrets.TRADINGBOT_READ_TOKEN }}
-          JOURNAL_SHA: ${{ needs.check.outputs.sha }}
         run: |
           if [ -f dashboard/PAUSED ]; then
             mkdir -p site && cp dashboard/paused.html site/index.html
             echo '{"paused": true}' > site/meta.json
+          elif [ -n "$KRAKEN_READ_KEY" ] && [ -n "$KRAKEN_READ_SECRET" ]; then
+            python3 dashboard/positions.py
           else
             python3 dashboard/build.py
           fi
