@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """The "Open positions" page (site/index.html): every open position of the Kraken Futures account and the account
-value, read with a READ-ONLY key (repository secrets KRAKEN_READ_KEY / KRAKEN_READ_SECRET). No name and no bot data
-on the page. The browser re-prices the positions every minute from Kraken's public spot prices.
+value, read with a READ-ONLY key (repository secrets KRAKEN_READONLY_KEY / KRAKEN_READONLY_SECRET; never the trading
+key KRAKEN_FUTURES_*). No name and no bot data on the page. The browser re-prices the positions every minute from
+Kraken's public spot prices.
 
 Local test without a key: POSITIONS_FILE=<openpositions json> ACCOUNTS_FILE=<accounts json> python3 positions.py
 """
@@ -29,7 +30,7 @@ def read_private(path, local_env):
     never clashes with another client of the same account."""
     if os.environ.get(local_env):
         return json.loads(Path(os.environ[local_env]).read_text())
-    key, secret = os.environ["KRAKEN_READ_KEY"], os.environ["KRAKEN_READ_SECRET"]
+    key, secret = os.environ["KRAKEN_READONLY_KEY"], os.environ["KRAKEN_READONLY_SECRET"]
     digest = hashlib.sha256(path.removeprefix("/derivatives").encode()).digest()
     authent = base64.b64encode(hmac.new(base64.b64decode(secret), digest, hashlib.sha512).digest()).decode()
     return json.loads(get(FUTURES + path, {"APIKey": key, "Authent": authent}))
@@ -72,7 +73,7 @@ def snapshot():
 
 def build():
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    keyed = os.environ.get("KRAKEN_READ_KEY") and os.environ.get("KRAKEN_READ_SECRET")
+    keyed = os.environ.get("KRAKEN_READONLY_KEY") and os.environ.get("KRAKEN_READONLY_SECRET")
     if not (keyed or os.environ.get("POSITIONS_FILE")):
         print("no read key set")
         doc = {"equity": None, "available": None, "positions": [], "error": "Account not connected yet."}
@@ -81,7 +82,8 @@ def build():
             doc = snapshot()
         except Exception as e:  # never prints the key or a request: only the error type
             print("account read failed:", type(e).__name__)
-            doc = {"equity": None, "available": None, "positions": [], "error": "Account not readable at the last update."}
+            doc = {"equity": None, "available": None, "positions": [],
+                   "error": "Account not readable at the last update."}
     doc["updated_utc"] = now
     data = json.dumps(doc, separators=(",", ":")).replace("</", "<\\/")
     out = HERE.parent / "site"
