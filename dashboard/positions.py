@@ -72,11 +72,16 @@ def snapshot():
 
 def build():
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    try:
-        doc = snapshot()
-    except Exception as e:      # never prints the key or a request: only the error type
-        print("account read failed:", type(e).__name__)
-        doc = {"equity": None, "available": None, "positions": [], "error": "Account not readable at the last update."}
+    keyed = os.environ.get("KRAKEN_READ_KEY") and os.environ.get("KRAKEN_READ_SECRET")
+    if not (keyed or os.environ.get("POSITIONS_FILE")):
+        print("no read key set")
+        doc = {"equity": None, "available": None, "positions": [], "error": "Account not connected yet."}
+    else:
+        try:
+            doc = snapshot()
+        except Exception as e:  # never prints the key or a request: only the error type
+            print("account read failed:", type(e).__name__)
+            doc = {"equity": None, "available": None, "positions": [], "error": "Account not readable at the last update."}
     doc["updated_utc"] = now
     data = json.dumps(doc, separators=(",", ":")).replace("</", "<\\/")
     out = HERE.parent / "site"
