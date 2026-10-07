@@ -66,10 +66,6 @@ def clean(raw):
         x = {"coin": str(p["coin"])[:10], "side": "Long" if p["side"] == "Long" else "Short", "qty": num(p["qty"]),
              "entry": num(p["entry"]), "mark": num(p["mark"]), "pnl_usd": num(p["pnl_usd"])}
         x.update({k: opt(p.get(k)) for k in ("fees", "funding", "funding_rate", "stop", "tp", "liq")})
-        try:
-            x["since_utc"] = stamp(p["since_utc"])
-        except (KeyError, TypeError, ValueError):
-            x["since_utc"] = None
         pos.append(x)
     hist = []
     for h in (raw.get("history") or [])[-HISTORY_MAX:]:
@@ -78,7 +74,8 @@ def clean(raw):
         except (KeyError, TypeError, ValueError):
             continue
     when = datetime.strptime(raw["snapshot_utc"], FMT).replace(tzinfo=timezone.utc)
-    return {"equity": num(raw["equity"]), "available": num(raw["available"]), "positions": pos, "history": hist}, when
+    return {"equity": num(raw["equity"]), "available": num(raw["available"]), "positions": pos, "history": hist,
+            "orders_read": raw.get("orders_read") is True}, when     # False: stop / target unknown, not "none"
 
 
 def build():

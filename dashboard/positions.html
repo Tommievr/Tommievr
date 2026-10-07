@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap">
 <style>
 /* Layout: one narrow column; account summary with a value chart on top, then one card per open position with a
-   stop-to-take-profit rail. */
+   stop-to-target rail. */
 :root{
   --bg:#f3f5f4; --card:#ffffff; --fg:#17201c; --muted:#5f6d66; --line:#dbe2de;
   --up:#14843f; --down:#c4302b; --accent:#2f5d8a; --rail:#e4eae7;
@@ -66,7 +66,7 @@ footer{font-size:.72rem;color:var(--muted);line-height:1.5}
 <script id="data" type="application/json">__DATA__</script>
 <script>
 const $=id=>document.getElementById(id);
-function fp(v){if(v==null)return"–";const a=Math.abs(v);const d=a>=1000?0:a>=10?2:4;return v.toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d})}
+function fp(v){if(v==null)return"–";const a=Math.abs(v);if(a>0&&a<1)return v.toPrecision(4);const d=a>=1000?0:a>=10?2:4;return v.toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d})}
 function sp(v,d=2){if(v==null)return"–";return(v>=0?"+":"")+v.toFixed(d)+"%"}
 function usd(v){if(v==null)return"–";if(Math.abs(v)<0.005)return"$0.00";return(v>=0?"+$":"−$")+Math.abs(v).toFixed(2)}
 function cls(v){return v==null?"":v>=0?"up":"down"}
@@ -75,15 +75,17 @@ const hm=u=>new Date(u).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",h
 const dhm=u=>new Date(u).toLocaleString([],{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit",hour12:false});
 // the age is checked here too: a page that stops being rebuilt must not show old positions as live
 const STALE_MS=8*3600e3,ageH=d=>(Date.now()-Date.parse(d.updated_utc))/3600e3,stale=d=>d.equity!=null&&ageH(d)*3600e3>STALE_MS;
-const sum=(xs,k)=>{const v=xs.map(x=>x[k]).filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+b,0):null};
-let last=null;
+// a total only when every position has the value: a partial sum would silently understate it
+const sum=(xs,k)=>xs.length&&xs.every(x=>x[k]!=null)?xs.reduce((a,x)=>a+x[k],0):null;
+let last=null,liveTried=false;
 function render(d){
   last=d;
   const st=$("st"),lt=$("late");
   if(d.equity==null){st.textContent="offline";st.className="pill bad";lt.textContent=d.error||"No account data.";lt.hidden=false}
   else if(stale(d)||d.error){st.textContent="stale";st.className="pill bad";
     lt.textContent="Positions not refreshed for "+Math.floor(ageH(d))+" h (they normally refresh every few hours), so they may have changed since.";lt.hidden=false}
-  else{st.textContent="live";st.className="pill ok";lt.hidden=true}
+  else{lt.hidden=true;if(d.live){st.textContent="live";st.className="pill ok"}
+    else{st.textContent=liveTried?"prices delayed":"loading";st.className="pill"}}
   const h=(d.history||[]).filter(x=>x.equity!=null),start=h.length?h[0]:null;
   const chg=d.equity!=null&&start?d.equity-start.equity:null,chgPct=chg!=null&&start.equity?chg/start.equity*100:null;
   const q=$("eq");q.textContent=d.equity!=null?"$"+d.equity.toFixed(2):"–";q.className="big num "+cls(chg);
@@ -92,14 +94,14 @@ function render(d){
   if(d.equity!=null){
     const notional=d.positions.reduce((a,p)=>a+p.qty*p.mark,0),funding=sum(d.positions,"funding"),fees=sum(d.positions,"fees");
     if(start)sub.append(el("span",{},"Since "+new Date(start.utc).toLocaleDateString([],{day:"numeric",month:"short"})+" $"+start.equity.toFixed(2)));
-    const s3=el("span");s3.append("Leverage ",el("b",{class:"num"},(notional/d.equity).toFixed(2)+"x"));
+    const s3=el("span");s3.append("Leverage ",el("b",{class:"num"},d.equity>0?(notional/d.equity).toFixed(2)+"x":"–"));
     if(notional)s3.append(" ($"+Math.round(notional)+" in positions)");
     const s4=el("span");s4.append("Funding ",el("b",{class:"num "+(Math.abs(funding||0)<0.005?"":cls(funding))},usd(funding)));
     const s5=el("span");s5.append("Fees ",el("b",{class:"num"},fees==null?"–":"−$"+fees.toFixed(2)));
     const s6=el("span");s6.append("Free margin ",el("b",{class:"num"},"$"+d.available.toFixed(2)));
     sub.append(s3,s4,s5,s6);
   }
-  sub.append(el("span",{},(d.live?"Live prices "+hm(d.priced_utc):"Prices "+hm(d.updated_utc))+" · Positions "+dhm(d.updated_utc)));
+  sub.append(el("span",{},(d.live?"Live prices "+hm(d.priced_utc):"Prices "+hm(d.updated_utc)+" (not live)")+" · Positions "+dhm(d.updated_utc)));
   // value chart: x by time, green above the first point, red below
   const sv=$("spark"),ax=$("axis");sv.replaceChildren();ax.replaceChildren();
   if(h.length>1){const ys=h.map(x=>x.equity),ts=h.map(x=>Date.parse(x.utc)),lo=Math.min(...ys),hi=Math.max(...ys),r=(hi-lo)||1;
@@ -126,17 +128,19 @@ function render(d){
     if(l.fees!=null){const fe=el("span");fe.append("Fees ",el("b",{class:"num"},"−$"+l.fees.toFixed(2)));r0.append(fe)}
     const r1=el("div",{class:"row"}),e=el("span"),lv=el("span");
     e.append("Entry ",el("b",{class:"num"},fp(l.entry)));
-    lv.append("Lev ",el("b",{class:"num"},d.equity?(notional/d.equity).toFixed(2)+"x":"–"));
+    lv.append("Lev ",el("b",{class:"num"},d.equity>0?(notional/d.equity).toFixed(2)+"x":"–"));
     r1.append(e,lv,el("span",{class:"num "+cls(l.pnl_usd)},usd(l.pnl_usd)));
     const r2=el("div",{class:"row"}),fu=el("span");
     fu.append("Funding ",el("b",{class:"num "+(Math.abs(l.funding||0)<0.005?"":cls(l.funding))},usd(l.funding)));r2.append(fu);
     if(l.funding_rate!=null){const fr=l.funding_rate*100,ra=el("span");
       ra.append("Rate ",el("b",{class:"num "+cls(-sd*fr)},(fr>=0?"+":"")+fr.toFixed(Math.abs(fr)<1e-4?5:4)+"%/h"));r2.append(ra)}
     card.append(top,pr,r0,r1,r2);
-    // rail from stop to take profit (whichever of the two is set), with the entry tick
+    // rail from stop (left) to target (right, whichever of the two is set), with the entry tick; mirrored for a
+    // short so the stop is always on the left
     if(l.stop!=null||l.tp!=null){
-      const pts=[l.stop,l.tp,l.entry,l.mark].filter(v=>v!=null),lo=Math.min(...pts),hi=Math.max(...pts),pos=v=>hi>lo?Math.max(0,Math.min(100,(v-lo)/(hi-lo)*100)):50;
-      const rail=el("div",{class:"rail",role:"img","aria-label":"Price between stop and take profit"});
+      const pts=[l.stop,l.tp,l.entry,l.mark].filter(v=>v!=null),lo=Math.min(...pts),hi=Math.max(...pts);
+      const raw=v=>hi>lo?Math.max(0,Math.min(100,(v-lo)/(hi-lo)*100)):50,pos=v=>sd>0?raw(v):100-raw(v);
+      const rail=el("div",{class:"rail",role:"img","aria-label":"Price between stop and target"});
       const en=el("span",{class:"ent"});en.style.left=pos(l.entry)+"%";
       const a=pos(l.entry),b=pos(l.mark),fill=el("span",{class:"fill"});
       const win=(l.mark-l.entry)*sd>=0,goal=win?l.tp:l.stop,frac=goal!=null&&goal!==l.entry?Math.max(0,Math.min(1,(l.mark-l.entry)/(goal-l.entry))):.5;
@@ -146,7 +150,8 @@ function render(d){
       rail.append(fill,en);card.append(rail);
     }
     const ends=el("div",{class:"ends num"});
-    ends.append(el("span",{},l.stop!=null?"Stop "+fp(l.stop):"No stop"),el("span",{style:"color:var(--down)"},"≈ Liq "+fp(l.liq)),el("span",{},l.tp!=null?"TP "+fp(l.tp):"No TP"));
+    const known=d.orders_read;      // orders not read: the stop / target are unknown, not absent
+    ends.append(el("span",{},l.stop!=null?"Stop "+fp(l.stop):known?"No stop":"Stop –"),el("span",{style:"color:var(--down)"},"≈ Liq "+fp(l.liq)),el("span",{},l.tp!=null?"Target "+fp(l.tp):known?"No target":"Target –"));
     card.append(ends);box.append(card);
   }
 }
@@ -154,7 +159,8 @@ function render(d){
 const base=JSON.parse($("data").textContent);
 // Kraken spot names: BTC is XBT, DOGE is XDG; one request per coin, so an unknown pair never blocks the others
 const SPOT={BTC:"XBT",DOGE:"XDG"};
-async function live(){
+async function live(){try{await reprice()}finally{if(!liveTried){liveTried=true;if(last&&!last.live)render(last)}}}
+async function reprice(){
   if(stale(base))return;
   const d=structuredClone(base);let move=0,got=0;
   await Promise.all(d.positions.map(async p=>{
@@ -166,7 +172,7 @@ async function live(){
     }catch(e){}
   }));
   if(!got)return;
-  if(d.equity!=null){d.equity+=move;d.history.push({utc:new Date().toISOString(),equity:d.equity})}
+  if(d.equity!=null){d.equity+=move;if(d.history.length)d.history.push({utc:new Date().toISOString(),equity:d.equity})}
   d.live=true;d.priced_utc=new Date().toISOString();render(d);
 }
 render(base);live();setInterval(live,60000);setInterval(()=>{if(last)render(last)},60000);
