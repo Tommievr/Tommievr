@@ -5,7 +5,9 @@ name: bot-dashboard
 # closed trades, fees, funding and the value history; the browser re-prices the open legs every minute from Kraken's
 # public prices.
 # The build reads the bot's live journal and state from the private repo Tommievr/tradingbot (main) with the
-# read-only token TRADINGBOT_READ_TOKEN. No Kraken key is in this repo. A file dashboard/PAUSED publishes the blank
+# read-only token TRADINGBOT_READ_TOKEN, plus the read-only Kraken positions snapshot (positions.json on the
+# tradingbot branch positions-data, every 6 h) with the same token: when that snapshot is newer than the journal, the
+# page shows the positions as they are on Kraken. No Kraken key is in this repo. A file dashboard/PAUSED publishes the blank
 # offline page instead.
 on:
   push:

@@ -51,18 +51,23 @@ svg.spark{width:100%;height:64px;display:block}
 footer{font-size:.72rem;color:var(--muted);line-height:1.5}
 .late{background:var(--card);border:1px solid var(--down);color:var(--down);border-radius:14px;padding:12px 16px;font-size:.88rem;line-height:1.45}
 .late a{color:var(--down);font-weight:700}
+.banner{background:var(--card);border:1px solid var(--accent);color:var(--accent);border-radius:14px;padding:12px 16px;font-size:.88rem;line-height:1.45;font-weight:600}
+.note{background:var(--card);border:1px dashed var(--muted);color:var(--muted);border-radius:14px;padding:10px 16px;font-size:.82rem;line-height:1.45}
+.miss{color:var(--down);font-weight:700}
 body{margin:0;font-size:14px}
 </style></head><body>
 <div class="wrap">
   <header><h1>5-coin trend bot (test)</h1><span id="st" class="pill">loading</span></header>
+  <div id="banner" class="banner" role="status" hidden></div>
   <div id="late" class="late" role="alert" hidden></div>
+  <div id="snapnote" class="note" role="status" hidden></div>
   <section class="summary">
     <div class="eq"><span id="eq" class="big num">–</span><span id="chg" class="chg num"></span></div>
     <div class="sub" id="sub"><span>Waiting for the latest bot check…</span></div>
     <div><svg class="spark" id="spark" viewBox="0 0 300 64" preserveAspectRatio="none" aria-label="Equity over time"></svg><div class="axis num" id="axis"></div></div>
   </section>
   <div class="coins" id="coins"><div class="empty">Coin positions appear here after the next bot check.</div></div>
-  <footer id="foot">Prices are live Kraken prices, read by this page every minute (spot, within a few hundredths of a % of the futures mark). Positions, funding and fees refresh after each bot run (checked hourly). Equity is estimated from the last bot check plus the price moves since. Positions, stops and take profits are as of the last bot run. Funding is estimated from the Kraken hourly funding rates since each entry (+ received, − paid); Rate is the current hourly funding rate (green when it pays you, red when you pay). ≈ Liq is the bot's own liquidation estimate per coin; on the shared cross-margin account the real level depends on all positions together. Fees are the trading fees paid since the 7 Oct restart (0.05% taker, 0.02% maker), estimated from the bot's fills; the balance is the real Kraken wallet, so it is already after fees and funding. P&amp;L % is the price move since entry; leverage multiplies it on the account.</footer>
+  <footer id="foot">Prices are live Kraken prices, read by this page every minute (spot, within a few hundredths of a % of the futures mark). Positions, funding and fees refresh after each bot run (checked hourly). Equity is estimated from the last bot check plus the price moves since. Positions, stops and take profits are as of the last bot run, or, when the read-only Kraken snapshot (every 6 h) is newer, as they are on Kraken: ✓ means the stop / TP1 order is still resting there, and a leg that is gone on Kraken shows as closed (stop or TP inferred from the price). Funding is estimated from the Kraken hourly funding rates since each entry (+ received, − paid); Rate is the current hourly funding rate (green when it pays you, red when you pay). ≈ Liq is the bot's own liquidation estimate per coin; on the shared cross-margin account the real level depends on all positions together. Fees are the trading fees paid since the 7 Oct restart (0.05% taker, 0.02% maker), estimated from the bot's fills; the balance is the real Kraken wallet, so it is already after fees and funding. P&amp;L % is the price move since entry; leverage multiplies it on the account.</footer>
 </div>
 <script id="data" type="application/json">__DATA__</script>
 <script>
@@ -77,10 +82,12 @@ let last=null;
 function render(d){
   last=d;
   const st=$("st");
-  if(d.halted){st.textContent="halted";st.className="pill bad"}else{st.textContent=d.status==="ok"?"running":(d.status||"unknown");st.className="pill "+(d.status==="ok"?"ok":"bad")}
+  if(d.halted){st.textContent="halted";st.className="pill bad"}else if(d.banner){st.textContent="paused";st.className="pill"}else{st.textContent=d.status==="ok"?"running":(d.status||"unknown");st.className="pill "+(d.status==="ok"?"ok":"bad")}
+  const bn=$("banner");bn.textContent=d.banner||"";bn.hidden=!d.banner;
+  const sn=$("snapnote");sn.textContent=d.snapshot_note||"";sn.hidden=!d.snapshot_note;
   // the bot runs at 00:20 and 12:20 UTC: no run for 13 h means it stopped (dispatcher, Actions minutes, failed tests)
   const lateH=(Date.now()-Date.parse(d.run_utc))/3600000,lt=$("late");
-  if(!d.halted&&lateH>13){st.textContent="bot late";st.className="pill bad";
+  if(!d.halted&&!d.banner&&lateH>13){st.textContent="bot late";st.className="pill bad";
     lt.replaceChildren(document.createTextNode("No bot run for "+Math.floor(lateH)+" h (it normally runs every 12 h, at 00:20 and 12:20 UTC). The stops and take-profits keep resting on Kraken. "),
       el("a",{href:"https://github.com/Tommievr/tradingbot/actions/workflows/ruleb-tp2-5coin-live.yml",target:"_blank",rel:"noopener"},"Open the bot's runs"));
     lt.hidden=false}else lt.hidden=true;
@@ -88,13 +95,15 @@ function render(d){
   const c=$("chg");const dd=d.equity!=null?d.equity-d.start_eq:null;c.textContent=(dd==null?"":(dd>=0?"+$":"−$")+Math.abs(dd).toFixed(2)+" ")+"("+sp(d.vs_start_pct)+")";c.className="chg num "+cls(d.vs_start_pct);
   const sub=$("sub");sub.replaceChildren();
   const hm=u=>new Date(u).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",hour12:false});
-  const s2=el("span",{},(d.live?"Live prices "+hm(d.updated_utc):"Prices "+hm(d.updated_utc)+" (not live)")+" · Bot data "+hm(d.run_utc)+" · Page built "+hm(base.updated_utc));
+  const s2=el("span",{},(d.live?"Live prices "+hm(d.updated_utc):"Prices "+hm(d.updated_utc)+" (not live)")+" · Bot data "+hm(d.run_utc)+(d.source==="kraken"?" · Kraken positions "+hm(d.snapshot_utc)+" ("+ago(d.snapshot_utc)+")":"")+" · Page built "+hm(base.updated_utc));
   const s3=el("span");s3.append("Leverage ");s3.append(el("b",{class:"num"},d.lev_total!=null?d.lev_total.toFixed(2)+"x":"–"));
   if(d.notional)s3.append(" ($"+Math.round(d.notional)+" in positions)");
   const s4=el("span");s4.append("Funding ");s4.append(el("b",{class:"num "+(Math.abs(d.funding||0)<0.005?"":cls(d.funding))},usd(d.funding)));
   const s5=el("span");s5.append("Fees ");s5.append(el("b",{class:"num"},"−$"+(d.fees||0).toFixed(2)));
   const s0=el("span",{},"Start 7 Oct $"+d.start_eq.toFixed(2));
-  sub.append(s0,s3,s4,s5,s2);
+  sub.append(s0,s3,s4,s5);
+  if(d.source==="kraken"){const s6=el("span");s6.append("Kraken account ");s6.append(el("b",{class:"num"},"$"+d.snapshot_equity.toFixed(2)));s6.append(" at the snapshot");sub.append(s6)}
+  sub.append(s2);
   // equity chart: x by time, green above the bot-start value, red below
   const h=(d.history||[]).filter(x=>x.equity!=null),sv=$("spark"),ax=$("axis");sv.replaceChildren();ax.replaceChildren();
   if(h.length>1){const ys=h.map(x=>x.equity),ts=h.map(x=>Date.parse(x.utc)),lo=Math.min(...ys,d.start_eq),hi=Math.max(...ys,d.start_eq),r=(hi-lo)||1;
@@ -112,8 +121,17 @@ function render(d){
   for(const l of d.legs){
     const card=el("article",{class:"coin"});
     const top=el("div",{class:"top"});const left=el("div");left.append(el("span",{class:"sym"},l.sym));
+    if(!l.open&&l.closed){
+      left.append(el("span",{class:"side"},l.side+" · closed on Kraken"));left.append(el("span",{class:"tag",style:"color:"+(l.closed==="stop hit"?"var(--down)":"var(--up)")}," · "+l.closed));
+      top.append(left,el("span",{class:"pct num "+cls(l.pnl_pct)},sp(l.pnl_pct)));
+      const r=el("div",{class:"row"});const e=el("span");e.append("Entry ");e.append(el("b",{class:"num"},fp(l.entry)));
+      const x=el("span");x.append("Exit ≈ ");x.append(el("b",{class:"num"},fp(l.exit)));
+      r.append(e,x,el("span",{class:"num "+cls(l.pnl_usd)},l.pnl_usd==null?"–":(l.pnl_usd>=0?"+$":"−$")+Math.abs(l.pnl_usd).toFixed(2)));
+      const r2=el("div",{class:"row"});r2.append(el("span",{},"Size was "+(+l.qty.toPrecision(6))+" "+l.sym+" · inferred from which order is gone and the price"),el("span",{class:"num"},"Now "+fp(l.mark)));
+      card.append(top,r,r2);box.append(card);continue}
     if(!l.open){left.append(el("span",{class:"side"},"no position"));top.append(left,el("span",{class:"num"},fp(l.mark)));card.append(top);box.append(card);continue}
     left.append(el("span",{class:"side"},l.side));
+    if(l.not_bot)left.append(el("span",{class:"tag"}," · on Kraken, not in the bot"));
     if(l.stop_hit)left.append(el("span",{class:"tag",style:"color:var(--down)"}," · past stop"));
     if(l.tp_done)left.append(el("span",{class:"tag"}," · TP1 hit"));
     top.append(left,el("span",{class:"pct num "+cls(l.pnl_pct)},sp(l.pnl_pct)));
@@ -142,7 +160,10 @@ function render(d){
     fill.style.background="linear-gradient(to "+(b>=a?"right":"left")+",color-mix(in srgb,"+col+" 12%,transparent),color-mix(in srgb,"+col+" "+strong+"%,transparent))";
     rail.append(fill,en);
     const ends=el("div",{class:"ends num"});
-    ends.append(el("span",{},(l.trailing?"Trail ":"Stop ")+fp(l.stop)),el("span",{style:"color:var(--down)"},"≈ Liq "+fp(l.liq)),el("span",{},(l.tp_done?"TP1 done ":"TP1 ")+fp(l.tp)));
+    // ✓ / "no order": whether the stop and TP1 orders are still resting on Kraken (snapshot only)
+    const mark=(span,has)=>{if(has===true)span.append(" ✓");else if(has===false)span.append(el("span",{class:"miss"}," · no order"));return span};
+    ends.append(mark(el("span",{},(l.trailing?"Trail ":"Stop ")+fp(l.stop)),l.stop_order),el("span",{style:"color:var(--down)"},"≈ Liq "+fp(l.liq)),
+      l.tp_done&&l.tp_order===false?el("span",{},"TP1 done"):mark(el("span",{},(l.tp_done?"TP1 done ":"TP1 ")+fp(l.tp)),l.tp_order));
     if(r2rate)r2.append(r2rate);
     card.append(top,pr,r0,r1,r2,rail,ends);box.append(card);
   }
