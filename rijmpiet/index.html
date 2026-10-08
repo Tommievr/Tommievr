@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Rijmpiet – Sinterklaasgedicht op maat</title>
+<meta name="description" content="Geen inspiratie of geen tijd? Rijmpiet schrijft een grappig, persoonlijk Sinterklaasgedicht voor jouw surprise. Binnen 24 uur, vanaf €7,50.">
+<meta property="og:title" content="Rijmpiet – Sinterklaasgedicht op maat">
+<meta property="og:description" content="Een grappig, persoonlijk gedicht voor jouw surprise. Binnen 24 uur, vanaf €7,50.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎁</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #a51d2d;
+    --red-dark: #7d1422;
+    --gold: #d99a1e;
+    --cream: #fbf6ee;
+    --paper: #ffffff;
+    --ink: #2a1d1a;
+    --muted: #6d5d57;
+    --line: #eadfd2;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font: 16px/1.6 Inter, system-ui, sans-serif;
+  }
+  h1, h2, h3 { font-family: Fraunces, Georgia, serif; line-height: 1.15; margin: 0 0 .5em; }
+  a { color: var(--red); }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+
+  /* Hero */
+  .hero {
+    background: radial-gradient(circle at 80% 0%, #c42a3c 0%, var(--red) 45%, var(--red-dark) 100%);
+    color: #fff;
+    padding: 56px 0 64px;
+    text-align: center;
+  }
+  .brand { font-family: Fraunces, Georgia, serif; font-weight: 800; letter-spacing: .02em; font-size: 1.1rem; opacity: .9; }
+  .brand span { color: var(--gold); }
+  .hero h1 { font-size: clamp(2rem, 6vw, 3.2rem); margin-top: 18px; }
+  .hero p { font-size: 1.15rem; max-width: 560px; margin: 0 auto 28px; opacity: .95; }
+  .btn {
+    display: inline-block;
+    background: var(--gold);
+    color: #2a1d1a;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: 999px;
+    box-shadow: 0 4px 0 #a8750f;
+    transition: transform .1s, box-shadow .1s;
+  }
+  .btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 #a8750f; }
+  .ticks { list-style: none; padding: 0; margin: 22px 0 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; font-size: .95rem; opacity: .95; }
+
+  section { padding: 56px 0; }
+  section h2 { font-size: clamp(1.6rem, 4vw, 2.1rem); text-align: center; }
+  .sub { text-align: center; color: var(--muted); margin: -6px auto 32px; max-width: 520px; }
+
+  /* Steps */
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+  .step { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+  .step b { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--red); color: #fff; margin-bottom: 10px; }
+  .step h3 { font-size: 1.1rem; margin-bottom: .3em; }
+  .step p { margin: 0; color: var(--muted); font-size: .95rem; }
+
+  /* Prices */
+  .prices { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .price { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 24px; text-align: center; }
+  .price.hl { border: 2px solid var(--gold); position: relative; }
+  .price.hl::before { content: "Populair"; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--gold); font-size: .8rem; font-weight: 600; padding: 2px 12px; border-radius: 999px; }
+  .price .amt { font-family: Fraunces, Georgia, serif; font-size: 2.2rem; font-weight: 800; color: var(--red); }
+  .price p { color: var(--muted); margin: .3em 0 0; font-size: .95rem; }
+
+  /* Example poem */
+  .poem {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 28px 24px;
+    max-width: 560px;
+    margin: 0 auto;
+    font-family: Fraunces, Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+    box-shadow: 0 10px 30px rgba(125, 20, 34, .08);
+  }
+  @media (max-width: 480px) { .poem { font-size: .92rem; padding: 22px 16px; } }
+  .poem .tag { font-family: Inter, sans-serif; font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 12px; }
+
+  /* FAQ */
+  details { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-bottom: 10px; }
+  summary { cursor: pointer; font-weight: 600; }
+  details p { margin: .6em 0 0; color: var(--muted); }
+
+  .cta { text-align: center; background: var(--red); color: #fff; border-radius: 20px; padding: 40px 20px; }
+  .cta p { opacity: .95; margin: 0 0 22px; }
+  footer { text-align: center; color: var(--muted); font-size: .9rem; padding: 32px 0 48px; }
+  /* Sint & Piet props */
+  .ico { width: 48px; height: 48px; display: block; margin: 0 auto 10px; }
+  .props { display: flex; justify-content: center; gap: 10px; margin: 18px 0 6px; flex-wrap: wrap; }
+  .props span { width: 52px; height: 52px; border-radius: 50%; background: var(--cream); display: grid; place-items: center; box-shadow: 0 3px 0 rgba(0,0,0,.15); }
+  .props svg { width: 36px; height: 36px; }
+    /* Vallende kruidnoten (posities en tempo worden willekeurig gekozen in het script onderaan) */
+  .hero { position: relative; overflow: hidden; cursor: pointer; }
+  .hero .wrap { position: relative; z-index: 1; }
+  .hero h1, .hero p, .ticks { text-shadow: 0 2px 10px rgba(80, 0, 10, .45); }
+  .rain { position: absolute; inset: 0; pointer-events: none; }
+  .rain .k { position: absolute; top: -48px; left: var(--x); animation: fall var(--d) linear var(--delay) infinite; }
+  .rain .k svg { display: block; width: var(--s); height: var(--s); animation: sway var(--sw) ease-in-out var(--delay) infinite alternate; }
+  @keyframes fall { to { transform: translateY(var(--h, 900px)); } }
+  @keyframes sway {
+    from { transform: translateX(calc(var(--a) * -1)) rotate(var(--r0)); }
+    to   { transform: translateX(var(--a)) rotate(var(--r1)); }
+  }
+  .burst { position: absolute; z-index: 2; pointer-events: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .rain .k, .rain .k svg { animation: none; }
+    .rain .k { top: var(--y); }
+  }
+  /* Rondgestrooide props (geplaatst door het script onderaan) */
+  body { position: relative; overflow-x: hidden; }
+  main section, main .cta { position: relative; z-index: 1; }
+  .toss { position: absolute; left: 0; width: 100%; overflow: hidden; pointer-events: none; z-index: 0; }
+  .toss svg { position: absolute; filter: drop-shadow(0 3px 2px rgba(42, 29, 26, .18)); animation: bob var(--b) ease-in-out var(--bd) infinite alternate; }
+  @keyframes bob { from { transform: rotate(var(--r)) translateY(-4px); } to { transform: rotate(calc(var(--r) + 8deg)) translateY(4px); } }
+  .props span:nth-child(1) { transform: rotate(-12deg) translateY(4px); }
+  .props span:nth-child(2) { transform: rotate(9deg) translateY(-3px); }
+  .props span:nth-child(3) { transform: rotate(-5deg) translateY(6px); }
+  .props span:nth-child(4) { transform: rotate(14deg) translateY(-2px); }
+  .props span:nth-child(5) { transform: rotate(-8deg) translateY(5px); }
+  @media (prefers-reduced-motion: reduce) { .toss svg { animation: none; transform: rotate(var(--r)); } }
+  /* Vroege Piet-korting: zichtbaar t/m 15 november, daarna zet het script de gewone prijzen terug */
+  .full { display: none; }
+  .eb-over .eb { display: none !important; }
+  .eb-over .full { display: inline; }
+  .eb-banner { display: inline-block; background: var(--gold); color: #2a1d1a; font-weight: 500; font-size: .95rem; padding: 6px 16px; border-radius: 999px; margin-bottom: 16px; box-shadow: 0 3px 0 #a8750f; transform: rotate(-1.5deg); }
+  @media (max-width: 480px) { .eb-banner { font-size: .85rem; padding: 6px 12px; } }
+  .price .amt s { font-size: 1.1rem; font-weight: 600; color: var(--muted); margin-right: 4px; }
+</style>
+<script>
+  // Na 15 november (Nederlandse tijd) automatisch terug naar de gewone prijzen.
+  if (Date.now() >= Date.parse('2026-11-16T00:00:00+01:00')) document.documentElement.classList.add('eb-over');
+</script>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Mijter -->
+    <symbol id="i-mijter" viewBox="0 0 64 64">
+      <path d="M18 56V26Q18 12 32 5Q46 12 46 26V56Z" fill="#a51d2d" stroke="#d99a1e" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="18" y="48" width="28" height="8" fill="#d99a1e"/>
+      <path d="M32 18V40M25 26H39" stroke="#d99a1e" stroke-width="4" stroke-linecap="round"/>
+    </symbol>
+    <!-- Staf -->
+    <symbol id="i-staf" viewBox="0 0 64 64">
+      <path d="M30 60V24C30 8 52 6 52 20C52 29 41 30 40 22" fill="none" stroke="#d99a1e" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="30" cy="40" r="3.5" fill="#a51d2d"/>
+    </symbol>
+    <!-- Schoen met wortel -->
+    <symbol id="i-schoen" viewBox="0 0 64 64">
+      <path d="M20 4L16 12M20 4V12M20 4L24 12" stroke="#3f8a3c" stroke-width="3" stroke-linecap="round"/>
+      <path d="M15 11H25L20 36Z" fill="#ee7d22" stroke="#c45f12" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M8 54V34Q8 29 13 29H26Q31 29 31 35V40L49 42Q57 43 57 51V54Z" fill="#a51d2d" stroke="#7d1422" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M8 54H57" stroke="#2a1d1a" stroke-width="4" stroke-linecap="round"/>
+    </symbol>
+    <!-- Chocoladeletter R -->
+    <symbol id="i-letter" viewBox="0 0 64 64">
+      <text x="32" y="54" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-weight="800" font-size="56" fill="#6b3a1e" stroke="#4a2612" stroke-width="2">R</text>
+    </symbol>
+    <!-- Piet's baret met veer -->
+    <symbol id="i-baret" viewBox="0 0 64 64">
+      <path d="M40 30Q48 6 61 5Q57 17 45 32Z" fill="#f2c14e" stroke="#a8750f" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M44 28L57 9" stroke="#a8750f" stroke-width="1.5"/>
+      <path d="M6 44Q8 26 32 24Q56 26 58 44Q32 51 6 44Z" fill="#a51d2d" stroke="#7d1422" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M7 44Q32 52 57 44" fill="none" stroke="#d99a1e" stroke-width="4"/>
+    </symbol>
+    <!-- Kruidnoten -->
+    <symbol id="i-kruidnoten" viewBox="0 0 64 64">
+      <circle cx="22" cy="38" r="12" fill="#b9733a" stroke="#7d4a20" stroke-width="2"/>
+      <circle cx="42" cy="28" r="12" fill="#c98446" stroke="#7d4a20" stroke-width="2"/>
+      <circle cx="38" cy="47" r="10" fill="#a8652e" stroke="#7d4a20" stroke-width="2"/>
+      <path d="M18 34l2 1M25 41l1 2M40 24l2 1M46 31l1 2M36 45l2 1" stroke="#5e3615" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+    <!-- Eén kruidnoot -->
+    <symbol id="i-kruidnoot" viewBox="0 0 32 32">
+      <circle cx="16" cy="16" r="13" fill="#c07a3e" stroke="#7d4a20" stroke-width="2"/>
+      <path d="M10 12l2 1M19 9l2 1M21 19l1 2M12 20l2 1M16 15l1 1" stroke="#5e3615" stroke-width="2" stroke-linecap="round"/>
+      <path d="M8 10Q11 6 15 5" fill="none" stroke="#e3a46b" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="hero">
+  <div class="rain" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="eb eb-banner">🎉 Vroege Piet: <b>40% korting</b> t/m 15 november</div>
+    <div class="brand">🎁 Rijm<span>piet</span></div>
+    <div class="props" aria-hidden="true">
+      <span><svg><use href="#i-mijter"/></svg></span>
+      <span><svg><use href="#i-staf"/></svg></span>
+      <span><svg><use href="#i-schoen"/></svg></span>
+      <span><svg><use href="#i-letter"/></svg></span>
+      <span><svg><use href="#i-baret"/></svg></span>
+    </div>
+    <h1>Sinterklaasgedicht op maat</h1>
+    <p>Geen inspiratie of geen tijd? Jij vertelt, Rijmpiet rijmt. Een grappig, persoonlijk gedicht voor jouw surprise.</p>
+    <a class="btn" href="TALLY_LINK">Bestel je gedicht →</a>
+    <ul class="ticks">
+      <li>✔️ Binnen 24 uur</li>
+      <li>✔️ Vanaf <span class="eb">€4,50</span><span class="full">€7,50</span></li>
+      <li>✔️ Eén keer gratis aanpassen</li>
+    </ul>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section>
+    <h2>Even voorstellen</h2>
+    <div class="poem">
+      <div class="tag">Rijmpiet over zichzelf</div>
+      Hallo, ik ben Rijmpiet, de dichter van de Sint,<br>
+      ik schrijf een gedicht dat iedereen leuk vindt.<br>
+      Is jouw hoofd zo leeg als de schoorsteen in mei?<br>
+      Geen zorgen, want rijmen doe ik er graag bij!<br>
+      Vertel me wat hobby's, een gekke gewoonte of twee,<br>
+      dan dicht ik er lustig en lachend op mee.<br>
+      Vul snel het formulier in, het kost je niet veel tijd,<br>
+      en jij bent dat lastige rijmen weer kwijt!
+    </div>
+  </section>
+
+  <section>
+    <h2>Zo werkt het</h2>
+    <p class="sub">In vier stappen van lege pagina naar lachende gezichten.</p>
+    <div class="steps">
+      <div class="step"><b>1</b><h3>Vul het formulier in</h3><p>Vertel over de persoon: hobby's, gewoontes, gekke momenten van dit jaar.</p></div>
+      <div class="step"><b>2</b><h3>Betaal via Tikkie</h3><p>Je krijgt een Tikkie via WhatsApp. Snel en veilig.</p></div>
+      <div class="step"><b>3</b><h3>Rijmpiet gaat rijmen</h3><p>Je gedicht wordt helemaal op maat geschreven.</p></div>
+      <div class="step"><b>4</b><h3>Ontvang je gedicht</h3><p>Binnen 24 uur via WhatsApp of e-mail. Printen en klaar!</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Prijzen</h2>
+    <p class="sub">Geen verrassingen, behalve in de surprise.<span class="eb"><br><b>Vroege Piet: 40% korting op elk gedicht als je bestelt t/m 15 november.</b></span></p>
+    <div class="prices">
+      <div class="price"><h3>Kort</h3><div class="amt"><span class="eb"><s>€7,50</s> €4,50</span><span class="full">€7,50</span></div><p>±16 regels<br>Perfect voor een klein cadeau</p></div>
+      <div class="price hl"><h3>Lang</h3><div class="amt"><span class="eb"><s>€12,50</s> €7,50</span><span class="full">€12,50</span></div><p>30+ regels<br>Voor een echte surprise</p></div>
+      <div class="price"><h3>Spoed</h3><div class="amt">+€2,50</div><p>Binnen 12 uur geleverd<br>Voor de last-minute shoppers</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Voorbeeld</h2>
+    <p class="sub">Zo kan jouw gedicht klinken (toon: plagerig 😏).</p>
+    <div class="poem">
+      <div class="tag">Voor Mark, die graag hardloopt</div>
+      Sinterklaas zat in zijn grote boek te lezen,<br>
+      en dacht: wat is Mark toch een vreemd wezen!<br>
+      Elke ochtend om zes uur staat hij al op,<br>
+      voor een rondje hardlopen, met een muts op zijn kop.<br>
+      Maar 's avonds op de bank, zo heeft Piet gezien,<br>
+      eet hij stiekem een zak chips… of twee, of tien.<br>
+      Zijn vrouw zegt: "Mark, dat sporten heeft zo geen zin!"<br>
+      Mark zegt: "Ach schat, morgen begin ik weer, ik win!"<br>
+      Daarom geeft de Sint hem dit cadeau,<br>
+      voor al dat rennen, zweten en zo.<br>
+      Pak het maar uit, en Mark, wees eerlijk en klaag niet,<br>
+      want de chips zit er niet bij. Groetjes, Sint en Piet!
+    </div>
+  </section>
+
+  <section>
+    <h2>Veelgestelde vragen</h2>
+    <details class="eb"><summary>Hoe werkt de Vroege Piet-korting?</summary><p>Bestel je gedicht uiterlijk 15 november en je krijgt 40% korting. Je kiest zelf wanneer je het gedicht wilt ontvangen, dus het mag ook pas eind november.</p></details>
+    <details><summary>Hoe snel krijg ik mijn gedicht?</summary><p>Binnen 24 uur na betaling. Met spoed binnen 12 uur.</p></details>
+    <details><summary>Wat als ik het gedicht niet leuk vind?</summary><p>Je mag één keer gratis een aanpassing vragen. Zeg gewoon wat er anders moet.</p></details>
+    <details><summary>Hoeveel moet ik vertellen?</summary><p>Hoe meer details, hoe leuker het gedicht. Denk aan hobby's, werk, gewoontes en grappige momenten van dit jaar.</p></details>
+    <details><summary>Kan het ook voor een kind?</summary><p>Zeker! Kies "Kind" als leeftijd en "Lief" als toon, dan wordt het gedicht kindvriendelijk.</p></details>
+    <details><summary>Wat gebeurt er met mijn gegevens?</summary><p>Je antwoorden worden alleen gebruikt voor jouw gedicht en na Sinterklaas verwijderd.</p></details>
+  </section>
+
+  <section>
+    <div class="cta">
+    <h2>Klaar om te laten rijmen?</h2>
+      <p>Het formulier invullen duurt maar 3 minuten.</p>
+      <a class="btn" href="TALLY_LINK">Bestel je gedicht →</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  🎁 Rijmpiet · Sinterklaasgedichten op maat<br>
+  Vragen? Mail naar <a href="mailto:nlrijmpiet@gmail.com">nlrijmpiet@gmail.com</a>
+</footer>
+
+<script>
+// Kruidnoten: willekeurige plekken, eigen tempo en geschommel, elke ronde opnieuw.
+// Tik of klik in de rode kop en Piet strooit een handje kruidnoten.
+(function () {
+  var hero = document.querySelector('.hero');
+  var rain = hero.querySelector('.rain');
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var NS = 'http://www.w3.org/2000/svg';
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  function cookie(size) {
+    var svg = document.createElementNS(NS, 'svg');
+    var use = document.createElementNS(NS, 'use');
+    use.setAttribute('href', '#i-kruidnoot');
+    svg.appendChild(use);
+    svg.style.width = svg.style.height = size + 'px';
+    return svg;
+  }
+  function shuffle(k) {
+    var st = k.style;
+    st.setProperty('--x', rnd(-2, 98) + '%');
+    st.setProperty('--y', rnd(2, 92) + '%');
+    st.setProperty('--s', Math.round(rnd(12, 30)) + 'px');
+    st.setProperty('--a', Math.round(rnd(8, 34)) + 'px');
+    st.setProperty('--sw', rnd(0.8, 2.2).toFixed(2) + 's');
+    var r = rnd(-200, 200);
+    st.setProperty('--r0', r + 'deg');
+    st.setProperty('--r1', (r + rnd(-260, 260)) + 'deg');
+  }
+  function setHeight() { hero.style.setProperty('--h', (hero.offsetHeight + 96) + 'px'); }
+  setHeight();
+  window.addEventListener('resize', setHeight);
+
+  var count = window.innerWidth < 700 ? 12 : 20;
+  for (var i = 0; i < count; i++) {
+    var k = document.createElement('div');
+    k.className = 'k';
+    k.appendChild(cookie(20));
+    k.querySelector('svg').style.width = k.querySelector('svg').style.height = '';
+    shuffle(k);
+    var d = rnd(6, 13);
+    k.style.setProperty('--d', d.toFixed(2) + 's');
+    k.style.setProperty('--delay', (-rnd(0, d)).toFixed(2) + 's');
+    k.addEventListener('animationiteration', function (e) {
+      if (e.animationName === 'fall') shuffle(e.currentTarget);
+    });
+    rain.appendChild(k);
+  }
+
+  if (still) return;
+  hero.addEventListener('click', function (e) {
+    if (e.target.closest('a')) return;
+    var box = hero.getBoundingClientRect();
+    var x0 = e.clientX - box.left, y0 = e.clientY - box.top;
+    for (var i = 0; i < 9; i++) {
+      var size = Math.round(rnd(14, 28));
+      var c = cookie(size);
+      c.classList.add('burst');
+      c.style.left = (x0 - size / 2) + 'px';
+      c.style.top = (y0 - size / 2) + 'px';
+      hero.appendChild(c);
+      var vx = rnd(-160, 160), vy = rnd(-320, -140), g = 700, spin = rnd(-720, 720), T = rnd(1.1, 1.6);
+      var frames = [];
+      for (var f = 0; f <= 12; f++) {
+        var t = T * f / 12;
+        frames.push({
+          transform: 'translate(' + (vx * t) + 'px,' + (vy * t + g * t * t / 2) + 'px) rotate(' + (spin * t) + 'deg)',
+          opacity: f > 9 ? (12 - f) / 3 : 1
+        });
+      }
+      c.animate(frames, { duration: T * 1000, easing: 'linear' }).onfinish = (function (el) {
+        return function () { el.remove(); };
+      })(c);
+    }
+  });
+})();
+</script>
+<script>
+// Props willekeurig over de pagina gooien, zonder over de tekst en kaartjes te vallen.
+(function () {
+  var main = document.querySelector('main');
+  var NS = 'http://www.w3.org/2000/svg';
+  var kinds = ['mijter', 'staf', 'schoen', 'letter', 'baret', 'kruidnoten'];
+  var layer = document.createElement('div');
+  layer.className = 'toss';
+  layer.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(layer);
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  function place() {
+    layer.innerHTML = '';
+    var top = main.offsetTop, h = main.offsetHeight, W = document.documentElement.clientWidth;
+    layer.style.top = top + 'px';
+    layer.style.height = h + 'px';
+    var blocks = [].map.call(main.querySelectorAll('h2, .sub, .step, .price, .poem, details, .cta'), function (el) {
+      var r = el.getBoundingClientRect();
+      return { x: r.left, y: r.top + scrollY - top, w: r.width, h: r.height };
+    });
+    var small = W < 700, placed = [];
+    var n = Math.round(h / (small ? 260 : 220));
+    var order = kinds.slice().sort(function () { return Math.random() - .5; });
+    for (var i = 0; i < n; i++) {
+      var size = Math.round(small ? rnd(34, 48) : rnd(44, 70));
+      for (var tries = 0; tries < 60; tries++) {
+        var x = rnd(-size * .35, W - size * .65), y = rnd(0, h - size);
+        var box = { x: x - 6, y: y - 6, w: size + 12, h: size + 12 };
+        var hit = blocks.concat(placed).some(function (b) {
+          return box.x < b.x + b.w && b.x < box.x + box.w && box.y < b.y + b.h && b.y < box.y + box.h;
+        });
+        if (hit) continue;
+        placed.push(box);
+        var svg = document.createElementNS(NS, 'svg');
+        var use = document.createElementNS(NS, 'use');
+        use.setAttribute('href', '#i-' + order[i % order.length]);
+        svg.appendChild(use);
+        svg.setAttribute('width', size); svg.setAttribute('height', size);
+        svg.style.left = x + 'px'; svg.style.top = y + 'px';
+        svg.style.setProperty('--r', Math.round(rnd(-40, 40)) + 'deg');
+        svg.style.setProperty('--b', rnd(1.6, 3.2).toFixed(2) + 's');
+        svg.style.setProperty('--bd', (-rnd(0, 3)).toFixed(2) + 's');
+        layer.appendChild(svg);
+        break;
+      }
+    }
+  }
+  var t;
+  function later() { clearTimeout(t); t = setTimeout(place, 200); }
+  var lastW = innerWidth;
+  addEventListener('resize', function () { if (innerWidth !== lastW) { lastW = innerWidth; later(); } });
+  document.querySelectorAll('details').forEach(function (d) { d.addEventListener('toggle', later); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(place); else addEventListener('load', place);
+})();
+</script>
+</body>
+</html>
