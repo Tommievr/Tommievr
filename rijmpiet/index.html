@@ -146,6 +146,18 @@
   .eb-banner { display: inline-block; background: var(--gold); color: #2a1d1a; font-weight: 500; font-size: .95rem; padding: 6px 16px; border-radius: 999px; margin-bottom: 16px; box-shadow: 0 3px 0 #a8750f; transform: rotate(-1.5deg); }
   @media (max-width: 480px) { .eb-banner { font-size: .85rem; padding: 6px 12px; } }
   .price .amt s { font-size: 1.1rem; font-weight: 600; color: var(--muted); margin-right: 4px; }
+  /* Lootjespakket */
+  .bundle { margin-top: 20px; background: var(--paper); border: 2px dashed var(--gold); border-radius: 16px; padding: 22px; display: grid; grid-template-columns: 1.3fr 1fr; gap: 18px; align-items: center; }
+  .bundle-head { min-width: 0; }
+  .bundle-head h3 { font-size: 1.3rem; margin: 8px 0 .3em; }
+  .bundle-head p { margin: 0; color: var(--muted); font-size: .95rem; }
+  .bundle-tag { display: inline-block; background: var(--red); color: #fff; font-size: .8rem; font-weight: 600; padding: 2px 12px; border-radius: 999px; transform: rotate(-2deg); }
+  .bundle-opts { display: grid; gap: 10px; }
+  .bundle-opts > div { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 2px 12px; background: var(--cream); border-radius: 12px; padding: 10px 14px; }
+  .bundle-opts .amt { justify-self: end; font-family: Fraunces, Georgia, serif; font-weight: 800; font-size: 1.5rem; color: var(--red); }
+  .bundle-opts .amt s { font-size: 1rem; font-weight: 600; color: var(--muted); margin-right: 4px; }
+  .bundle-opts small { grid-column: 1 / -1; color: var(--muted); font-size: .85rem; }
+  @media (max-width: 600px) { .bundle { grid-template-columns: 1fr; padding: 18px; } }
 </style>
 <script>
   // Na 15 november (Nederlandse tijd) automatisch terug naar de gewone prijzen.
@@ -260,6 +272,17 @@
       <div class="price hl"><h3>Lang</h3><div class="amt"><span class="eb"><s>€12,50</s> €7,50</span><span class="full">€12,50</span></div><p>30+ regels<br>Voor een echte surprise</p></div>
       <div class="price"><h3>Spoed</h3><div class="amt">+€2,50</div><p>Binnen 12 uur geleverd<br>Voor de last-minute shoppers</p></div>
     </div>
+    <div class="bundle">
+      <div class="bundle-head">
+        <span class="bundle-tag">Lootjespakket</span>
+        <h3>5 gedichten, voordeliger samen</h3>
+        <p>Lootjes getrokken met familie, vrienden of collega's? Bestel vijf gedichten in één keer.</p>
+      </div>
+      <div class="bundle-opts">
+        <div><b>5 × Kort</b><span class="amt"><span class="eb"><s>€25</s> €15</span><span class="full">€25</span></span><small><span class="eb">€3 per gedicht</span><span class="full">€5 per gedicht</span></small></div>
+        <div><b>5 × Lang</b><span class="amt"><span class="eb"><s>€40</s> €24</span><span class="full">€40</span></span><small><span class="eb">€4,80 per gedicht</span><span class="full">€8 per gedicht</span></small></div>
+      </div>
+    </div>
   </section>
 
   <section>
@@ -285,6 +308,7 @@
   <section>
     <h2>Veelgestelde vragen</h2>
     <details class="eb"><summary>Hoe werkt de Vroege Piet-korting?</summary><p>Bestel je gedicht uiterlijk 15 november en je krijgt 40% korting. Je kiest zelf wanneer je het gedicht wilt ontvangen, dus het mag ook pas eind november.</p></details>
+    <details><summary>Hoe bestel ik een Lootjespakket?</summary><p>Vul het formulier in voor elke persoon en kies bij "Bestelling" voor Lootjespakket. Gebruik bij alle vijf dezelfde naam, dan krijg je één Tikkie voor het hele pakket. Spoed kost per gedicht €2,50 extra.</p></details>
     <details><summary>Hoe snel krijg ik mijn gedicht?</summary><p>Binnen 24 uur na betaling. Met spoed binnen 12 uur.</p></details>
     <details><summary>Wat als ik het gedicht niet leuk vind?</summary><p>Je mag één keer gratis een aanpassing vragen. Zeg gewoon wat er anders moet.</p></details>
     <details><summary>Hoeveel moet ik vertellen?</summary><p>Hoe meer details, hoe leuker het gedicht. Denk aan hobby's, werk, gewoontes en grappige momenten van dit jaar.</p></details>
@@ -399,7 +423,7 @@
     var top = main.offsetTop, h = main.offsetHeight, W = document.documentElement.clientWidth;
     layer.style.top = top + 'px';
     layer.style.height = h + 'px';
-    var blocks = [].map.call(main.querySelectorAll('h2, .sub, .step, .price, .poem, details, .cta'), function (el) {
+    var blocks = [].map.call(main.querySelectorAll('h2, .sub, .step, .price, .bundle, .poem, details, .cta'), function (el) {
       var r = el.getBoundingClientRect();
       return { x: r.left, y: r.top + scrollY - top, w: r.width, h: r.height };
     });
