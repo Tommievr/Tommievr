@@ -158,6 +158,18 @@
   .bundle-opts .amt s { font-size: 1rem; font-weight: 600; color: var(--muted); margin-right: 4px; }
   .bundle-opts small { grid-column: 1 / -1; color: var(--muted); font-size: .85rem; }
   @media (max-width: 600px) { .bundle { grid-template-columns: 1fr; padding: 18px; } }
+  /* Voorbeeldtegels */
+  .examples { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .ex { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 20px 20px 18px; box-shadow: 0 8px 24px rgba(125, 20, 34, .06); display: flex; flex-direction: column; }
+  .ex:nth-child(odd) { transform: rotate(-.6deg); } .ex:nth-child(even) { transform: rotate(.6deg); }
+  .ex-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .chip { font-size: .75rem; font-weight: 600; padding: 2px 10px; border-radius: 999px; background: var(--cream); border: 1px solid var(--line); color: var(--muted); }
+  .chip:last-child { background: var(--red); border-color: var(--red); color: #fff; }
+  .ex h3 { font-size: 1.05rem; margin: 0 0 10px; }
+  .ex p { margin: 0; font-family: Fraunces, Georgia, serif; font-size: .9rem; line-height: 1.55; }
+  .ex .lines span { display: block; padding-left: 1.1em; text-indent: -1.1em; margin-bottom: 2px; }
+  .ex-note { text-align: center; color: var(--muted); margin: 22px 0 0; font-size: .95rem; }
+  @media (max-width: 700px) { .examples { grid-template-columns: 1fr; } .ex:nth-child(n) { transform: none; } }
 </style>
 <script>
   // Na 15 november (Nederlandse tijd) automatisch terug naar de gewone prijzen.
@@ -286,23 +298,31 @@
   </section>
 
   <section>
-    <h2>Voorbeeld</h2>
-    <p class="sub">Zo kan jouw gedicht klinken (toon: plagerig 😏).</p>
-    <div class="poem">
-      <div class="tag">Voor Mark, die graag hardloopt</div>
-      Sinterklaas zat in zijn grote boek te lezen,<br>
-      en dacht: wat is Mark toch een vreemd wezen!<br>
-      Elke ochtend om zes uur staat hij al op,<br>
-      voor een rondje hardlopen, met een muts op zijn kop.<br>
-      Maar 's avonds op de bank, zo heeft Piet gezien,<br>
-      eet hij stiekem een zak chips… of twee, of tien.<br>
-      Zijn vrouw zegt: "Mark, dat sporten heeft zo geen zin!"<br>
-      Mark zegt: "Ach schat, morgen begin ik weer, ik win!"<br>
-      Daarom geeft de Sint hem dit cadeau,<br>
-      voor al dat rennen, zweten en zo.<br>
-      Pak het maar uit, en Mark, wees eerlijk en klaag niet,<br>
-      want de chips zit er niet bij. Groetjes, Sint en Piet!
+    <h2>Voorbeelden</h2>
+    <p class="sub">Zo kan jouw gedicht klinken. Lief, plagerig of flink plagerig: jij kiest.</p>
+    <div class="examples">
+      <article class="ex">
+        <div class="ex-meta"><span class="chip">Kind</span><span class="chip">Lief 😊</span></div>
+        <h3>Voor Emma (7), die graag tekent</h3>
+        <p class="lines"><span>Sinterklaas keek in zijn boek en zei: "Kijk eens aan,</span><span>wat heeft Emma dit jaar toch goed haar best gedaan!</span><span>Ze tekent de mooiste paarden, met manen zo fijn,</span><span>Piet hangt ze op in de stoomboot, zo trots kan hij zijn.</span><span>En op school leert ze lezen, ze kent al elk woord,</span><span>zelfs 'pepernotenpakhuis', heeft Piet gehoord!</span><span>Dus Emma, pak uit, en kijk wat er is:</span><span>iets voor een kunstenares… en dat is niet mis!</span></p>
+      </article>
+      <article class="ex">
+        <div class="ex-meta"><span class="chip">Partner</span><span class="chip">Plagerig 😏</span></div>
+        <h3>Voor Mark, die graag hardloopt</h3>
+        <p class="lines"><span>Sinterklaas zat in zijn grote boek te lezen,</span><span>en dacht: wat is Mark toch een vreemd wezen!</span><span>Elke ochtend om zes uur staat hij al op,</span><span>voor een rondje hardlopen, met een muts op zijn kop.</span><span>Maar 's avonds op de bank, zo heeft Piet gezien,</span><span>eet hij stiekem een zak chips… of twee, of tien.</span><span>Daarom geeft de Sint hem dit cadeau,</span><span>voor al dat rennen, zweten en zo.</span><span>Pak het maar uit, en Mark, wees eerlijk en klaag niet,</span><span>want de chips zit er niet bij. Groetjes, Sint en Piet!</span></p>
+      </article>
+      <article class="ex">
+        <div class="ex-meta"><span class="chip">65+</span><span class="chip">Lief 😊</span></div>
+        <h3>Voor oma Riet, de beste bakker</h3>
+        <p class="lines"><span>Lieve oma Riet, de Sint heeft het gezien:</span><span>jij bakt appeltaart, en die krijgt van Piet een tien!</span><span>Je breit voor de hele familie een sjaal,</span><span>al heeft opa er nu twaalf, en draagt hij ze allemaal.</span><span>Dus oma, pak uit, met je bril op je neus,</span><span>dit cadeau is voor jou, en dat was een makkelijke keus!</span></p>
+      </article>
+      <article class="ex">
+        <div class="ex-meta"><span class="chip">Collega</span><span class="chip">Flink plagerig 😈</span></div>
+        <h3>Voor Dennis, van de koffieautomaat</h3>
+        <p class="lines"><span>Dennis, de Sint heeft gekeken op kantoor,</span><span>en wat blijkt: bij de koffieautomaat sta jij altijd voor!</span><span>Je mail is "even kijken", je deadline "bijna klaar",</span><span>maar bij de taart voor een jarige ben jij als eerste daar.</span><span>Je zegt elke maandag: "Nu ga ik écht aan de slag!"</span><span>en vrijdag om drie uur zwaai je al: "Fijne dag!"</span><span>Dus pak maar uit, en Dennis, doe niet zo raar:</span><span>dit is voor op je bureau, dan staat er tenminste iets klaar!</span></p>
+      </article>
     </div>
+    <p class="ex-note">📄 Elk gedicht krijg je ook als mooie printversie (PDF), klaar om op je surprise te plakken.</p>
   </section>
 
   <section>
@@ -423,7 +443,7 @@
     var top = main.offsetTop, h = main.offsetHeight, W = document.documentElement.clientWidth;
     layer.style.top = top + 'px';
     layer.style.height = h + 'px';
-    var blocks = [].map.call(main.querySelectorAll('h2, .sub, .step, .price, .bundle, .poem, details, .cta'), function (el) {
+    var blocks = [].map.call(main.querySelectorAll('h2, .sub, .step, .price, .bundle, .poem, .ex, .ex-note, details, .cta'), function (el) {
       var r = el.getBoundingClientRect();
       return { x: r.left, y: r.top + scrollY - top, w: r.width, h: r.height };
     });
