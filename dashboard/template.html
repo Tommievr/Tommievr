@@ -1,199 +1,433 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex">
-<title>5-coin trend bot (test)</title>
+<title>Tidebot</title>
+<meta name="theme-color" content="#eef3f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#081416" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='3' r='2' fill='%230b7f8a'/%3E%3Crect x='15' y='3' width='2' height='5' fill='%230b7f8a'/%3E%3Crect x='3' y='7' width='26' height='22' rx='8' fill='%230b7f8a'/%3E%3Ccircle cx='11' cy='15.5' r='2.3' fill='%23fff'/%3E%3Ccircle cx='21' cy='15.5' r='2.3' fill='%23fff'/%3E%3Cpath d='M8.5 23c1.9 0 1.9-2 3.8-2s1.9 2 3.7 2 1.9-2 3.7-2 1.9 2 3.8 2' stroke='%23fff' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
 <style>
-/* Layout: one narrow column; equity summary on top, then one row per coin (BTC first) with a stop-to-target rail. */
+/* Tidebot: one narrow column. Account value and its chart on top, then the distance to liquidation, the open
+   positions (biggest coins first) and the recent trades. Everything is worked out in the browser from the data
+   below, so the live prices (every minute) move every number on the page together. */
 :root{
-  --bg:#f3f5f4; --card:#ffffff; --fg:#17201c; --muted:#5f6d66; --line:#dbe2de;
-  --up:#14843f; --down:#c4302b; --accent:#2f5d8a; --rail:#e4eae7;
-  --display:"Archivo",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --bg:#eef3f3; --card:#ffffff; --fg:#0d1d22; --muted:#55696f; --faint:#7f9297; --line:#dbe5e6;
+  --accent:#0b7f8a; --accent-soft:rgba(11,127,138,.11); --on-accent:#ffffff;
+  --up:#0d8559; --up-soft:rgba(13,133,89,.11); --down:#c93a28; --down-soft:rgba(201,58,40,.10);
+  --warn:#a8620b; --warn-soft:rgba(168,98,11,.10);
+  --ui:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; --display:"Space Grotesk",var(--ui);
+  color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0f1412; --card:#171e1b; --fg:#e8eeeb; --muted:#93a29a; --line:#26302c;
-  --up:#3fcf72; --down:#ff6b61; --accent:#7fb0e0; --rail:#24302b; color-scheme:dark}}
+  --bg:#081416; --card:#0f1f22; --fg:#e2eef0; --muted:#8fa6ab; --faint:#667f84; --line:#1c3337;
+  --accent:#37c4d0; --accent-soft:rgba(55,196,208,.13); --on-accent:#062226;
+  --up:#41d29a; --up-soft:rgba(65,210,154,.13); --down:#ff7a66; --down-soft:rgba(255,122,102,.13);
+  --warn:#f0b23e; --warn-soft:rgba(240,178,62,.12); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0f1412; --card:#171e1b; --fg:#e8eeeb; --muted:#93a29a; --line:#26302c;
-  --up:#3fcf72; --down:#ff6b61; --accent:#7fb0e0; --rail:#24302b; color-scheme:dark}
-body{background:var(--bg);color:var(--fg);font-family:var(--display);padding:16px;padding-block:18px 28px}
-.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
-.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
-header{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
-h1{font-size:1.05rem;margin:0;letter-spacing:.02em;font-weight:800}
-.when{font-size:.78rem;color:var(--muted)}
-.pill{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
-.pill.ok{color:var(--up);border-color:var(--up)} .pill.bad{color:var(--down);border-color:var(--down)}
-.summary{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px}
-.eq{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-.eq .big{font-size:2.1rem;font-weight:600}
-.chg{font-weight:600;font-size:1.25rem}
-.up{color:var(--up)} .down{color:var(--down)}
-.row .up{color:var(--up)} .row .down{color:var(--down)}
-.sub{display:flex;gap:16px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
-svg.spark{width:100%;height:64px;display:block}
-.axis{display:flex;justify-content:space-between;font-size:.68rem;color:var(--muted);margin-top:2px}
-.coins{display:flex;flex-direction:column;gap:10px}
-.coin{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:8px}
-.top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-.sym{font-weight:800;font-size:1.15rem}
-.side{font-size:.72rem;color:var(--muted);margin-left:6px;font-weight:500}
-.pct{font-size:1.25rem;font-weight:600}
-.row{display:flex;justify-content:space-between;gap:8px;font-size:.82rem;color:var(--muted);flex-wrap:wrap}
-.row b{color:var(--fg);font-weight:600}
-.rail{position:relative;height:12px;border-radius:4px;background:var(--rail);margin-top:2px}
-.rail .ent{position:absolute;top:-3px;width:2px;height:18px;margin-left:-1px;background:var(--fg);z-index:1;opacity:.7}
-.rail{overflow:visible}.rail .fill{position:absolute;top:0;bottom:0;border-radius:4px}
-.price{font-size:1.5rem;font-weight:600;line-height:1.1}.price small{font-size:.72rem;color:var(--muted);font-weight:400;font-family:var(--display);margin-right:6px}
-.ends{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted)}
-.tag{font-size:.68rem;color:var(--accent);font-weight:700;letter-spacing:.04em;text-transform:uppercase}
-.empty{color:var(--muted);font-size:.9rem;padding:24px 4px;text-align:center}
-footer{font-size:.72rem;color:var(--muted);line-height:1.5}
-.late{background:var(--card);border:1px solid var(--down);color:var(--down);border-radius:14px;padding:12px 16px;font-size:.88rem;line-height:1.45}
-.late a{color:var(--down);font-weight:700}
-.banner{background:var(--card);border:1px solid var(--accent);color:var(--accent);border-radius:14px;padding:12px 16px;font-size:.88rem;line-height:1.45;font-weight:600}
-.note{background:var(--card);border:1px dashed var(--muted);color:var(--muted);border-radius:14px;padding:10px 16px;font-size:.82rem;line-height:1.45}
-.miss{color:var(--down);font-weight:700}
-body{margin:0;font-size:14px}
+  --bg:#081416; --card:#0f1f22; --fg:#e2eef0; --muted:#8fa6ab; --faint:#667f84; --line:#1c3337;
+  --accent:#37c4d0; --accent-soft:rgba(55,196,208,.13); --on-accent:#062226;
+  --up:#41d29a; --up-soft:rgba(65,210,154,.13); --down:#ff7a66; --down-soft:rgba(255,122,102,.13);
+  --warn:#f0b23e; --warn-soft:rgba(240,178,62,.12); color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 var(--ui);
+  padding:max(18px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 36px max(16px,env(safe-area-inset-left))}
+.wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.num{font-variant-numeric:tabular-nums}
+.up{color:var(--up)} .down{color:var(--down)} .warn{color:var(--warn)} .muted{color:var(--muted)}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand svg{width:36px;height:36px;flex:none}
+.brand h1{font:700 1.4rem/1 var(--display);letter-spacing:-.015em;margin:0}
+.brand p{margin:3px 0 0;font-size:.78rem;color:var(--muted)}
+.status{display:inline-flex;align-items:center;gap:7px;font-size:.76rem;font-weight:600;padding:6px 11px;border-radius:99px;
+  background:var(--card);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.status .dot{width:8px;height:8px;border-radius:50%;background:var(--faint)}
+.status.live{color:var(--fg)}
+.status.live .dot{background:var(--up);animation:pulse 2.4s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 var(--up-soft)}60%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){.status.live .dot{animation:none}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
+.label{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.big{font:600 2.7rem/1.05 var(--display);letter-spacing:-.025em;margin-top:6px}
+.delta{font-weight:600;margin-top:6px;font-size:.95rem}
+.delta span{color:var(--muted);font-weight:500}
+.chart{position:relative;height:170px;margin:12px 0 4px;touch-action:pan-y}
+.chart svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.chart .ylab{position:absolute;left:0;font-size:.68rem;color:var(--faint);line-height:1}
+.tip{position:absolute;top:-8px;transform:translate(-50%,-100%);background:var(--fg);color:var(--bg);font-size:.72rem;font-weight:600;
+  padding:4px 8px;border-radius:7px;pointer-events:none;white-space:nowrap;display:none}
+.axis{display:flex;justify-content:space-between;font-size:.7rem;color:var(--faint)}
+.controls{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}
+.seg{display:inline-flex;background:var(--bg);border-radius:11px;padding:3px;gap:2px}
+.seg button{font:600 .78rem var(--ui);color:var(--muted);background:none;border:0;padding:7px 13px;border-radius:8px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--card);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 0;padding-top:14px;border-top:1px solid var(--line)}
+.stats dt{font-size:.72rem;color:var(--muted)}
+.stats dd{margin:3px 0 0;font:600 1.04rem var(--display)}
+.risk-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.risk-val{font:600 1.5rem/1.1 var(--display)}
+.meter{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin:12px 0 10px}
+.meter span{display:block;height:100%;border-radius:99px;min-width:4px}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+h2{font:600 1.05rem var(--display);margin:10px 2px 0;display:flex;align-items:center;gap:8px}
+h2 .count{font:600 .72rem var(--ui);background:var(--accent-soft);color:var(--accent);padding:2px 9px;border-radius:99px}
+.list{display:flex;flex-direction:column;gap:10px}
+.pos-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.coin{font:700 1.22rem var(--display);display:flex;align-items:center;gap:9px}
+.pill{font:600 .68rem var(--ui);letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px}
+.pill.long,.pill.buy{background:var(--up-soft);color:var(--up)}
+.pill.short,.pill.sell{background:var(--down-soft);color:var(--down)}
+.pill.liq{background:var(--down);color:var(--card)}
+.pnl{text-align:right;font:600 1.18rem/1.15 var(--display)}
+.pnl small{display:block;font:600 .76rem var(--ui)}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.grid4 span{display:block;font-size:.7rem;color:var(--muted)}
+.grid4 b{font:600 .94rem var(--display);overflow-wrap:anywhere}
+.grid4 small{display:block;font-size:.72rem;font-weight:600;margin-top:1px}
+.grid4.minor{padding-top:10px;border-top:1px dashed var(--line)}
+.grid4.minor b{font-size:.86rem}
+.trades{padding:4px 16px 8px}
+.day{font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);padding:14px 0 2px}
+.trade{display:grid;grid-template-columns:36px 1fr auto;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
+.day+.trade{border-top:0}
+.ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font:700 .7rem var(--display);
+  background:var(--accent-soft);color:var(--accent)}
+.what{min-width:0}
+.what .l1{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-weight:600}
+.what .l2{font-size:.78rem;color:var(--muted);margin-top:1px}
+.amt{text-align:right;font:600 .95rem var(--display);white-space:nowrap}
+.amt small{display:block;font:600 .76rem var(--ui);margin-top:1px}
+.empty{color:var(--muted);font-size:.9rem;padding:18px 2px;text-align:center}
+.banner{border-radius:14px;padding:11px 14px;font-size:.86rem;border:1px solid var(--warn);color:var(--warn);background:var(--warn-soft)}
+.banner.bad{border-color:var(--down);color:var(--down);background:var(--down-soft)}
+footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;padding:6px 8px 0}
+@media (max-width:380px){.grid4{grid-template-columns:repeat(2,1fr)}.big{font-size:2.3rem}.stats dd{font-size:.95rem}}
 </style></head><body>
 <div class="wrap">
-  <header><h1>5-coin trend bot (test)</h1><span id="st" class="pill">loading</span></header>
-  <div id="banner" class="banner" role="status" hidden></div>
-  <div id="late" class="late" role="alert" hidden></div>
-  <div id="snapnote" class="note" role="status" hidden></div>
-  <section class="summary">
-    <div class="eq"><span id="eq" class="big num">–</span><span id="chg" class="chg num"></span></div>
-    <div class="sub" id="sub"><span>Waiting for the latest bot check…</span></div>
-    <div><svg class="spark" id="spark" viewBox="0 0 300 64" preserveAspectRatio="none" aria-label="Equity over time"></svg><div class="axis num" id="axis"></div></div>
+  <header class="top">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="3" r="2" fill="var(--accent)"/><rect x="15" y="3" width="2" height="5" fill="var(--accent)"/><rect x="3" y="7" width="26" height="22" rx="8" fill="var(--accent)"/><circle cx="11" cy="15.5" r="2.3" fill="var(--on-accent)"/><circle cx="21" cy="15.5" r="2.3" fill="var(--on-accent)"/><path d="M8.5 23c1.9 0 1.9-2 3.8-2s1.9 2 3.7 2 1.9-2 3.7-2 1.9 2 3.8 2" stroke="var(--on-accent)" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+      <div><h1>Tidebot</h1><p>Kraken Futures watcher</p></div>
+    </div>
+    <span id="status" class="status"><span class="dot"></span><span id="statusText">Loading</span></span>
+  </header>
+  <div id="banner" class="banner" hidden></div>
+  <section class="card" aria-labelledby="valueLabel">
+    <div class="label" id="valueLabel">Account value</div>
+    <div class="big num" id="value">–</div>
+    <div class="delta num" id="delta"></div>
+    <div class="chart" id="chart" role="img" aria-label="Account value over time"><div class="tip num" id="tip"></div></div>
+    <div class="axis num"><span id="axisFrom"></span><span id="axisTo"></span></div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Chart range">
+        <button type="button" data-range="1d">24h</button><button type="button" data-range="7d">7 days</button><button type="button" data-range="all">All</button>
+      </div>
+    </div>
+    <dl class="stats">
+      <div><dt>Free margin</dt><dd class="num" id="free">–</dd></div>
+      <div><dt>Leverage</dt><dd class="num" id="lev">–</dd></div>
+      <div><dt>In positions</dt><dd class="num" id="notional">–</dd></div>
+    </dl>
   </section>
-  <div class="coins" id="coins"><div class="empty">Coin positions appear here after the next bot check.</div></div>
-  <footer id="foot">Prices are live Kraken prices, read by this page every minute (spot, within a few hundredths of a % of the futures mark). Positions, funding and fees refresh after each bot run (checked hourly). Equity is estimated from the last bot check plus the price moves since. Positions, stops and take profits are as of the last bot run, or, when the read-only Kraken snapshot (every 6 h) is newer, as they are on Kraken: ✓ means the stop / TP1 order is still resting there, and a leg that is gone on Kraken shows as closed (stop or TP inferred from the price). Funding is estimated from the Kraken hourly funding rates since each entry (+ received, − paid); Rate is the current hourly funding rate (green when it pays you, red when you pay). ≈ Liq is the bot's own liquidation estimate per coin; on the shared cross-margin account the real level depends on all positions together. Fees are the trading fees paid since the 7 Oct restart (0.05% taker, 0.02% maker), estimated from the bot's fills; the balance is the real Kraken wallet, so it is already after fees and funding. P&amp;L % is the price move since entry; leverage multiplies it on the account.</footer>
+  <section class="card" id="risk" hidden aria-labelledby="riskLabel">
+    <div class="risk-head"><span class="label" id="riskLabel">Distance to liquidation</span><span class="risk-val num" id="riskVal"></span></div>
+    <div class="meter"><span id="riskBar"></span></div>
+    <p class="note" id="riskNote"></p>
+  </section>
+  <h2>Open positions <span class="count" id="posCount">0</span></h2>
+  <div class="list" id="positions"></div>
+  <h2>Recent trades</h2>
+  <div class="card trades" id="trades"></div>
+  <footer id="foot"></footer>
 </div>
 <script id="data" type="application/json">__DATA__</script>
 <script>
-const $=id=>document.getElementById(id);
-function fp(v){if(v==null)return"–";const a=Math.abs(v);const d=a>=1000?0:a>=100?2:a>=10?2:4;return v.toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d})}
-function sp(v,d=2){if(v==null)return"–";return(v>=0?"+":"")+v.toFixed(d)+"%"}
-function usd(v){if(v==null)return"–";if(Math.abs(v)<0.005)return"$0.00";return(v>=0?"+$":"−$")+Math.abs(v).toFixed(2)}
-function cls(v){return v==null?"":v>=0?"up":"down"}
-function ago(utc){const m=Math.round((Date.now()-Date.parse(utc))/60000);if(m<1)return"just now";if(m<60)return m+" min ago";const h=Math.floor(m/60);return h+" h "+(m%60)+" min ago"}
-function el(tag,attrs,text){const e=document.createElement(tag);for(const k in attrs||{})e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;return e}
-let last=null;
-function render(d){
-  last=d;
-  const st=$("st");
-  if(d.halted){st.textContent="halted";st.className="pill bad"}else if(d.banner){st.textContent="paused";st.className="pill"}else{st.textContent=d.status==="ok"?"running":(d.status||"unknown");st.className="pill "+(d.status==="ok"?"ok":"bad")}
-  const bn=$("banner");bn.textContent=d.banner||"";bn.hidden=!d.banner;
-  const sn=$("snapnote");sn.textContent=d.snapshot_note||"";sn.hidden=!d.snapshot_note;
-  // the bot runs at 00:20 and 12:20 UTC: no run for 13 h means it stopped (dispatcher, Actions minutes, failed tests)
-  const lateH=(Date.now()-Date.parse(d.run_utc))/3600000,lt=$("late");
-  if(!d.halted&&!d.banner&&lateH>13){st.textContent="bot late";st.className="pill bad";
-    lt.replaceChildren(document.createTextNode("No bot run for "+Math.floor(lateH)+" h (it normally runs every 12 h, at 00:20 and 12:20 UTC). The stops and take-profits keep resting on Kraken. "),
-      el("a",{href:"https://github.com/Tommievr/tradingbot/actions/workflows/ruleb-tp2-5coin-live.yml",target:"_blank",rel:"noopener"},"Open the bot's runs"));
-    lt.hidden=false}else lt.hidden=true;
-  const q=$("eq");q.textContent="$"+(d.equity!=null?d.equity.toFixed(2):"–");q.className="big num "+cls(d.vs_start_pct);
-  const c=$("chg");const dd=d.equity!=null?d.equity-d.start_eq:null;c.textContent=(dd==null?"":(dd>=0?"+$":"−$")+Math.abs(dd).toFixed(2)+" ")+"("+sp(d.vs_start_pct)+")";c.className="chg num "+cls(d.vs_start_pct);
-  const sub=$("sub");sub.replaceChildren();
-  const hm=u=>new Date(u).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",hour12:false});
-  const s2=el("span",{},(d.live?"Live prices "+hm(d.updated_utc):"Prices "+hm(d.updated_utc)+" (not live)")+" · Bot data "+hm(d.run_utc)+(d.source==="kraken"?" · Kraken positions "+hm(d.snapshot_utc)+" ("+ago(d.snapshot_utc)+")":"")+" · Page built "+hm(base.updated_utc));
-  const s3=el("span");s3.append("Leverage ");s3.append(el("b",{class:"num"},d.lev_total!=null?d.lev_total.toFixed(2)+"x":"–"));
-  if(d.notional)s3.append(" ($"+Math.round(d.notional)+" in positions)");
-  const s4=el("span");s4.append("Funding ");s4.append(el("b",{class:"num "+(Math.abs(d.funding||0)<0.005?"":cls(d.funding))},usd(d.funding)));
-  const s5=el("span");s5.append("Fees ");s5.append(el("b",{class:"num"},"−$"+(d.fees||0).toFixed(2)));
-  const s0=el("span",{},"Start 7 Oct $"+d.start_eq.toFixed(2));
-  sub.append(s0,s3,s4,s5);
-  if(d.source==="kraken"){const s6=el("span");s6.append("Kraken account ");s6.append(el("b",{class:"num"},"$"+d.snapshot_equity.toFixed(2)));s6.append(" at the snapshot");sub.append(s6)}
-  sub.append(s2);
-  // equity chart: x by time, green above the bot-start value, red below
-  const h=(d.history||[]).filter(x=>x.equity!=null),sv=$("spark"),ax=$("axis");sv.replaceChildren();ax.replaceChildren();
-  if(h.length>1){const ys=h.map(x=>x.equity),ts=h.map(x=>Date.parse(x.utc)),lo=Math.min(...ys,d.start_eq),hi=Math.max(...ys,d.start_eq),r=(hi-lo)||1;
-    const t0=ts[0],t1=ts[ts.length-1],X=t=>4+(t-t0)/((t1-t0)||1)*292,Y=v=>58-(v-lo)/r*52,yb=Y(d.start_eq);
-    const NS="http://www.w3.org/2000/svg",mk=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
-    const g=mk("linearGradient",{id:"eqg",gradientUnits:"userSpaceOnUse",x1:0,y1:0,x2:0,y2:64});
-    g.append(mk("stop",{offset:yb/64,"stop-color":"var(--up)"}),mk("stop",{offset:yb/64,"stop-color":"var(--down)"}));
-    const defs=mk("defs",{});defs.append(g);sv.append(defs);
-    sv.append(mk("line",{x1:0,x2:300,y1:yb,y2:yb,stroke:"var(--muted)","stroke-dasharray":"3 3","stroke-width":1,"vector-effect":"non-scaling-stroke",opacity:.6}));
-    sv.append(mk("polyline",{points:h.map((x,i)=>X(ts[i])+","+Y(ys[i])).join(" "),fill:"none",stroke:"url(#eqg)","stroke-width":2.5,"vector-effect":"non-scaling-stroke","stroke-linejoin":"round"}));
-    const fmt=t=>new Date(t).toLocaleString("en-GB",{weekday:"short",hour:"2-digit",minute:"2-digit"});
-    ax.append(el("span",{},fmt(t0)),el("span",{},fmt((t0+t1)/2)),el("span",{},fmt(t1)));
-  }
-  const box=$("coins");box.replaceChildren();
-  for(const l of d.legs){
-    const card=el("article",{class:"coin"});
-    const top=el("div",{class:"top"});const left=el("div");left.append(el("span",{class:"sym"},l.sym));
-    if(!l.open&&l.closed){
-      left.append(el("span",{class:"side"},l.side+" · closed on Kraken"));left.append(el("span",{class:"tag",style:"color:"+(l.closed==="stop hit"?"var(--down)":"var(--up)")}," · "+l.closed));
-      top.append(left,el("span",{class:"pct num "+cls(l.pnl_pct)},sp(l.pnl_pct)));
-      const r=el("div",{class:"row"});const e=el("span");e.append("Entry ");e.append(el("b",{class:"num"},fp(l.entry)));
-      const x=el("span");x.append("Exit ≈ ");x.append(el("b",{class:"num"},fp(l.exit)));
-      r.append(e,x,el("span",{class:"num "+cls(l.pnl_usd)},l.pnl_usd==null?"–":(l.pnl_usd>=0?"+$":"−$")+Math.abs(l.pnl_usd).toFixed(2)));
-      const r2=el("div",{class:"row"});r2.append(el("span",{},"Size was "+(+l.qty.toPrecision(6))+" "+l.sym+" · inferred from which order is gone and the price"),el("span",{class:"num"},"Now "+fp(l.mark)));
-      card.append(top,r,r2);box.append(card);continue}
-    if(!l.open){left.append(el("span",{class:"side"},"no position"));top.append(left,el("span",{class:"num"},fp(l.mark)));card.append(top);box.append(card);continue}
-    left.append(el("span",{class:"side"},l.side));
-    if(l.not_bot)left.append(el("span",{class:"tag"}," · on Kraken, not in the bot"));
-    if(l.stop_hit)left.append(el("span",{class:"tag",style:"color:var(--down)"}," · past stop"));
-    if(l.tp_done)left.append(el("span",{class:"tag"}," · TP1 hit"));
-    top.append(left,el("span",{class:"pct num "+cls(l.pnl_pct)},sp(l.pnl_pct)));
-    const pr=el("div",{class:"price num"});pr.append(el("small",{},"Now"));pr.append(el("span",{class:cls(l.pnl_pct)},fp(l.mark)));
-    const r1=el("div",{class:"row"});
-    const e=el("span");e.append("Entry ");e.append(el("b",{class:"num"},fp(l.entry)));
-    const u=el("span",{class:"num "+cls(l.pnl_usd)},(l.pnl_usd>=0?"+$":"−$")+Math.abs(l.pnl_usd||0).toFixed(2));
-    const lv=el("span");lv.append("Lev ");lv.append(el("b",{class:"num"},l.lev!=null?l.lev.toFixed(2)+"x":"–"));
-    const fu=el("span");fu.append("Funding ");fu.append(el("b",{class:"num "+(Math.abs(l.funding||0)<0.005?"":cls(l.funding))},usd(l.funding)));
-    let r2rate=null;
-    if(l.funding_rate!=null){const sd=l.side==="Long"?1:-1,fr=l.funding_rate*100;
-      r2rate=el("span");r2rate.append("Rate ");r2rate.append(el("b",{class:"num "+cls(-sd*fr)},(fr>=0?"+":"")+fr.toFixed(4)+"%/h"));}
-    r1.append(e,lv,u);
-    const r0=el("div",{class:"row"});const sz=el("span");sz.append("Size ");sz.append(el("b",{class:"num"},(+l.qty.toPrecision(6)).toString()+" "+l.sym));
-    if(l.notional!=null)sz.append(" · $"+l.notional.toFixed(0));r0.append(sz);
-    if(l.fees!=null){const fe=el("span");fe.append("Fees ");fe.append(el("b",{class:"num"},"−$"+l.fees.toFixed(2)));r0.append(fe);}
-    const r2=el("div",{class:"row"});r2.append(fu);
-    // rail from stop to take profit
-    const lo=Math.min(l.stop,l.tp),hi=Math.max(l.stop,l.tp),pos=v=>Math.max(0,Math.min(100,(v-lo)/(hi-lo)*100));
-    const rail=el("div",{class:"rail",role:"img","aria-label":"Price between stop and take profit"});
-    const en=el("span",{class:"ent"});en.style.left=pos(l.entry)+"%";
-    const a=pos(l.entry),b=pos(l.mark),fill=el("span",{class:"fill"});
-    const toTp=(l.mark-l.entry)*(l.tp-l.entry)>=0,goal=toTp?l.tp:l.stop,frac=Math.max(0,Math.min(1,(l.mark-l.entry)/(goal-l.entry)));
-    const col=toTp?"var(--up)":"var(--down)",strong=Math.round(25+75*frac);
-    fill.style.left=Math.min(a,b)+"%";fill.style.width=Math.max(Math.abs(b-a),0.8)+"%";
-    fill.style.background="linear-gradient(to "+(b>=a?"right":"left")+",color-mix(in srgb,"+col+" 12%,transparent),color-mix(in srgb,"+col+" "+strong+"%,transparent))";
-    rail.append(fill,en);
-    const ends=el("div",{class:"ends num"});
-    // ✓ / "no order": whether the stop and TP1 orders are still resting on Kraken (snapshot only)
-    const mark=(span,has)=>{if(has===true)span.append(" ✓");else if(has===false)span.append(el("span",{class:"miss"}," · no order"));return span};
-    ends.append(mark(el("span",{},(l.trailing?"Trail ":"Stop ")+fp(l.stop)),l.stop_order),el("span",{style:"color:var(--down)"},"≈ Liq "+fp(l.liq)),
-      l.tp_done&&l.tp_order===false?el("span",{},"TP1 done"):mark(el("span",{},(l.tp_done?"TP1 done ":"TP1 ")+fp(l.tp)),l.tp_order));
-    if(r2rate)r2.append(r2rate);
-    card.append(top,pr,r0,r1,r2,rail,ends);box.append(card);
-  }
-}
-// live prices: the page itself reads the public Kraken Futures marks and re-prices the last build
-const base=JSON.parse(document.getElementById("data").textContent);
-// Kraken's futures API does not allow browser reads; its spot prices (within a few hundredths of a % of the
-// perp marks) do. Result keys: XXBTZUSD, XETHZUSD, SOLUSD, XXRPZUSD, BNBUSD.
-const SPOT={BTC:"XBT",ETH:"ETH",SOL:"SOL",XRP:"XRP",BNB:"BNB"};
-async function live(){
-  try{
-    const r=await fetch("https://api.kraken.com/0/public/Ticker?pair=XBTUSD,ETHUSD,SOLUSD,XRPUSD,BNBUSD",{cache:"no-store"});
-    const res=(await r.json()).result||{},px={};
-    for(const c in SPOT){const k=Object.keys(res).find(k=>k.replace(/^X/,"").startsWith(SPOT[c])&&k.endsWith("USD"));if(k)px[c]=+res[k].c[0];}
-    const d=structuredClone(base);let move=0,notional=0,got=0;
-    for(const l of d.legs){
-      const m=px[l.sym];if(!m)continue;got++;
-      if(l.open){const sd=l.side==="Long"?1:-1;move+=(m-l.mark)*l.qty*sd;l.mark=m;
-        l.pnl_pct=(m/l.entry-1)*100*sd;l.pnl_usd=(m-l.entry)*l.qty*sd;l.notional=l.qty*m;
-        l.stop_hit=!!(l.stop&&(m-l.stop)*sd<=0);}else l.mark=m;
+(() => {
+  "use strict";
+  let D = JSON.parse(document.getElementById("data").textContent);
+  const SPOT = {BTC: "XBTUSD"};               // Kraken spot pairs; other coins: COIN + "USD"
+  const LIVE_FOR = 3 * 60e3;                    // a live price this recent counts as live
+  const live = {};                              // coin -> {px, t} from Kraken's public prices
+  let lastLive = 0;
+  let range = "all";
+  try { range = localStorage.getItem("tidebot.range") || "all"; } catch (e) { /* no storage: default range */ }
+
+  const $ = id => document.getElementById(id);
+  const make = (tag, cls, text) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  };
+  const MINUS = "−";
+  const fix = (x, d) => Math.abs(x).toLocaleString("en-US", {minimumFractionDigits: d, maximumFractionDigits: d});
+  const signed = (x, s) => x < 0 ? MINUS : x > 0 && s ? "+" : "";
+  const usd = (x, s) => x == null ? "–" : signed(x, s) + "$" + fix(x, Math.abs(x) >= 100000 ? 0 : 2);
+  const price = x => x == null ? "–" : (x < 0 ? MINUS : "") +
+    (Math.abs(x) >= 1000 ? fix(x, 0) : Math.abs(x) >= 10 ? fix(x, 2) : Math.abs(x) >= 0.1 ? fix(x, 4) : Math.abs(x).toPrecision(4));
+  const pct = (x, s) => x == null ? "–" : signed(x, s) + fix(x * 100, Math.abs(x) < 0.01 ? 2 : 1) + "%";
+  const qty = x => x.toLocaleString("en-US", {maximumFractionDigits: 8});
+  const tone = x => x > 0 ? "up" : x < 0 ? "down" : "muted";
+  const time = d => d.toLocaleTimeString("en-GB", {hour: "2-digit", minute: "2-digit"});
+  const date = d => d.toLocaleDateString("en-GB", {weekday: "short", day: "numeric", month: "short"});
+  const dayKey = d => d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
+  const dayName = d => {
+    const today = new Date(), y = new Date(today.getTime() - 864e5);
+    return dayKey(d) === dayKey(today) ? "Today" : dayKey(d) === dayKey(y) ? "Yesterday" : date(d);
+  };
+  const ago = ms => {
+    const m = Math.round(ms / 60e3);
+    if (m < 1) return "just now";
+    if (m < 60) return m + " min ago";
+    const h = Math.round(m / 60);
+    return h < 48 ? h + " h ago" : Math.round(h / 24) + " days ago";
+  };
+  const when = s => new Date(s);
+
+  function account() {
+    const pos = D.positions.map(p => {
+      const s = p.side === "Long" ? 1 : -1, now = live[p.coin] ? live[p.coin].px : p.mark;
+      return Object.assign({}, p, {s, now, pnl: s * p.qty * (now - p.entry), move: s * (now / p.entry - 1),
+                                   value: p.qty * now, liq: null, liqDist: null});
+    });
+    const value = D.equity_snap + pos.reduce((a, p) => a + p.s * p.qty * (p.now - p.mark_snap), 0);
+    const notional = pos.reduce((a, p) => a + p.value, 0);
+    const A = {pos, value, notional, free: D.available == null ? null : D.available + (value - D.equity_snap),
+               lev: value > 0 && pos.length ? notional / value : null, cushion: null, move: null};
+    if (D.maint != null && pos.length) {
+      A.cushion = value - D.maint;
+      const net = pos.reduce((a, p) => a + p.s * p.qty * p.now, 0);
+      A.move = net !== 0 ? -A.cushion / net : null;
+      for (const p of pos) {
+        const liq = p.now - p.s * A.cushion / p.qty;
+        if (liq > 0) { p.liq = liq; p.liqDist = liq / p.now - 1; }
+      }
     }
-    if(!got)return;
-    for(const l of d.legs)if(l.open&&l.notional!=null)notional+=l.notional;
-    if(d.equity!=null){d.equity+=move;d.notional=notional;d.lev_total=notional/d.equity;d.vs_start_pct=(d.equity/d.start_eq-1)*100;
-      for(const l of d.legs)if(l.open&&l.notional!=null)l.lev=l.notional/d.equity;
-      d.history.push({utc:new Date().toISOString(),equity:d.equity});}
-    d.updated_utc=new Date().toISOString();d.live=true;render(d);
-  }catch(e){console.log("live prices failed",e)}
-}
-render(base);live();setInterval(live,60000);setInterval(()=>{if(last)render(last)},60000);
-setTimeout(()=>location.reload(),10*60000);
+    return A;
+  }
+
+  function riskTone(d) {
+    const a = Math.abs(d);
+    return a < 0.05 ? "down" : a < 0.12 ? "warn" : "up";
+  }
+
+  function renderStatus() {
+    const st = $("status"), fresh = Date.now() - lastLive < LIVE_FOR;
+    st.classList.toggle("live", fresh && D.positions.length > 0);
+    if (!D.positions.length) $("statusText").textContent = "Read " + time(when(D.snapshot_utc));
+    else $("statusText").textContent = fresh ? "Live" : "Prices " + time(new Date(D.marks_live ? D.built_utc : D.snapshot_utc));
+    const age = Date.now() - when(D.snapshot_utc).getTime(), b = $("banner");
+    b.hidden = age < 3 * 3600e3;
+    b.className = "banner" + (age > 24 * 3600e3 ? " bad" : "");
+    b.textContent = "The account was last read " + ago(age) + ". Trades and position changes since then are not shown yet.";
+    $("foot").textContent = "Tidebot reads the account every hour (read-only) and the prices every minute. " +
+      "Last account read " + ago(age) + ". P&L before fees.";
+  }
+
+  function rangeStart(points) {
+    const now = Date.now();
+    if (range === "1d") return now - 864e5;
+    if (range === "7d") return now - 7 * 864e5;
+    return points.length ? points[0].t : now - 864e5;
+  }
+
+  function renderChart(A) {
+    const box = $("chart"), all = D.history.map(h => ({t: when(h.utc).getTime(), v: h.equity}));
+    all.push({t: Date.now(), v: A.value});
+    const t0 = rangeStart(all);
+    let pts = all.filter(p => p.t >= t0);
+    const before = all.filter(p => p.t < t0);
+    if (before.length) pts.unshift({t: t0, v: before[before.length - 1].v});   // the value as the range starts
+    if (pts.length < 2) pts = all.slice(-2);
+    const first = pts[0], last = pts[pts.length - 1], diff = last.v - first.v;
+    $("delta").replaceChildren(make("span", tone(diff), (diff >= 0 ? "▲ " : "▼ ") + usd(Math.abs(diff)) + " (" + pct(first.v ? diff / first.v : 0, true) + ")"),
+      make("span", null, range === "1d" ? " · past 24 hours" : range === "7d" ? " · past 7 days" : " · since " + date(new Date(first.t))));
+    $("axisFrom").textContent = range === "1d" ? time(new Date(first.t)) : date(new Date(first.t));
+    $("axisTo").textContent = "now";
+    const W = Math.max(box.clientWidth, 200), H = box.clientHeight || 170, pad = 20;   // the high and low labels sit in the padding
+    let lo = Math.min(...pts.map(p => p.v)), hi = Math.max(...pts.map(p => p.v));
+    if (hi - lo < 1e-9) { lo -= 1; hi += 1; }
+    const tA = first.t, tB = Math.max(last.t, tA + 1);
+    const X = t => (t - tA) / (tB - tA) * W, Y = v => pad + (1 - (v - lo) / (hi - lo)) * (H - 2 * pad);
+    const ns = "http://www.w3.org/2000/svg", svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const color = diff >= 0 ? "var(--up)" : "var(--down)";
+    const line = pts.map((p, i) => (i ? "L" : "M") + X(p.t).toFixed(1) + "," + Y(p.v).toFixed(1)).join("");
+    svg.innerHTML = `<defs><linearGradient id="fade" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".22"/>` +
+      `<stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>` +
+      `<line x1="0" x2="${W}" y1="${Y(first.v).toFixed(1)}" y2="${Y(first.v).toFixed(1)}" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="4 4"/>` +
+      `<path d="${line}L${W},${H}L0,${H}Z" fill="url(#fade)"/>` +
+      `<path d="${line}" fill="none" stroke="${color}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>` +
+      `<circle cx="${X(last.t).toFixed(1)}" cy="${Y(last.v).toFixed(1)}" r="4" fill="${color}" stroke="var(--card)" stroke-width="2"/>` +
+      `<line id="hair" y1="0" y2="${H}" stroke="var(--muted)" stroke-width="1" visibility="hidden"/>` +
+      `<circle id="hdot" r="4" fill="${color}" stroke="var(--card)" stroke-width="2" visibility="hidden"/>`;
+    box.querySelectorAll("svg,.ylab").forEach(e => e.remove());
+    box.prepend(svg);
+    const top = make("span", "ylab num", usd(hi)), bot = make("span", "ylab num", usd(lo));
+    top.style.top = "0"; bot.style.bottom = "0";
+    box.append(top, bot);
+    box.setAttribute("aria-label", "Account value from " + usd(first.v) + " to " + usd(last.v));
+    const tip = $("tip"), hair = svg.querySelector("#hair"), hdot = svg.querySelector("#hdot");
+    const show = ev => {
+      const r = box.getBoundingClientRect(), x = Math.min(Math.max(ev.clientX - r.left, 0), r.width) * W / r.width;
+      let best = pts[0];
+      for (const p of pts) if (Math.abs(X(p.t) - x) < Math.abs(X(best.t) - x)) best = p;
+      const bx = X(best.t), by = Y(best.v);
+      hair.setAttribute("x1", bx); hair.setAttribute("x2", bx); hair.setAttribute("visibility", "visible");
+      hdot.setAttribute("cx", bx); hdot.setAttribute("cy", by); hdot.setAttribute("visibility", "visible");
+      tip.textContent = usd(best.v) + " · " + (best === last ? "now" : date(new Date(best.t)) + " " + time(new Date(best.t)));
+      tip.style.display = "block";
+      tip.style.left = Math.min(Math.max(bx * r.width / W, 60), r.width - 60) + "px";
+    };
+    const hide = () => { tip.style.display = "none"; hair.setAttribute("visibility", "hidden"); hdot.setAttribute("visibility", "hidden"); };
+    box.onpointermove = show; box.onpointerdown = show; box.onpointerleave = hide; box.onpointercancel = hide;
+    document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.range === range)));
+  }
+
+  function renderRisk(A) {
+    const box = $("risk");
+    box.hidden = !A.pos.length || A.cushion == null;
+    if (box.hidden) return;
+    const val = $("riskVal"), bar = $("riskBar"), note = $("riskNote");
+    if (A.cushion <= 0) {
+      val.textContent = "At the line"; val.className = "risk-val num down";
+      bar.style.width = "100%"; bar.style.background = "var(--down)";
+      note.textContent = "The account value is at or below the maintenance margin (" + usd(D.maint) + "): Kraken closes positions from here.";
+      return;
+    }
+    if (A.move == null) {
+      val.textContent = "Hedged"; val.className = "risk-val num up";
+      bar.style.width = "100%"; bar.style.background = "var(--up)";
+      note.textContent = "Longs and shorts balance out: moving all coins together does not reach the maintenance margin.";
+      return;
+    }
+    if (A.move <= -1) {
+      val.textContent = "Out of reach"; val.className = "risk-val num up";
+      bar.style.width = "100%"; bar.style.background = "var(--up)";
+      note.textContent = "Even if every coin fell to zero, the account would stay above its maintenance margin of " + usd(D.maint) + ".";
+      return;
+    }
+    const t = riskTone(A.move);
+    val.textContent = pct(Math.abs(A.move)); val.className = "risk-val num " + t;
+    bar.style.width = Math.min(100, Math.abs(A.move) / 0.25 * 100) + "%"; bar.style.background = `var(--${t})`;
+    note.textContent = "Liquidation starts if every coin " + (A.move < 0 ? "falls " : "rises ") + pct(Math.abs(A.move)) +
+      " at once. The account is " + usd(A.cushion) + " above its maintenance margin of " + usd(D.maint) +
+      " (cross margin). Each position's liquidation price below is for that coin moving alone.";
+  }
+
+  function renderPositions(A) {
+    const box = $("positions");
+    $("posCount").textContent = A.pos.length;
+    if (!A.pos.length) { box.replaceChildren(make("div", "card empty", "No open positions.")); return; }
+    box.replaceChildren(...A.pos.map(p => {
+      const card = make("article", "card");
+      const top = make("div", "pos-top"), coin = make("div", "coin", p.coin);
+      coin.append(make("span", "pill " + (p.s > 0 ? "long" : "short"), p.side));
+      const pnl = make("div", "pnl num " + tone(p.pnl), usd(p.pnl, true));
+      pnl.append(make("small", null, pct(p.move, true)));
+      top.append(coin, pnl);
+      const cell = (grid, k, v, sub, cls) => {
+        const c = make("div");
+        c.append(make("span", null, k), make("b", "num", v));
+        if (sub) c.append(make("small", "num " + (cls || "muted"), sub));
+        grid.append(c);
+      };
+      const g1 = make("div", "grid4"), g2 = make("div", "grid4 minor");
+      cell(g1, "Size", qty(p.qty)); cell(g1, "Entry", price(p.entry)); cell(g1, "Now", price(p.now)); cell(g1, "Value", usd(p.value));
+      cell(g2, "Liquidation", p.liq == null ? "–" : price(p.liq), p.liq == null ? null : pct(p.liqDist, true),
+           p.liq == null ? null : {down: "down", warn: "warn", up: "muted"}[riskTone(p.liqDist)]);
+      if (D.orders_read) {
+        cell(g2, "Stop", p.stop == null ? "none" : price(p.stop), p.stop == null ? null : pct(p.stop / p.now - 1, true));
+        cell(g2, "Take profit", p.tp == null ? "none" : price(p.tp), p.tp == null ? null : pct(p.tp / p.now - 1, true));
+      } else {
+        cell(g2, "Stop", "not read"); cell(g2, "Take profit", "not read");
+      }
+      cell(g2, "Funding", p.funding == null ? "–" : usd(p.funding, true));
+      card.append(top, g1, g2);
+      return card;
+    }));
+  }
+
+  function renderTrades() {
+    const box = $("trades");
+    if (D.trades == null) { box.replaceChildren(make("div", "empty", "Trades show up here after the next hourly account read.")); return; }
+    if (!D.trades.length) { box.replaceChildren(make("div", "empty", "No trades among Kraken's last 100 fills.")); return; }
+    const rows = [];
+    let day = null;
+    for (const t of D.trades) {
+      const d = when(t.utc);
+      if (dayKey(d) !== day) { day = dayKey(d); rows.push(make("div", "day", dayName(d))); }
+      const row = make("div", "trade"), what = make("div", "what"), l1 = make("div", "l1", t.coin);
+      l1.append(make("span", "pill " + t.side, t.side === "buy" ? "Buy" : "Sell"));
+      if (t.kind === "liquidation") l1.append(make("span", "pill liq", "Liquidation"));
+      const span = t.end && time(when(t.end)) !== time(d) ? time(d) + "–" + time(when(t.end)) : time(d);
+      what.append(l1, make("div", "l2 num", qty(t.qty) + " @ " + price(t.price) + " · " + span));
+      const amt = make("div", "amt num", usd(t.value));
+      if (t.pnl != null && Math.abs(t.pnl) >= 0.005) amt.append(make("small", tone(t.pnl), usd(t.pnl, true) + " P&L"));
+      row.append(make("div", "ic", t.coin.slice(0, 4)), what, amt);
+      rows.push(row);
+    }
+    box.replaceChildren(...rows);
+  }
+
+  function render() {
+    const A = account();
+    $("value").textContent = usd(A.value);
+    document.title = usd(A.value) + " · Tidebot";
+    $("free").textContent = usd(A.free);
+    $("free").className = "num " + (A.free != null && A.free < 0 ? "down" : "");
+    $("lev").textContent = A.lev == null ? "–" : A.lev.toFixed(1) + "×";
+    $("lev").className = "num " + (A.lev >= 10 ? "down" : A.lev >= 5 ? "warn" : "");
+    $("notional").textContent = usd(A.notional);
+    renderStatus();
+    renderChart(A);
+    renderRisk(A);
+    renderPositions(A);
+    renderTrades();
+  }
+
+  async function refreshPrices() {
+    if (document.hidden || !D.positions.length) return;
+    let ok = false;
+    await Promise.all([...new Set(D.positions.map(p => p.coin))].map(async c => {
+      const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 10e3);
+      try {
+        const r = await fetch("https://api.kraken.com/0/public/Ticker?pair=" + encodeURIComponent(SPOT[c] || c + "USD"), {signal: ctl.signal});
+        const j = await r.json(), k = j && j.result && Object.keys(j.result)[0];
+        const v = k ? parseFloat(j.result[k].c[0]) : NaN;
+        if (v > 0 && isFinite(v)) { live[c] = {px: v, t: Date.now()}; ok = true; }
+      } catch (e) { /* this coin keeps its last price */ }
+      clearTimeout(to);
+    }));
+    if (ok) lastLive = Date.now();
+    render();
+  }
+
+  async function refreshData() {
+    if (document.hidden) return;
+    try {
+      const r = await fetch("data.json?t=" + Date.now(), {cache: "no-store"});
+      if (!r.ok) return;
+      const n = await r.json();
+      if (n && Array.isArray(n.positions) && n.built_utc !== D.built_utc) { D = n; render(); }
+    } catch (e) { /* keep the data we have */ }
+  }
+
+  document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => {
+    range = b.dataset.range;
+    try { localStorage.setItem("tidebot.range", range); } catch (e) { /* not remembered */ }
+    render();
+  }));
+  let resizeT;
+  window.addEventListener("resize", () => { clearTimeout(resizeT); resizeT = setTimeout(render, 150); });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) { refreshData(); refreshPrices(); } });
+  render();
+  refreshPrices();
+  setInterval(refreshPrices, 60e3);
+  setInterval(refreshData, 5 * 60e3);
+  setInterval(renderStatus, 30e3);
+})();
 </script>
 </body></html>

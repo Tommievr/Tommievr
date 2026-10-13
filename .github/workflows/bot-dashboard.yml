@@ -1,14 +1,12 @@
 name: bot-dashboard
 
-# Public bot dashboard on GitHub Pages (dashboard/build.py + dashboard/template.html): the live 5-coin trend bot
-# ("5-coin trend bot (test)"), counted from its restart on 7 Oct 2026 20:05 UTC at $95.19. It shows the open legs,
-# closed trades, fees, funding and the value history; the browser re-prices the open legs every minute from Kraken's
-# public prices.
-# The build reads the bot's live journal and state from the private repo Tommievr/tradingbot (main) with the
-# read-only token TRADINGBOT_READ_TOKEN, plus the read-only Kraken positions snapshot (positions.json on the
-# tradingbot branch positions-data, every 6 h) with the same token: when that snapshot is newer than the journal, the
-# page shows the positions as they are on Kraken. No Kraken key is in this repo. A file dashboard/PAUSED publishes the blank
-# offline page instead.
+# Public dashboard "Tidebot" on GitHub Pages (dashboard/build.py + dashboard/template.html): the Kraken Futures
+# account's value and its history, the distance to liquidation, the open positions and the recent trades. The browser
+# re-prices the positions every minute from Kraken's public prices and re-reads data.json every 5 minutes.
+# The build reads the read-only account snapshot (positions.json on the branch positions-data of the private repo
+# Tommievr/tradingbot, written every hour there by ops/positions_snapshot.py) with the read-only token
+# TRADINGBOT_READ_TOKEN. No Kraken key is in this repo. When the snapshot cannot be read, nothing is deployed and the
+# last page stays up (it shows how old its data is). A file dashboard/PAUSED publishes the blank offline page instead.
 on:
   push:
     branches: [main]
@@ -38,17 +36,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build page
+        id: build
         env:
           TRADINGBOT_READ_TOKEN: ${{ secrets.TRADINGBOT_READ_TOKEN }}
         run: |
           if [ -f dashboard/PAUSED ]; then
             mkdir -p site && cp dashboard/paused.html site/index.html
             echo '{"paused": true}' > site/meta.json
+            echo "deploy=1" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          rc=0
+          python3 dashboard/build.py || rc=$?
+          if [ "$rc" -eq 3 ]; then
+            echo "::warning::the account snapshot could not be read; the last page stays up"
+            echo "deploy=0" >> "$GITHUB_OUTPUT"
+          elif [ "$rc" -ne 0 ]; then
+            exit "$rc"
           else
-            python3 dashboard/build.py
+            echo "deploy=1" >> "$GITHUB_OUTPUT"
           fi
       - uses: actions/upload-pages-artifact@v3
+        if: steps.build.outputs.deploy == '1'
         with:
           path: site
       - id: deploy
+        if: steps.build.outputs.deploy == '1'
         uses: actions/deploy-pages@v4

@@ -1,292 +1,210 @@
 #!/usr/bin/env python3
-"""Build the phone dashboard of the live 5-coin bot (read-only: no Kraken keys, no orders).
+"""Build Tidebot: the public phone dashboard of the Kraken Futures account (read-only: no Kraken key, no orders).
 
-Reads the live journal of Tommievr/tradingbot (via the GitHub API with a read-only token in
-TRADINGBOT_READ_TOKEN) and the public Kraken Futures tickers, and writes site/index.html.
+Reads the read-only account snapshot (positions.json on the branch positions-data of the private repo
+Tommievr/tradingbot, written every hour by its ops/positions_snapshot.py) with the read-only token
+TRADINGBOT_READ_TOKEN, re-prices the open positions with Kraken's public futures prices, groups the account's last
+fills into trades, and writes site/index.html (the page, its data inline) and site/data.json (the same data, which
+the open page re-reads every few minutes). The browser re-prices the positions every minute from Kraken's public
+prices and works out the account value, the P&L and the distance to liquidation itself.
 
-Kraken is the truth when its read-only positions snapshot (positions.json on the tradingbot branch positions-data,
-written every 6 hours by ops/positions_snapshot.py) is newer than the bot's last journal record: while the bot is
-paused, a stop or TP1 fill on Kraken never reaches the journal. A missing, stale or older snapshot falls back to the
-journal alone, with a note on the page.
+Exit codes: 0 built, 3 no snapshot could be read (nothing written: the workflow keeps the last page up).
+Local test: SNAPSHOT_FILE=dashboard/sample/positions.json NO_NETWORK=1 python3 dashboard/build.py
 """
 import json
+import math
 import os
-import time
+import re
+import sys
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-ORDER = ["BTC", "ETH", "SOL", "XRP", "BNB"]
-PERP = {"BTC": "PF_XBTUSD", "ETH": "PF_ETHUSD", "SOL": "PF_SOLUSD", "XRP": "PF_XRPUSD", "BNB": "PF_BNBUSD"}
-START_EQ = 95.19       # 7 Oct 2026 restart at 5% risk per coin (Tommie): the page counts from here
-RESTART_UTC = "2026-10-07T20:05:00Z"   # journal rows before this belong to the first run (4-7 Oct), not shown
-TAKER, MAKER = 0.0005, 0.0002   # Kraken Futures base-tier fees, as in tradingbot ruleb_tp2/config.py
-JOURNAL = "ruleb_tp2/state_live/5coin/ruleb_tp2_live_journal.jsonl"
-STATE = "ruleb_tp2/state_live/5coin/ruleb_tp2_live_state.json"
-SNAPSHOT = "positions.json"            # on the tradingbot branch positions-data (read-only Kraken snapshot)
-SNAPSHOT_REF = "positions-data"
-SNAPSHOT_MAX_AGE_H = 9                 # written every 6 h; older than this counts as stale
-# Banner on top of the page; set to None (or "") to remove it once the bot runs again.
-PAUSED_BANNER = "Bot paused since 8 Oct 2026; open positions are protected by their stop and TP1 orders on Kraken"
+NAME = "Tidebot"
+REPO = "Tommievr/tradingbot"
+SNAPSHOT, SNAPSHOT_REF = "positions.json", "positions-data"
+ORDER = ["BTC", "ETH", "SOL", "XRP", "BNB"]     # these first on the page, then the others by size
+TRADE_GAP_S = 15 * 60       # fills of one coin, side and kind, each within 15 minutes of the last, are one trade
+TRADES_MAX = 40
+KINDS = ("taker", "maker", "liquidation", "other")
 FMT = "%Y-%m-%dT%H:%M:%SZ"
-HERE = Path(__file__).parent
+COIN = re.compile(r"[A-Z0-9]{1,12}")
+HERE = Path(__file__).resolve().parent
 
 
 def get(url, headers=None):
-    req = urllib.request.Request(url, headers={"User-Agent": "bot-dashboard", **(headers or {})})
+    req = urllib.request.Request(url, headers={"User-Agent": "tidebot-dashboard", **(headers or {})})
     with urllib.request.urlopen(req, timeout=30) as r:
         return r.read()
 
 
-def repo_file(path, env, ref="main"):
-    if os.environ.get(env):
-        return Path(os.environ[env]).read_text()
-    return get(f"https://api.github.com/repos/Tommievr/tradingbot/contents/{path}?ref={ref}", {
+def num(x):
+    """A finite float, else None (bools are not numbers here)."""
+    if isinstance(x, bool):
+        return None
+    try:
+        v = float(x)
+    except (TypeError, ValueError):
+        return None
+    return v if math.isfinite(v) else None
+
+
+def utc(s):
+    """'2026-10-13T06:01:59Z' -> the same string when it is a valid time in that format, else None."""
+    try:
+        return s if datetime.strptime(s, FMT).strftime(FMT) == s else None
+    except (TypeError, ValueError):
+        return None
+
+
+def epoch(s):
+    return datetime.strptime(s, FMT).replace(tzinfo=timezone.utc).timestamp()
+
+
+def stamp(t):
+    return datetime.fromtimestamp(t, timezone.utc).strftime(FMT)
+
+
+def read_snapshot():
+    if os.environ.get("SNAPSHOT_FILE"):
+        return json.loads(Path(os.environ["SNAPSHOT_FILE"]).read_text())
+    return json.loads(get(f"https://api.github.com/repos/{REPO}/contents/{SNAPSHOT}?ref={SNAPSHOT_REF}", {
         "Authorization": f"Bearer {os.environ['TRADINGBOT_READ_TOKEN']}",
         "Accept": "application/vnd.github.raw",
-    }).decode()
+    }))
 
 
-def journal_rows():
-    rows = [json.loads(l) for l in repo_file(JOURNAL, "JOURNAL_FILE").splitlines() if l.strip()]
-    return [r for r in rows if r["utc"] >= RESTART_UTC]
+def perp(coin):
+    return f"PF_{'XBT' if coin == 'BTC' else coin}USD"
 
 
-def halted_flat(rows, last):
-    """(reason, equity) when the bot was HALTED and flattened after its last run summary (the kill switch writes
-    no run summary), else None. The equity is the book's cash after the flatten (= the Kraken equity it read)."""
-    after = rows[rows.index(last) + 1:]
-    halt = next((r for r in reversed(after) if r["kind"] == "halt"), None)
-    flat = any(r["kind"] == "flatten_done" and not r["payload"].get("left") for r in after)
-    if halt is None or not flat:
-        return None
-    try:
-        eq = float(json.loads(repo_file(STATE, "STATE_FILE"))["engine"]["cash"])
-    except Exception as e:  # keep building on the journal alone
-        print("state read failed:", e)
-        eq = None
-    return halt["payload"].get("reason") or "halted", eq, halt["utc"]
-
-
-def _epoch(utc):
-    return datetime.strptime(utc, FMT).replace(tzinfo=timezone.utc).timestamp()
-
-
-def kraken_snapshot(last_journal_utc, now_epoch):
-    """(snapshot, note): the snapshot when it is usable (readable, at most SNAPSHOT_MAX_AGE_H old and newer than the
-    bot's last journal record), else None and, when it is missing or stale, a note for the page."""
-    try:
-        snap = json.loads(repo_file(SNAPSHOT, "SNAPSHOT_FILE", SNAPSHOT_REF))
-        age_h = (now_epoch - _epoch(snap["snapshot_utc"])) / 3600
-        float(snap["equity"])
-        snap["positions"] = [p for p in snap.get("positions") or [] if p.get("coin") in ORDER]
-    except Exception as e:  # keep building on the journal alone
-        print("positions snapshot not read:", e)
-        return None, "No Kraken positions snapshot could be read, so positions are as of the last bot run " \
-                     "(a stop or TP1 fill since then is not shown)."
-    if age_h > SNAPSHOT_MAX_AGE_H:
-        return None, f"The Kraken positions snapshot is {age_h:.0f} h old, so positions are as of the last bot " \
-                     "run (a stop or TP1 fill since then is not shown)."
-    if snap["snapshot_utc"] <= last_journal_utc:
-        return None, None   # the bot ran after the snapshot: its journal is the newer view
-    return snap, None
-
-
-def closed_reason(leg, price):
-    """Which order closed a bot leg that is gone on Kraken, inferred from the price: past the stop -> stop, past the
-    take profit -> TP, otherwise the nearer of the two. Returns (reason, exit level)."""
-    side, stop, tp = leg["side"], leg.get("trail") or leg.get("stop"), leg.get("tp")
-    if stop is None and tp is None:
-        return "closed", None
-    if tp is None or (stop is not None and price is not None and (price - stop) * side <= 0):
-        return "stop hit", stop
-    if stop is None or (price is not None and (price - tp) * side >= 0):
-        return ("TP filled" if leg.get("tp_done") else "TP1 filled"), tp
-    if price is None or abs(price - stop) <= abs(price - tp):
-        return "stop hit", stop
-    return ("TP filled" if leg.get("tp_done") else "TP1 filled"), tp
-
-
-def kraken_marks():
+def futures_marks(coins):
+    """{coin: Kraken's mark price now} for the coins held; empty when Kraken is not reachable."""
+    if not coins or os.environ.get("NO_NETWORK"):
+        return {}
     try:
         tickers = json.loads(get("https://futures.kraken.com/derivatives/api/v3/tickers"))["tickers"]
-    except Exception as e:  # keep the page building on the last bot marks
-        print("kraken tickers failed:", e)
+        by_sym = {str(t.get("symbol", "")).upper(): t for t in tickers}
+    except Exception as e:  # the page then starts from the snapshot's prices
+        print("kraken tickers failed:", type(e).__name__)
         return {}
-    by_sym = {t["symbol"]: t for t in tickers}
-    return {c: float(by_sym[p]["markPrice"]) for c, p in PERP.items() if p in by_sym and by_sym[p].get("markPrice")}
+    out = {}
+    for c in coins:
+        mark = num((by_sym.get(perp(c)) or {}).get("markPrice"))
+        if mark and mark > 0:
+            out[c] = mark
+    return out
 
 
-def funding_rates(perp):
-    """Kraken's hourly funding as [(hour start epoch_s, USD per contract per hour, fraction of notional)], oldest
-    first; None when unavailable."""
-    try:
-        rates = json.loads(get(f"https://futures.kraken.com/derivatives/api/v4/historicalfundingrates?symbol={perp}"))["rates"]
-        return sorted((datetime.fromisoformat(r["timestamp"].replace("Z", "+00:00")).timestamp(), float(r["fundingRate"]),
-                       float(r["relativeFundingRate"])) for r in rates)
-    except Exception as e:
-        print("funding failed:", perp, e)
+def positions(snap):
+    out = []
+    for p in snap.get("positions") or []:
+        if not isinstance(p, dict):
+            continue
+        coin, side = str(p.get("coin", "")), p.get("side")
+        qty, entry, mark = num(p.get("qty")), num(p.get("entry")), num(p.get("mark"))
+        if not COIN.fullmatch(coin) or side not in ("Long", "Short") or not (
+                qty and qty > 0 and entry and entry > 0 and mark and mark > 0):
+            continue
+        out.append({"coin": coin, "side": side, "qty": qty, "entry": entry, "mark_snap": mark,
+                    "stop": num(p.get("stop")), "tp": num(p.get("tp")), "liq_snap": num(p.get("liq")),
+                    "funding": num(p.get("funding")), "funding_rate": num(p.get("funding_rate"))})
+    out.sort(key=lambda p: (ORDER.index(p["coin"]) if p["coin"] in ORDER else len(ORDER), -p["qty"] * p["mark_snap"]))
+    return out
+
+
+def maintenance(snap, pos, equity):
+    """The account's maintenance margin: from the snapshot, or worked back from a position's liquidation price
+    (the snapshot puts it where the value would reach the maintenance margin if only that coin moved)."""
+    m = num(snap.get("maint"))
+    if m is not None:
+        return m
+    for p in pos:
+        if p["liq_snap"]:
+            side = 1 if p["side"] == "Long" else -1
+            return equity - side * p["qty"] * (p["mark_snap"] - p["liq_snap"])
+    return None
+
+
+def trades(fills):
+    """The fills as trades, latest first: one coin's fills of one side and kind, each within TRADE_GAP_S of the last
+    and with no other fill of that coin in between, are one trade (one order filled in parts, or a liquidation done
+    in steps). None when the snapshot has no fill list (unknown, not "no trades")."""
+    if not isinstance(fills, list):
         return None
-
-
-def funding_paid(rates, side, qty, t0, t1):
-    """Funding over [t0, t1] (+ received, - paid; > 0 rate = longs pay): each hour's rate accrues for the part of
-    that hour held, x the size (as Kraken accrues it)."""
-    total = 0.0
-    for ts, rate, _ in rates:
-        held = min(ts + 3600, t1) - max(ts, t0)
-        if held > 0:
-            total -= side * qty * rate * held / 3600
-    return total
-
-
-def fees_paid(rows):
-    """Trading fees per coin since the restart, estimated from the journal's fills at Kraken's fee rates."""
-    fees = {c: 0.0 for c in ORDER}
-    flat_runs = {r["run_id"] for r in rows if r["kind"] == "halt"}
-    for r in rows:
-        p, k = r["payload"], r["kind"]
-        if k in ("order_filled", "entry_fallback_filled", "entry_limit_fill", "resting_fill") and p.get("price"):
-            rate = MAKER if k == "entry_limit_fill" or p.get("what") == "tp" else TAKER
-        elif k == "order_send" and r["run_id"] in flat_runs and p.get("reduce_only"):
-            rate = TAKER   # flatten closes: the journal keeps only the order (its IOC limit stands in for the fill)
-        else:
+    clean = []
+    for f in fills:
+        if not isinstance(f, dict):
             continue
-        if p.get("sym") in fees:
-            fees[p["sym"]] += rate * float(p.get("qty") or p.get("size")) * float(p["price"])
-    return fees
+        t, coin, side, kind = utc(f.get("utc")), str(f.get("coin", "")), f.get("side"), f.get("kind")
+        qty, px = num(f.get("qty")), num(f.get("price"))
+        if t and COIN.fullmatch(coin) and side in ("buy", "sell") and qty and qty > 0 and px and px > 0:
+            clean.append((epoch(t), coin, side, kind if kind in KINDS else "other", qty, px, num(f.get("pnl"))))
+    clean.sort(key=lambda f: f[0])
+    groups, last = [], {}
+    for t, coin, side, kind, qty, px, pnl in clean:
+        g = last.get(coin)
+        if g is None or (g["side"], g["kind"]) != (side, kind) or t - g["t1"] > TRADE_GAP_S:
+            g = {"t0": t, "coin": coin, "side": side, "kind": kind, "qty": 0.0, "value": 0.0, "pnl": None, "fills": 0}
+            groups.append(g)
+            last[coin] = g
+        g["t1"] = t
+        g["qty"] += qty
+        g["value"] += qty * px
+        g["fills"] += 1
+        if pnl is not None:
+            g["pnl"] = (g["pnl"] or 0.0) + pnl
+    groups.sort(key=lambda g: g["t1"])                  # the latest activity first on the page
+    return [{"utc": stamp(g["t0"]), "end": stamp(g["t1"]) if g["t1"] > g["t0"] else None, "coin": g["coin"],
+             "side": g["side"], "kind": g["kind"], "qty": g["qty"], "price": g["value"] / g["qty"],
+             "value": g["value"], "pnl": g["pnl"], "fills": g["fills"]} for g in reversed(groups[-TRADES_MAX:])]
 
 
-def build():
-    rows = journal_rows()
-    fees = fees_paid(rows)
-    entered = {}
-    for r in rows:
-        if r["kind"] == "entry_filled":
-            entered[r["payload"]["sym"]] = r["ts"]
-    runs = [r for r in rows if r["kind"] == "run_summary"]
-    last = runs[-1]
-    p = last["payload"]
-    stopped = halted_flat(rows, last)
-    if stopped:      # flattened by the kill switch: no legs, the equity after the flatten, the halt's time
-        reason, eq_after, halt_utc = stopped
-        p = {**p, "legs": {}, "status": "halted", "halted": reason,
-             "equity_usd": eq_after if eq_after is not None else p.get("equity_usd")}
-        last = {**last, "utc": halt_utc, "payload": p}
-    run_marks = p.get("marks") or {}
-    live = kraken_marks()
-    marks = {c: live.get(c, run_marks.get(c)) for c in ORDER}
-    snap, snap_note = kraken_snapshot(rows[-1]["utc"], time.time())
-    if snap:
-        return build_from_snapshot(rows, runs, last, p, snap, live, fees, entered, run_marks)
-
-    legs, eq_move = [], 0.0
-    for sym in ORDER:
-        leg = (p.get("legs") or {}).get(sym)
-        mark = marks.get(sym)
-        if not leg:
-            legs.append({"sym": sym, "open": False, "mark": mark})
-            continue
-        side, entry, qty = leg["side"], leg["entry"], leg["qty"]
-        stop = leg.get("trail") or leg.get("stop")
-        if mark and run_marks.get(sym):
-            eq_move += (mark - run_marks[sym]) * qty * side
-        legs.append({
-            "sym": sym, "open": True, "side": "Long" if side > 0 else "Short",
-            "entry": entry, "mark": mark, "qty": qty, "stop": stop, "tp": leg.get("tp"),
-            "liq": leg.get("liq"), "tp_done": bool(leg.get("tp_done")), "trailing": leg.get("trail") is not None,
-            "stop_hit": bool(mark and stop and (mark - stop) * side <= 0),
-            "pnl_pct": (mark / entry - 1) * 100 * side if mark else None,
-            "pnl_usd": (mark - entry) * qty * side if mark else None, "fees": fees[sym],
-        })
-
-    eq = p["equity_usd"] + eq_move if p.get("equity_usd") is not None else None
-    history = [{"utc": r["utc"], "equity": r["payload"].get("equity_usd")} for r in runs[-120:]]
-    write_page(legs, eq, history, last, p, fees, entered, live,
-               {"source": "journal", "snapshot_note": snap_note})
+def history(snap):
+    pts = [{"utc": h["utc"], "equity": num(h["equity"])} for h in snap.get("history") or []
+           if isinstance(h, dict) and utc(h.get("utc")) and num(h.get("equity")) is not None]
+    return sorted(pts, key=lambda h: h["utc"])
 
 
-def build_from_snapshot(rows, runs, last, p, snap, live, fees, entered, run_marks):
-    """Kraken is the truth: per coin the position on Kraken (size, entry, its stop / TP1 orders); a bot leg that is
-    gone on Kraken shows as closed, with the order that closed it inferred from the price."""
-    pos = {x["coin"]: x for x in snap["positions"]}
-    orders_read = bool(snap.get("orders_read"))
-    legs, eq_move = [], 0.0
-    for sym in ORDER:
-        leg = (p.get("legs") or {}).get(sym)
-        kp = pos.get(sym)
-        mark = live.get(sym) or (kp or {}).get("mark") or run_marks.get(sym)
-        if kp is None:
-            if leg:      # the bot's leg is gone on Kraken: a stop or TP filled while the bot was not looking
-                why, exit_px = closed_reason(leg, mark)
-                side = leg["side"]
-                legs.append({"sym": sym, "open": False, "closed": why, "mark": mark,
-                             "side": "Long" if side > 0 else "Short", "entry": leg["entry"], "qty": leg["qty"],
-                             "exit": exit_px,
-                             "pnl_usd": (exit_px - leg["entry"]) * leg["qty"] * side if exit_px else None,
-                             "pnl_pct": (exit_px / leg["entry"] - 1) * 100 * side if exit_px else None})
-            else:
-                legs.append({"sym": sym, "open": False, "mark": mark})
-            continue
-        side = 1 if kp["side"] == "Long" else -1
-        qty, entry = float(kp["qty"]), float(kp["entry"])
-        if mark and kp.get("mark"):
-            eq_move += (mark - float(kp["mark"])) * qty * side
-        bot_stop = (leg.get("trail") or leg.get("stop")) if leg else None
-        stop = kp.get("stop") if kp.get("stop") is not None else bot_stop
-        tp = kp.get("tp") if kp.get("tp") is not None else (leg.get("tp") if leg else None)
-        # TP1 filled on Kraken: the bot's TP1 order is gone and the size shrank
-        tp_done = bool(leg and (leg.get("tp_done") or (orders_read and kp.get("tp") is None
-                                                        and qty < float(leg["qty"]) - 1e-12)))
-        legs.append({
-            "sym": sym, "open": True, "side": kp["side"], "entry": entry, "mark": mark, "qty": qty,
-            "stop": stop, "tp": tp, "liq": kp.get("liq"), "tp_done": tp_done,
-            "trailing": bool(leg and leg.get("trail") is not None),
-            "stop_order": (kp.get("stop") is not None) if orders_read else None,
-            "tp_order": (kp.get("tp") is not None) if orders_read else None,
-            "not_bot": leg is None,
-            "stop_hit": bool(mark and stop and (mark - stop) * side <= 0),
-            "pnl_pct": (mark / entry - 1) * 100 * side if mark else None,
-            "pnl_usd": (mark - entry) * qty * side if mark else None, "fees": fees[sym],
-        })
-    eq = float(snap["equity"]) + eq_move
-    history = [{"utc": r["utc"], "equity": r["payload"].get("equity_usd")} for r in runs[-120:]]
-    history += [h for h in snap.get("history") or [] if h.get("utc", "") > last["utc"]]
-    write_page(legs, eq, history, last, p, fees, entered, live,
-               {"source": "kraken", "snapshot_utc": snap["snapshot_utc"], "snapshot_equity": float(snap["equity"]),
-                "orders_read": orders_read})
-
-
-def write_page(legs, eq, history, last, p, fees, entered, live, extra):
-    notional, funding = 0.0, 0.0
-    for l in legs:
-        if l["open"] and l["mark"]:
-            l["notional"] = l["qty"] * l["mark"]
-            l["lev"] = l["notional"] / eq if eq else None
-            notional += l["notional"]
-            # estimate: longs pay when the rate is positive; the current size, since this entry
-            since = entered.get(l["sym"], 0)
-            side = 1 if l["side"] == "Long" else -1
-            rates = funding_rates(PERP[l["sym"]])
-            l["funding"] = None if rates is None else funding_paid(rates, side, l["qty"], since, time.time())
-            l["funding_rate"] = rates[-1][2] if rates else None  # latest hourly rate, fraction of notional
-            funding = None if funding is None or l["funding"] is None else funding + l["funding"]
-    now = datetime.now(timezone.utc).strftime(FMT)
-    if eq is not None:
-        history.append({"utc": now, "equity": eq})
-    doc = {
-        "updated_utc": now, "run_utc": last["utc"], "status": p.get("status"), "halted": p.get("halted"),
-        "equity": eq, "notional": notional, "lev_total": notional / eq if eq else None, "funding": funding,
-        "fees": sum(fees.values()), "start_eq": START_EQ, "vs_start_pct": (eq / START_EQ - 1) * 100 if eq else None,
-        "legs": legs, "history": history, "banner": PAUSED_BANNER or None, **extra,
+def page_data(snap, marks, now):
+    snap_utc, equity = utc(snap.get("snapshot_utc")), num(snap.get("equity"))
+    if not snap_utc or equity is None:
+        raise ValueError("the snapshot has no time or account value")
+    pos = positions(snap)
+    for p in pos:
+        p["mark"] = marks.get(p["coin"], p["mark_snap"])
+    return {
+        "name": NAME, "built_utc": now.strftime(FMT), "snapshot_utc": snap_utc, "equity_snap": equity,
+        "available": num(snap.get("available")), "initial": num(snap.get("initial")),
+        "maint": maintenance(snap, pos, equity), "orders_read": snap.get("orders_read") is True,
+        "marks_live": bool(marks), "positions": pos, "trades": trades(snap.get("fills")), "history": history(snap),
     }
-    data = json.dumps(doc, separators=(",", ":")).replace("</", "<\\/")
-    out = HERE.parent / "site"
-    out.mkdir(exist_ok=True)
-    (out / "meta.json").write_text(json.dumps({"built_utc": now, "journal_sha": os.environ.get("JOURNAL_SHA", "")}))
-    (out / "index.html").write_text((HERE / "template.html").read_text().replace("__DATA__", data))
-    print(f"built: equity {eq}, positions from {extra['source']}, prices from {'kraken' if live else 'last bot run'}")
+
+
+def write(doc, out):
+    data = json.dumps(doc, separators=(",", ":"), allow_nan=False)
+    inline = data.replace("<", "\\u003c")        # nothing in the data can end the script tag it sits in
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "data.json").write_text(data)
+    (out / "index.html").write_text((HERE / "template.html").read_text().replace("__DATA__", inline))
+
+
+def main():
+    now = datetime.now(timezone.utc)
+    try:
+        snap = read_snapshot()
+        doc = page_data(snap, {}, now)          # fails here on a snapshot without a time or value
+    except Exception as e:      # the token, GitHub or the file: only the kind of failure is printed
+        print("account snapshot not usable:", type(e).__name__, getattr(e, "code", ""))
+        return 3
+    marks = futures_marks([p["coin"] for p in doc["positions"]])
+    doc = page_data(snap, marks, now)
+    write(doc, HERE.parent / "site")
+    print(f"built {NAME}: snapshot {doc['snapshot_utc']}, {len(doc['positions'])} position(s), "
+          f"{'no' if doc['trades'] is None else len(doc['trades'])} trade(s), prices "
+          f"{'from Kraken now' if marks else 'from the snapshot'}")
+    return 0
 
 
 if __name__ == "__main__":
-    build()
+    sys.exit(main())
