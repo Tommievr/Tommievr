@@ -3,11 +3,13 @@
 
 Reads the read-only account snapshot (positions.json on the branch positions-data of the private repo
 Tommievr/tradingbot, written every hour by its ops/positions_snapshot.py) with the read-only token
-TRADINGBOT_READ_TOKEN, re-prices the open positions with Kraken's public futures prices, groups the account's last
-fills into trades, passes on the deposits and withdrawals (the page leaves them out of its gain or loss), and writes
-site/index.html (the page, its data inline) and site/data.json (the same data, which the open page re-reads every few
-minutes). The browser re-prices the positions every minute from Kraken's public prices and works out the account
-value and the P&L itself. The page shows no liquidation figures, so none are passed on.
+TRADINGBOT_READ_TOKEN, re-prices the open positions with Kraken's public futures prices, passes on each coin's result
+(from Kraken's account log: P&L, fees and funding) and the deposits and withdrawals (the page leaves them out of its
+gain or loss), and writes site/index.html (the page, its data inline) and site/data.json (the same data, which the
+open page re-reads every few minutes). The account value starts at FRESH_START: the value history and money moves
+before it are left out, while the results per coin keep everything the snapshot has, losses included. The browser
+re-prices the positions every minute from Kraken's public prices and works out the account value and the P&L itself.
+The page shows no liquidation figures and no trade list, so neither is passed on.
 
 Exit codes: 0 built, 3 no snapshot could be read (nothing written: the workflow keeps the last page up).
 Local test: SNAPSHOT_FILE=dashboard/sample/positions.json NO_NETWORK=1 python3 dashboard/build.py
@@ -25,12 +27,10 @@ NAME = "Tidebot"
 REPO = "Tommievr/tradingbot"
 SNAPSHOT, SNAPSHOT_REF = "positions.json", "positions-data"
 ORDER = ["BTC", "ETH", "SOL", "XRP", "BNB"]     # these first on the page, then the others by size
-TRADE_GAP_S = 15 * 60       # fills of one coin, side and kind, each within 15 minutes of the last, are one trade
-TRADES_MAX = 40
-KINDS = ("taker", "maker", "liquidation", "other")
 FMT = "%Y-%m-%dT%H:%M:%SZ"
 COIN = re.compile(r"[A-Z0-9]{1,12}")
 HERE = Path(__file__).resolve().parent
+FRESH_START = "2026-10-13T06:54:52Z"    # the account value starts here, right after a deposit (asked for 13 Oct)
 
 
 def get(url, headers=None):
@@ -56,14 +56,6 @@ def utc(s):
         return s if datetime.strptime(s, FMT).strftime(FMT) == s else None
     except (TypeError, ValueError):
         return None
-
-
-def epoch(s):
-    return datetime.strptime(s, FMT).replace(tzinfo=timezone.utc).timestamp()
-
-
-def stamp(t):
-    return datetime.fromtimestamp(t, timezone.utc).strftime(FMT)
 
 
 def read_snapshot():
@@ -114,38 +106,14 @@ def positions(snap):
     return out
 
 
-def trades(fills):
-    """The fills as trades, latest first: one coin's fills of one side and kind, each within TRADE_GAP_S of the last
-    and with no other fill of that coin in between, are one trade (one order filled in parts, or a liquidation done
-    in steps). None when the snapshot has no fill list (unknown, not "no trades")."""
-    if not isinstance(fills, list):
+def coins(results):
+    """Each coin's result in the account from the snapshot (USD, after fees and funding; None when unknown) and the
+    time of its first booking, in the page's coin order. None when the snapshot has no results (unknown, not none)."""
+    if not isinstance(results, list):
         return None
-    clean = []
-    for f in fills:
-        if not isinstance(f, dict):
-            continue
-        t, coin, side, kind = utc(f.get("utc")), str(f.get("coin", "")), f.get("side"), f.get("kind")
-        qty, px = num(f.get("qty")), num(f.get("price"))
-        if t and COIN.fullmatch(coin) and side in ("buy", "sell") and qty and qty > 0 and px and px > 0:
-            clean.append((epoch(t), coin, side, kind if kind in KINDS else "other", qty, px, num(f.get("pnl"))))
-    clean.sort(key=lambda f: f[0])
-    groups, last = [], {}
-    for t, coin, side, kind, qty, px, pnl in clean:
-        g = last.get(coin)
-        if g is None or (g["side"], g["kind"]) != (side, kind) or t - g["t1"] > TRADE_GAP_S:
-            g = {"t0": t, "coin": coin, "side": side, "kind": kind, "qty": 0.0, "value": 0.0, "pnl": None, "fills": 0}
-            groups.append(g)
-            last[coin] = g
-        g["t1"] = t
-        g["qty"] += qty
-        g["value"] += qty * px
-        g["fills"] += 1
-        if pnl is not None:
-            g["pnl"] = (g["pnl"] or 0.0) + pnl
-    groups.sort(key=lambda g: g["t1"])                  # the latest activity first on the page
-    return [{"utc": stamp(g["t0"]), "end": stamp(g["t1"]) if g["t1"] > g["t0"] else None, "coin": g["coin"],
-             "side": g["side"], "qty": g["qty"], "price": g["value"] / g["qty"],
-             "value": g["value"], "pnl": g["pnl"], "fills": g["fills"]} for g in reversed(groups[-TRADES_MAX:])]
+    out = [{"coin": r["coin"], "usd": num(r.get("usd")), "since": utc(r.get("since"))} for r in results
+           if isinstance(r, dict) and COIN.fullmatch(str(r.get("coin", ""))) and utc(r.get("since"))]
+    return sorted(out, key=lambda c: (ORDER.index(c["coin"]) if c["coin"] in ORDER else len(ORDER), c["coin"]))
 
 
 def transfers(snap):
@@ -164,19 +132,36 @@ def history(snap):
     return sorted(pts, key=lambda h: h["utc"])
 
 
-def page_data(snap, marks, now):
+def since(start, hist, moved):
+    """The value history and money moves from `start` on. The history then begins at `start` with the last value before
+    it plus the money moved in or out after that value and up to `start`, so a deposit right at the start is part of
+    the starting value, not a gain."""
+    before, hist = [h for h in hist if h["utc"] < start], [h for h in hist if h["utc"] >= start]
+    if before and not (hist and hist[0]["utc"] == start):
+        added = sum(m["usd"] for m in moved or [] if before[-1]["utc"] < m["utc"] <= start and m["usd"] is not None)
+        hist.insert(0, {"utc": start, "equity": before[-1]["equity"] + added})
+    if moved is not None:
+        moved = [m for m in moved if m["utc"] > start]
+    return hist, moved
+
+
+def page_data(snap, marks, now, start=None):
+    """The page's data; with `start` (a time in FMT) the account value starts afresh there, see since()."""
     snap_utc, equity = utc(snap.get("snapshot_utc")), num(snap.get("equity"))
     if not snap_utc or equity is None:
         raise ValueError("the snapshot has no time or account value")
     pos = positions(snap)
     for p in pos:
         p["mark"] = marks.get(p["coin"], p["mark_snap"])
+    hist, moved = history(snap), transfers(snap)
+    if start:
+        hist, moved = since(start, hist, moved)
     return {
         "name": NAME, "built_utc": now.strftime(FMT), "snapshot_utc": snap_utc, "equity_snap": equity,
         "available": num(snap.get("available")), "initial": num(snap.get("initial")),
         "orders_read": snap.get("orders_read") is True,
-        "marks_live": bool(marks), "positions": pos, "trades": trades(snap.get("fills")), "history": history(snap),
-        "transfers": transfers(snap),
+        "marks_live": bool(marks), "positions": pos, "coins": coins(snap.get("results")), "history": hist,
+        "transfers": moved,
     }
 
 
@@ -192,15 +177,15 @@ def main():
     now = datetime.now(timezone.utc)
     try:
         snap = read_snapshot()
-        doc = page_data(snap, {}, now)          # fails here on a snapshot without a time or value
+        doc = page_data(snap, {}, now, FRESH_START)     # fails here on a snapshot without a time or value
     except Exception as e:      # the token, GitHub or the file: only the kind of failure is printed
         print("account snapshot not usable:", type(e).__name__, getattr(e, "code", ""))
         return 3
     marks = futures_marks([p["coin"] for p in doc["positions"]])
-    doc = page_data(snap, marks, now)
+    doc = page_data(snap, marks, now, FRESH_START)
     write(doc, HERE.parent / "site")
     print(f"built {NAME}: snapshot {doc['snapshot_utc']}, {len(doc['positions'])} position(s), "
-          f"{'no' if doc['trades'] is None else len(doc['trades'])} trade(s), prices "
+          f"{'no' if doc['coins'] is None else len(doc['coins'])} coin result(s), prices "
           f"{'from Kraken now' if marks else 'from the snapshot'}")
     return 0
 

@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
 <style>
 /* Tidebot: one narrow column. Account value and its chart on top, then the open positions (biggest coins first)
-   and the recent trades. Everything is worked out in the browser from the data below, so the live prices (every
+   and each coin's result. Everything is worked out in the browser from the data below, so the live prices (every
    minute) move every number on the page together. */
 :root{
   --bg:#eef3f3; --card:#ffffff; --fg:#0d1d22; --muted:#55696f; --faint:#7f9297; --line:#dbe5e6;
@@ -75,8 +75,8 @@ h2 .count{font:600 .72rem var(--ui);background:var(--accent-soft);color:var(--ac
 .pos-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .coin{font:700 1.22rem var(--display);display:flex;align-items:center;gap:9px}
 .pill{font:600 .68rem var(--ui);letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px}
-.pill.long,.pill.buy{background:var(--up-soft);color:var(--up)}
-.pill.short,.pill.sell{background:var(--down-soft);color:var(--down)}
+.pill.long{background:var(--up-soft);color:var(--up)}
+.pill.short{background:var(--down-soft);color:var(--down)}
 .pnl{text-align:right;font:600 1.18rem/1.15 var(--display)}
 .pnl small{display:block;font:600 .76rem var(--ui)}
 .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
@@ -85,10 +85,10 @@ h2 .count{font:600 .72rem var(--ui);background:var(--accent-soft);color:var(--ac
 .grid4 small{display:block;font-size:.72rem;font-weight:600;margin-top:1px}
 .grid4.minor{padding-top:10px;border-top:1px dashed var(--line)}
 .grid4.minor b{font-size:.86rem}
-.trades{padding:4px 16px 8px}
-.day{font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);padding:14px 0 2px}
-.trade{display:grid;grid-template-columns:36px 1fr auto;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
-.day+.trade{border-top:0}
+h2 .sub{font:500 .74rem var(--ui);color:var(--muted)}
+.coins{padding:4px 16px}
+.row{display:grid;grid-template-columns:36px 1fr auto;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
 .ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font:700 .7rem var(--display);
   background:var(--accent-soft);color:var(--accent)}
 .what{min-width:0}
@@ -131,8 +131,8 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
   </section>
   <h2>Open positions <span class="count" id="posCount">0</span></h2>
   <div class="list" id="positions"></div>
-  <h2>Recent trades</h2>
-  <div class="card trades" id="trades"></div>
+  <h2>Results per coin <span class="sub num" id="coinsSince"></span></h2>
+  <div class="card coins" id="coins"></div>
   <footer id="foot"></footer>
 </div>
 <script id="data" type="application/json">__DATA__</script>
@@ -165,11 +165,6 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
   const tone = x => x > 0 ? "up" : x < 0 ? "down" : "muted";
   const time = d => d.toLocaleTimeString("en-GB", {hour: "2-digit", minute: "2-digit"});
   const date = d => d.toLocaleDateString("en-GB", {weekday: "short", day: "numeric", month: "short"});
-  const dayKey = d => d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
-  const dayName = d => {
-    const today = new Date(), y = new Date(today.getTime() - 864e5);
-    return dayKey(d) === dayKey(today) ? "Today" : dayKey(d) === dayKey(y) ? "Yesterday" : date(d);
-  };
   const ago = ms => {
     const m = Math.round(ms / 60e3);
     if (m < 1) return "just now";
@@ -198,9 +193,9 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
     const age = Date.now() - when(D.snapshot_utc).getTime(), b = $("banner");
     b.hidden = age < 3 * 3600e3;
     b.className = "banner" + (age > 24 * 3600e3 ? " bad" : "");
-    b.textContent = "The account was last read " + ago(age) + ". Trades and position changes since then are not shown yet.";
+    b.textContent = "The account was last read " + ago(age) + ". Position changes and results since then are not shown yet.";
     $("foot").textContent = "Tidebot reads the account every hour (read-only) and the prices every minute. " +
-      "Last account read " + ago(age) + ". P&L before fees.";
+      "Last account read " + ago(age) + ". Open P&L before fees; results per coin after fees and funding.";
   }
 
   function rangeStart(points) {
@@ -343,25 +338,30 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
     }));
   }
 
-  function renderTrades() {
-    const box = $("trades");
-    if (D.trades == null) { box.replaceChildren(make("div", "empty", "Trades show up here after the next hourly account read.")); return; }
-    if (!D.trades.length) { box.replaceChildren(make("div", "empty", "No trades among Kraken's last 100 fills.")); return; }
-    const rows = [];
-    let day = null;
-    for (const t of D.trades) {
-      const d = when(t.utc);
-      if (dayKey(d) !== day) { day = dayKey(d); rows.push(make("div", "day", dayName(d))); }
-      const row = make("div", "trade"), what = make("div", "what"), l1 = make("div", "l1", t.coin);
-      l1.append(make("span", "pill " + t.side, t.side === "buy" ? "Buy" : "Sell"));
-      const span = t.end && time(when(t.end)) !== time(d) ? time(d) + "–" + time(when(t.end)) : time(d);
-      what.append(l1, make("div", "l2 num", qty(t.qty) + " @ " + price(t.price) + " · " + span));
-      const amt = make("div", "amt num", usd(t.value));
-      if (t.pnl != null && Math.abs(t.pnl) >= 0.005) amt.append(make("small", tone(t.pnl), usd(t.pnl, true) + " P&L"));
-      row.append(make("div", "ic", t.coin.slice(0, 4)), what, amt);
-      rows.push(row);
+  // Each coin's result: what the account booked on it (Kraken's P&L, fees and funding) plus its open position now,
+  // and the total of all coins under them.
+  function renderCoins(A) {
+    const box = $("coins"), open = {};
+    for (const p of A.pos) open[p.coin] = (open[p.coin] || 0) + p.pnl;
+    const rows = (D.coins || []).map(c => ({coin: c.coin, booked: c.usd, open: open[c.coin]}));
+    for (const coin of Object.keys(open)) if (!rows.some(r => r.coin === coin)) rows.push({coin, booked: null, open: open[coin]});
+    const first = (D.coins || []).map(c => c.since).sort()[0];
+    $("coinsSince").textContent = first ? "since " + date(when(first)) : "";
+    if (!rows.length) {
+      box.replaceChildren(make("div", "empty", D.coins == null ? "Results show up here after the next hourly account read." : "No trades yet."));
+      return;
     }
-    box.replaceChildren(...rows);
+    const total = r => (r.booked || 0) + (r.open || 0);
+    const line = (ic, name, sub, x) => {
+      const row = make("div", "row"), what = make("div", "what");
+      what.append(make("div", "l1", name), make("div", "l2 num", sub));
+      row.append(make("div", "ic", ic), what, make("div", "amt num " + tone(x), usd(x, true)));
+      return row;
+    };
+    const els = rows.map(r => line(r.coin.slice(0, 4), r.coin, [r.booked != null && "realized " + usd(r.booked, true),
+      r.open != null && "open " + usd(r.open, true)].filter(Boolean).join(" · ") || "no result yet", total(r)));
+    if (rows.length > 1) els.push(line("All", "All coins", "realized + open", rows.reduce((a, r) => a + total(r), 0)));
+    box.replaceChildren(...els);
   }
 
   function render() {
@@ -376,7 +376,7 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
     renderStatus();
     renderChart(A);
     renderPositions(A);
-    renderTrades();
+    renderCoins(A);
   }
 
   async function refreshPrices() {
