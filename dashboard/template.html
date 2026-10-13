@@ -279,12 +279,18 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
     const top = make("span", "ylab num", usd(hi)), bot = make("span", "ylab num", usd(lo));
     top.style.top = "0"; bot.style.bottom = "0";
     box.append(top, bot);
+    const placed = [];
     for (const m of moves || []) {          // a deposit's label beside its line, on the side with room
       if (m.usd == null) continue;
       const lab = make("span", "mv num", (m.usd >= 0 ? "+" : MINUS) + "$" + fix(m.usd, Math.abs(m.usd) >= 100 ? 0 : 2));
       const x = X(m.t) / W * 100;
       if (x > 50) lab.style.right = "calc(" + (100 - x).toFixed(2) + "% + 4px)"; else lab.style.left = "calc(" + x.toFixed(2) + "% + 4px)";
       box.append(lab);
+      const r = lab.getBoundingClientRect();  // a label that would cover an earlier one goes a line lower
+      let row = 0;
+      while (placed.some(p => p.row === row && r.left < p.right + 4 && r.right > p.left - 4)) row++;
+      if (row) lab.style.top = (row * (r.height + 3)).toFixed(1) + "px";
+      placed.push({row, left: r.left, right: r.right});
     }
     box.setAttribute("aria-label", "Account value from " + usd(first.v) + " to " + usd(last.v));
     const tip = $("tip"), hair = svg.querySelector("#hair"), hdot = svg.querySelector("#hdot");
