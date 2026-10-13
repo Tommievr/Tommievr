@@ -101,6 +101,28 @@ class Transfers(unittest.TestCase):
         self.assertEqual(B.page_data(sample(), {}, NOW)["transfers"], [{"utc": "2026-10-01T12:30:00Z", "usd": 200.0}])
 
 
+class FreshStart(unittest.TestCase):
+    def test_the_page_starts_with_the_value_right_after_the_deposit(self):
+        snap = sample()
+        snap["history"] = [{"utc": "2026-10-12T00:00:00Z", "equity": 96.81}, {"utc": "2026-10-13T06:01:59Z", "equity": 20.40},
+                           {"utc": "2026-10-13T08:26:32Z", "equity": 262.57}]
+        snap["transfers"] = [{"utc": "2026-10-10T00:00:00Z", "usd": 50.0}, {"utc": "2026-10-13T06:54:52Z", "usd": 239.4},
+                             {"utc": "2026-10-13T09:00:00Z", "usd": -10.0}]
+        snap["fills"] = [fill("2026-10-13T00:50:49Z", "XRP", "sell", 18, 1.3161), fill("2026-10-13T06:55:10Z", "BTC", "buy", 0.0268, 83695.0)]
+        doc = B.page_data(snap, {}, NOW, "2026-10-13T06:54:52Z")
+        self.assertEqual([h["utc"] for h in doc["history"]], ["2026-10-13T06:54:52Z", "2026-10-13T08:26:32Z"])
+        self.assertAlmostEqual(doc["history"][0]["equity"], 20.40 + 239.4)       # the 10 Oct move is in the 06:01 value
+        self.assertEqual(doc["transfers"], [{"utc": "2026-10-13T09:00:00Z", "usd": -10.0}])
+        self.assertEqual([t["coin"] for t in doc["trades"]], ["BTC"])
+
+    def test_a_point_at_the_start_is_kept_and_no_start_shows_everything(self):
+        snap = sample()
+        start = snap["history"][2]["utc"]
+        self.assertEqual(B.page_data(snap, {}, NOW, start)["history"], [h for h in B.history(snap) if h["utc"] >= start])
+        self.assertEqual(B.page_data(snap, {}, NOW)["history"], B.history(snap))
+        self.assertEqual(B.utc(B.FRESH_START), B.FRESH_START)
+
+
 class Trades(unittest.TestCase):
     def test_no_fill_list_is_unknown_not_empty(self):
         self.assertIsNone(B.trades(None))

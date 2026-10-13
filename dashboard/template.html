@@ -346,7 +346,7 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
   function renderTrades() {
     const box = $("trades");
     if (D.trades == null) { box.replaceChildren(make("div", "empty", "Trades show up here after the next hourly account read.")); return; }
-    if (!D.trades.length) { box.replaceChildren(make("div", "empty", "No trades among Kraken's last 100 fills.")); return; }
+    if (!D.trades.length) { box.replaceChildren(make("div", "empty", "No trades yet.")); return; }
     const rows = [];
     let day = null;
     for (const t of D.trades) {

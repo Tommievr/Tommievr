@@ -6,7 +6,7 @@ Tommievr/tradingbot, written every hour by its ops/positions_snapshot.py) with t
 TRADINGBOT_READ_TOKEN, re-prices the open positions with Kraken's public futures prices, groups the account's last
 fills into trades, passes on the deposits and withdrawals (the page leaves them out of its gain or loss), and writes
 site/index.html (the page, its data inline) and site/data.json (the same data, which the open page re-reads every few
-minutes). The browser re-prices the positions every minute from Kraken's public prices and works out the account
+minutes). The page starts at FRESH_START: the value history, trades and money moves before it are left out. The browser re-prices the positions every minute from Kraken's public prices and works out the account
 value and the P&L itself. The page shows no liquidation figures, so none are passed on.
 
 Exit codes: 0 built, 3 no snapshot could be read (nothing written: the workflow keeps the last page up).
@@ -31,6 +31,7 @@ KINDS = ("taker", "maker", "liquidation", "other")
 FMT = "%Y-%m-%dT%H:%M:%SZ"
 COIN = re.compile(r"[A-Z0-9]{1,12}")
 HERE = Path(__file__).resolve().parent
+FRESH_START = "2026-10-13T06:54:52Z"    # the page starts here, right after a deposit (a fresh start, asked for on 13 Oct)
 
 
 def get(url, headers=None):
@@ -164,19 +165,37 @@ def history(snap):
     return sorted(pts, key=lambda h: h["utc"])
 
 
-def page_data(snap, marks, now):
+def since(start, fills, hist, moved):
+    """The fills, value history and money moves from `start` on. The history then begins at `start` with the last value
+    before it plus the money moved in or out after that value and up to `start`, so a deposit right at the start is part
+    of the starting value, not a gain."""
+    if isinstance(fills, list):
+        fills = [f for f in fills if isinstance(f, dict) and utc(f.get("utc")) and f["utc"] >= start]
+    before, hist = [h for h in hist if h["utc"] < start], [h for h in hist if h["utc"] >= start]
+    if before and not (hist and hist[0]["utc"] == start):
+        added = sum(m["usd"] for m in moved or [] if before[-1]["utc"] < m["utc"] <= start and m["usd"] is not None)
+        hist.insert(0, {"utc": start, "equity": before[-1]["equity"] + added})
+    if moved is not None:
+        moved = [m for m in moved if m["utc"] > start]
+    return fills, hist, moved
+
+
+def page_data(snap, marks, now, start=None):
+    """The page's data; with `start` (a time in FMT) the page starts afresh there, see since()."""
     snap_utc, equity = utc(snap.get("snapshot_utc")), num(snap.get("equity"))
     if not snap_utc or equity is None:
         raise ValueError("the snapshot has no time or account value")
     pos = positions(snap)
     for p in pos:
         p["mark"] = marks.get(p["coin"], p["mark_snap"])
+    fills, hist, moved = snap.get("fills"), history(snap), transfers(snap)
+    if start:
+        fills, hist, moved = since(start, fills, hist, moved)
     return {
         "name": NAME, "built_utc": now.strftime(FMT), "snapshot_utc": snap_utc, "equity_snap": equity,
         "available": num(snap.get("available")), "initial": num(snap.get("initial")),
         "orders_read": snap.get("orders_read") is True,
-        "marks_live": bool(marks), "positions": pos, "trades": trades(snap.get("fills")), "history": history(snap),
-        "transfers": transfers(snap),
+        "marks_live": bool(marks), "positions": pos, "trades": trades(fills), "history": hist, "transfers": moved,
     }
 
 
@@ -192,12 +211,12 @@ def main():
     now = datetime.now(timezone.utc)
     try:
         snap = read_snapshot()
-        doc = page_data(snap, {}, now)          # fails here on a snapshot without a time or value
+        doc = page_data(snap, {}, now, FRESH_START)     # fails here on a snapshot without a time or value
     except Exception as e:      # the token, GitHub or the file: only the kind of failure is printed
         print("account snapshot not usable:", type(e).__name__, getattr(e, "code", ""))
         return 3
     marks = futures_marks([p["coin"] for p in doc["positions"]])
-    doc = page_data(snap, marks, now)
+    doc = page_data(snap, marks, now, FRESH_START)
     write(doc, HERE.parent / "site")
     print(f"built {NAME}: snapshot {doc['snapshot_utc']}, {len(doc['positions'])} position(s), "
           f"{'no' if doc['trades'] is None else len(doc['trades'])} trade(s), prices "
