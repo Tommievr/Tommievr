@@ -4,9 +4,10 @@
 Reads the read-only account snapshot (positions.json on the branch positions-data of the private repo
 Tommievr/tradingbot, written every hour by its ops/positions_snapshot.py) with the read-only token
 TRADINGBOT_READ_TOKEN, re-prices the open positions with Kraken's public futures prices, groups the account's last
-fills into trades, and writes site/index.html (the page, its data inline) and site/data.json (the same data, which
-the open page re-reads every few minutes). The browser re-prices the positions every minute from Kraken's public
-prices and works out the account value, the P&L and the distance to liquidation itself.
+fills into trades, passes on the deposits and withdrawals (the page leaves them out of its gain or loss), and writes
+site/index.html (the page, its data inline) and site/data.json (the same data, which the open page re-reads every few
+minutes). The browser re-prices the positions every minute from Kraken's public prices and works out the account
+value, the P&L and the distance to liquidation itself.
 
 Exit codes: 0 built, 3 no snapshot could be read (nothing written: the workflow keeps the last page up).
 Local test: SNAPSHOT_FILE=dashboard/sample/positions.json NO_NETWORK=1 python3 dashboard/build.py
@@ -160,6 +161,16 @@ def trades(fills):
              "value": g["value"], "pnl": g["pnl"], "fills": g["fills"]} for g in reversed(groups[-TRADES_MAX:])]
 
 
+def transfers(snap):
+    """Money moved into (+) or out of (-) the account in USD, oldest first (usd None: Kraken gave no rate for it).
+    None when the snapshot has no list: then the page cannot tell a deposit from a gain."""
+    moved = snap.get("transfers")
+    if not isinstance(moved, list):
+        return None
+    return sorted(({"utc": t["utc"], "usd": num(t.get("usd"))} for t in moved
+                   if isinstance(t, dict) and utc(t.get("utc"))), key=lambda t: t["utc"])
+
+
 def history(snap):
     pts = [{"utc": h["utc"], "equity": num(h["equity"])} for h in snap.get("history") or []
            if isinstance(h, dict) and utc(h.get("utc")) and num(h.get("equity")) is not None]
@@ -178,6 +189,7 @@ def page_data(snap, marks, now):
         "available": num(snap.get("available")), "initial": num(snap.get("initial")),
         "maint": maintenance(snap, pos, equity), "orders_read": snap.get("orders_read") is True,
         "marks_live": bool(marks), "positions": pos, "trades": trades(snap.get("fills")), "history": history(snap),
+        "transfers": transfers(snap),
     }
 
 

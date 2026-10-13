@@ -85,6 +85,23 @@ class PageData(unittest.TestCase):
                 B.page_data(bad, {}, NOW)
 
 
+class Transfers(unittest.TestCase):
+    def test_deposits_pass_through_oldest_first_and_odd_ones_are_left_out(self):
+        snap = sample()
+        snap["transfers"] = [{"utc": "2026-10-13T06:54:52Z", "usd": 239.4}, {"utc": "2026-10-12T10:00:00Z", "usd": None},
+                             {"utc": "yesterday", "usd": 1.0}, "not a transfer", {"utc": "2026-10-11T00:00:00Z", "usd": "NaN"},
+                             {"utc": "2026-10-10T00:00:00Z", "usd": -50, "asset": "usd", "id": 9}]
+        self.assertEqual(B.page_data(snap, {}, NOW)["transfers"], [
+            {"utc": "2026-10-10T00:00:00Z", "usd": -50.0}, {"utc": "2026-10-11T00:00:00Z", "usd": None},
+            {"utc": "2026-10-12T10:00:00Z", "usd": None}, {"utc": "2026-10-13T06:54:52Z", "usd": 239.4}])
+
+    def test_no_list_is_unknown_not_none_moved(self):
+        snap = sample()
+        del snap["transfers"]
+        self.assertIsNone(B.page_data(snap, {}, NOW)["transfers"])
+        self.assertEqual(B.page_data(sample(), {}, NOW)["transfers"], [{"utc": "2026-10-01T12:30:00Z", "usd": 200.0}])
+
+
 class Trades(unittest.TestCase):
     def test_no_fill_list_is_unknown_not_empty(self):
         self.assertIsNone(B.trades(None))
@@ -165,6 +182,29 @@ class Page(unittest.TestCase):
         finally:
             os.unlink(f.name)
         self.assertEqual(r.returncode, 0, r.stderr)
+
+    def test_page_leaves_deposits_out_of_the_gain(self):
+        """The page's result(): the change minus net deposits, and the returns between deposits chained."""
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("node not installed")
+        html = (Path(__file__).resolve().parent / "template.html").read_text()
+        fn = re.search(r"\n  function result\(pts, moves\) \{\n.*?\n  \}\n", html, re.S).group(0)
+        pts = [{"t": 0, "v": 96.81}, {"t": 10, "v": 20.40}, {"t": 30, "v": 262.57}, {"t": 40, "v": 260.21}]
+        cases = [[{"t": 20, "usd": 239.4}], [], None, [{"t": 20, "usd": None}],
+                 [{"t": 20, "usd": 239.4}, {"t": 25, "usd": -100.0}], [{"t": 5, "usd": -96.81}]]
+        js = fn + f"console.log(JSON.stringify({json.dumps(cases)}.map(m => result({json.dumps(pts)}, m))));"
+        r = subprocess.run([node, "-e", js], capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        (dep, none, unknown, unvalued, two, emptied) = json.loads(r.stdout)
+        self.assertAlmostEqual(dep["gain"], 260.21 - 96.81 - 239.4)
+        self.assertAlmostEqual(dep["pct"], 20.40 / 96.81 * 260.21 / (20.40 + 239.4) - 1)
+        for plain in (none, unknown, unvalued):                       # no deposits, or none that can be left out
+            self.assertAlmostEqual(plain["gain"], 260.21 - 96.81)
+            self.assertAlmostEqual(plain["pct"], (260.21 - 96.81) / 96.81)
+        self.assertAlmostEqual(two["gain"], 260.21 - 96.81 - 139.4)
+        self.assertAlmostEqual(two["pct"], 20.40 / 96.81 * 1 * 260.21 / (20.40 + 239.4 - 100.0) - 1)   # no point between
+        self.assertIsNone(emptied["pct"])                             # everything taken out: no percentage
 
     def test_no_snapshot_builds_nothing(self):
         with mock.patch.dict(os.environ, {"SNAPSHOT_FILE": "/nonexistent/positions.json"}), \
