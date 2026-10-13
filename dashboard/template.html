@@ -8,9 +8,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
 <style>
-/* Tidebot: one narrow column. Account value and its chart on top, then the distance to liquidation, the open
-   positions (biggest coins first) and the recent trades. Everything is worked out in the browser from the data
-   below, so the live prices (every minute) move every number on the page together. */
+/* Tidebot: one narrow column. Account value and its chart on top, then the open positions (biggest coins first)
+   and the recent trades. Everything is worked out in the browser from the data below, so the live prices (every
+   minute) move every number on the page together. */
 :root{
   --bg:#eef3f3; --card:#ffffff; --fg:#0d1d22; --muted:#55696f; --faint:#7f9297; --line:#dbe5e6;
   --accent:#0b7f8a; --accent-soft:rgba(11,127,138,.11); --on-accent:#ffffff;
@@ -69,11 +69,6 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:12p
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 0;padding-top:14px;border-top:1px solid var(--line)}
 .stats dt{font-size:.72rem;color:var(--muted)}
 .stats dd{margin:3px 0 0;font:600 1.04rem var(--display)}
-.risk-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-.risk-val{font:600 1.5rem/1.1 var(--display)}
-.meter{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin:12px 0 10px}
-.meter span{display:block;height:100%;border-radius:99px;min-width:4px}
-.note{font-size:.82rem;color:var(--muted);margin:0}
 h2{font:600 1.05rem var(--display);margin:10px 2px 0;display:flex;align-items:center;gap:8px}
 h2 .count{font:600 .72rem var(--ui);background:var(--accent-soft);color:var(--accent);padding:2px 9px;border-radius:99px}
 .list{display:flex;flex-direction:column;gap:10px}
@@ -82,7 +77,6 @@ h2 .count{font:600 .72rem var(--ui);background:var(--accent-soft);color:var(--ac
 .pill{font:600 .68rem var(--ui);letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px}
 .pill.long,.pill.buy{background:var(--up-soft);color:var(--up)}
 .pill.short,.pill.sell{background:var(--down-soft);color:var(--down)}
-.pill.liq{background:var(--down);color:var(--card)}
 .pnl{text-align:right;font:600 1.18rem/1.15 var(--display)}
 .pnl small{display:block;font:600 .76rem var(--ui)}
 .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
@@ -134,11 +128,6 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
       <div><dt>Leverage</dt><dd class="num" id="lev">–</dd></div>
       <div><dt>In positions</dt><dd class="num" id="notional">–</dd></div>
     </dl>
-  </section>
-  <section class="card" id="risk" hidden aria-labelledby="riskLabel">
-    <div class="risk-head"><span class="label" id="riskLabel">Distance to liquidation</span><span class="risk-val num" id="riskVal"></span></div>
-    <div class="meter"><span id="riskBar"></span></div>
-    <p class="note" id="riskNote"></p>
   </section>
   <h2>Open positions <span class="count" id="posCount">0</span></h2>
   <div class="list" id="positions"></div>
@@ -193,28 +182,12 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
   function account() {
     const pos = D.positions.map(p => {
       const s = p.side === "Long" ? 1 : -1, now = live[p.coin] ? live[p.coin].px : p.mark;
-      return Object.assign({}, p, {s, now, pnl: s * p.qty * (now - p.entry), move: s * (now / p.entry - 1),
-                                   value: p.qty * now, liq: null, liqDist: null});
+      return Object.assign({}, p, {s, now, pnl: s * p.qty * (now - p.entry), move: s * (now / p.entry - 1), value: p.qty * now});
     });
     const value = D.equity_snap + pos.reduce((a, p) => a + p.s * p.qty * (p.now - p.mark_snap), 0);
     const notional = pos.reduce((a, p) => a + p.value, 0);
-    const A = {pos, value, notional, free: D.available == null ? null : D.available + (value - D.equity_snap),
-               lev: value > 0 && pos.length ? notional / value : null, cushion: null, move: null};
-    if (D.maint != null && pos.length) {
-      A.cushion = value - D.maint;
-      const net = pos.reduce((a, p) => a + p.s * p.qty * p.now, 0);
-      A.move = net !== 0 ? -A.cushion / net : null;
-      for (const p of pos) {
-        const liq = p.now - p.s * A.cushion / p.qty;
-        if (liq > 0) { p.liq = liq; p.liqDist = liq / p.now - 1; }
-      }
-    }
-    return A;
-  }
-
-  function riskTone(d) {
-    const a = Math.abs(d);
-    return a < 0.05 ? "down" : a < 0.12 ? "warn" : "up";
+    return {pos, value, notional, free: D.available == null ? null : D.available + (value - D.equity_snap),
+            lev: value > 0 && pos.length ? notional / value : null};
   }
 
   function renderStatus() {
@@ -339,37 +312,6 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
     document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.range === range)));
   }
 
-  function renderRisk(A) {
-    const box = $("risk");
-    box.hidden = !A.pos.length || A.cushion == null;
-    if (box.hidden) return;
-    const val = $("riskVal"), bar = $("riskBar"), note = $("riskNote");
-    if (A.cushion <= 0) {
-      val.textContent = "At the line"; val.className = "risk-val num down";
-      bar.style.width = "100%"; bar.style.background = "var(--down)";
-      note.textContent = "The account value is at or below the maintenance margin (" + usd(D.maint) + "): Kraken closes positions from here.";
-      return;
-    }
-    if (A.move == null) {
-      val.textContent = "Hedged"; val.className = "risk-val num up";
-      bar.style.width = "100%"; bar.style.background = "var(--up)";
-      note.textContent = "Longs and shorts balance out: moving all coins together does not reach the maintenance margin.";
-      return;
-    }
-    if (A.move <= -1) {
-      val.textContent = "Out of reach"; val.className = "risk-val num up";
-      bar.style.width = "100%"; bar.style.background = "var(--up)";
-      note.textContent = "Even if every coin fell to zero, the account would stay above its maintenance margin of " + usd(D.maint) + ".";
-      return;
-    }
-    const t = riskTone(A.move);
-    val.textContent = pct(Math.abs(A.move)); val.className = "risk-val num " + t;
-    bar.style.width = Math.min(100, Math.abs(A.move) / 0.25 * 100) + "%"; bar.style.background = `var(--${t})`;
-    note.textContent = "Liquidation starts if every coin " + (A.move < 0 ? "falls " : "rises ") + pct(Math.abs(A.move)) +
-      " at once. The account is " + usd(A.cushion) + " above its maintenance margin of " + usd(D.maint) +
-      " (cross margin). Each position's liquidation price below is for that coin moving alone.";
-  }
-
   function renderPositions(A) {
     const box = $("positions");
     $("posCount").textContent = A.pos.length;
@@ -389,8 +331,6 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
       };
       const g1 = make("div", "grid4"), g2 = make("div", "grid4 minor");
       cell(g1, "Size", qty(p.qty)); cell(g1, "Entry", price(p.entry)); cell(g1, "Now", price(p.now)); cell(g1, "Value", usd(p.value));
-      cell(g2, "Liquidation", p.liq == null ? "–" : price(p.liq), p.liq == null ? null : pct(p.liqDist, true),
-           p.liq == null ? null : {down: "down", warn: "warn", up: "muted"}[riskTone(p.liqDist)]);
       if (D.orders_read) {
         cell(g2, "Stop", p.stop == null ? "none" : price(p.stop), p.stop == null ? null : pct(p.stop / p.now - 1, true));
         cell(g2, "Take profit", p.tp == null ? "none" : price(p.tp), p.tp == null ? null : pct(p.tp / p.now - 1, true));
@@ -414,7 +354,6 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
       if (dayKey(d) !== day) { day = dayKey(d); rows.push(make("div", "day", dayName(d))); }
       const row = make("div", "trade"), what = make("div", "what"), l1 = make("div", "l1", t.coin);
       l1.append(make("span", "pill " + t.side, t.side === "buy" ? "Buy" : "Sell"));
-      if (t.kind === "liquidation") l1.append(make("span", "pill liq", "Liquidation"));
       const span = t.end && time(when(t.end)) !== time(d) ? time(d) + "–" + time(when(t.end)) : time(d);
       what.append(l1, make("div", "l2 num", qty(t.qty) + " @ " + price(t.price) + " · " + span));
       const amt = make("div", "amt num", usd(t.value));
@@ -436,7 +375,6 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
     $("notional").textContent = usd(A.notional);
     renderStatus();
     renderChart(A);
-    renderRisk(A);
     renderPositions(A);
     renderTrades();
   }
