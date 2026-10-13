@@ -1,0 +1,31 @@
+name: dashboard-check
+
+# Pull requests: the dashboard's tests, and a build from the sample snapshot (no secrets, no network).
+on:
+  pull_request:
+    paths:
+      - "dashboard/**"
+      - ".github/workflows/bot-dashboard.yml"
+      - ".github/workflows/dashboard-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Tests
+        run: python3 -m unittest discover -s dashboard -p "test_*.py" -v
+      - name: Build from the sample snapshot
+        env:
+          SNAPSHOT_FILE: dashboard/sample/positions.json
+          NO_NETWORK: "1"
+        run: |
+          python3 dashboard/build.py
+          test -s site/index.html && test -s site/data.json
+          ! grep -q "__DATA__" site/index.html
