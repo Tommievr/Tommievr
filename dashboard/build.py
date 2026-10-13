@@ -7,7 +7,7 @@ TRADINGBOT_READ_TOKEN, re-prices the open positions with Kraken's public futures
 fills into trades, passes on the deposits and withdrawals (the page leaves them out of its gain or loss), and writes
 site/index.html (the page, its data inline) and site/data.json (the same data, which the open page re-reads every few
 minutes). The browser re-prices the positions every minute from Kraken's public prices and works out the account
-value, the P&L and the distance to liquidation itself.
+value and the P&L itself. The page shows no liquidation figures, so none are passed on.
 
 Exit codes: 0 built, 3 no snapshot could be read (nothing written: the workflow keeps the last page up).
 Local test: SNAPSHOT_FILE=dashboard/sample/positions.json NO_NETWORK=1 python3 dashboard/build.py
@@ -108,23 +108,10 @@ def positions(snap):
                 qty and qty > 0 and entry and entry > 0 and mark and mark > 0):
             continue
         out.append({"coin": coin, "side": side, "qty": qty, "entry": entry, "mark_snap": mark,
-                    "stop": num(p.get("stop")), "tp": num(p.get("tp")), "liq_snap": num(p.get("liq")),
+                    "stop": num(p.get("stop")), "tp": num(p.get("tp")),
                     "funding": num(p.get("funding")), "funding_rate": num(p.get("funding_rate"))})
     out.sort(key=lambda p: (ORDER.index(p["coin"]) if p["coin"] in ORDER else len(ORDER), -p["qty"] * p["mark_snap"]))
     return out
-
-
-def maintenance(snap, pos, equity):
-    """The account's maintenance margin: from the snapshot, or worked back from a position's liquidation price
-    (the snapshot puts it where the value would reach the maintenance margin if only that coin moved)."""
-    m = num(snap.get("maint"))
-    if m is not None:
-        return m
-    for p in pos:
-        if p["liq_snap"]:
-            side = 1 if p["side"] == "Long" else -1
-            return equity - side * p["qty"] * (p["mark_snap"] - p["liq_snap"])
-    return None
 
 
 def trades(fills):
@@ -157,7 +144,7 @@ def trades(fills):
             g["pnl"] = (g["pnl"] or 0.0) + pnl
     groups.sort(key=lambda g: g["t1"])                  # the latest activity first on the page
     return [{"utc": stamp(g["t0"]), "end": stamp(g["t1"]) if g["t1"] > g["t0"] else None, "coin": g["coin"],
-             "side": g["side"], "kind": g["kind"], "qty": g["qty"], "price": g["value"] / g["qty"],
+             "side": g["side"], "qty": g["qty"], "price": g["value"] / g["qty"],
              "value": g["value"], "pnl": g["pnl"], "fills": g["fills"]} for g in reversed(groups[-TRADES_MAX:])]
 
 
@@ -187,7 +174,7 @@ def page_data(snap, marks, now):
     return {
         "name": NAME, "built_utc": now.strftime(FMT), "snapshot_utc": snap_utc, "equity_snap": equity,
         "available": num(snap.get("available")), "initial": num(snap.get("initial")),
-        "maint": maintenance(snap, pos, equity), "orders_read": snap.get("orders_read") is True,
+        "orders_read": snap.get("orders_read") is True,
         "marks_live": bool(marks), "positions": pos, "trades": trades(snap.get("fills")), "history": history(snap),
         "transfers": transfers(snap),
     }

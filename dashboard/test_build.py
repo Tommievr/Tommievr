@@ -30,7 +30,7 @@ class PageData(unittest.TestCase):
     def test_sample_gives_the_page_its_numbers(self):
         doc = B.page_data(sample(), {}, NOW)
         self.assertEqual(doc["name"], "Tidebot")
-        self.assertEqual((doc["snapshot_utc"], doc["equity_snap"], doc["maint"]), ("2026-10-13T08:07:12Z", 1250.0, 60.0))
+        self.assertEqual((doc["snapshot_utc"], doc["equity_snap"]), ("2026-10-13T08:07:12Z", 1250.0))
         self.assertEqual([p["coin"] for p in doc["positions"]], ["BTC", "ETH", "SOL"])
         eth = doc["positions"][1]
         self.assertEqual((eth["side"], eth["qty"], eth["entry"], eth["mark"], eth["stop"]), ("Short", 0.3, 2600.0, 2530.0, 2700.0))
@@ -54,15 +54,14 @@ class PageData(unittest.TestCase):
         with mock.patch.dict(os.environ, {"NO_NETWORK": ""}), mock.patch.object(B, "get", side_effect=OSError("down")):
             self.assertEqual(B.futures_marks(["BTC"]), {})
 
-    def test_maintenance_margin_from_a_liquidation_price_when_the_snapshot_has_none(self):
+    def test_no_liquidation_figures_reach_the_page(self):
         snap = sample()
-        del snap["maint"]
-        snap["positions"][1]["liq"] = 6496.0
-        doc = B.page_data(snap, {}, NOW)
-        self.assertAlmostEqual(doc["maint"], 1250.0 + 0.3 * (2530.0 - 6496.0))     # a short: value - side*qty*(mark-liq)
-        for p in snap["positions"]:
-            p["liq"] = None
-        self.assertIsNone(B.page_data(snap, {}, NOW)["maint"])
+        self.assertIn('"liq": 6496', json.dumps(snap))                 # the snapshot has them: prices, margin, fills
+        self.assertIn('"kind": "liquidation"', json.dumps(snap))
+        text = json.dumps(B.page_data(snap, {}, NOW))
+        self.assertNotIn("liq", text)
+        self.assertNotIn("maint", text)
+        self.assertNotIn("liquidation", (Path(__file__).resolve().parent / "template.html").read_text().lower())
 
     def test_odd_rows_are_left_out(self):
         snap = sample()
@@ -114,8 +113,7 @@ class Trades(unittest.TestCase):
                  fill("2026-10-08T14:48:59Z", "ETH", "buy", 0.003, 2529.4),
                  fill("2026-10-08T14:48:59Z", "ETH", "buy", 0.02, 2529.2)]
         got = B.trades(fills)
-        self.assertEqual([(t["coin"], t["side"], t["kind"], t["fills"]) for t in got],
-                         [("XRP", "sell", "liquidation", 2), ("BTC", "sell", "liquidation", 1), ("ETH", "buy", "taker", 2)])
+        self.assertEqual([(t["coin"], t["side"], t["fills"]) for t in got], [("XRP", "sell", 2), ("BTC", "sell", 1), ("ETH", "buy", 2)])
         xrp = got[0]
         self.assertEqual((xrp["utc"], xrp["end"], xrp["qty"]), ("2026-10-13T00:50:49Z", "2026-10-13T00:51:00Z", 34))
         self.assertAlmostEqual(xrp["price"], (18 * 1.3161 + 16 * 1.3146) / 34)
@@ -150,7 +148,6 @@ class Trades(unittest.TestCase):
         got = B.trades(fills)
         self.assertEqual(len(got), B.TRADES_MAX)
         self.assertEqual(got[0]["utc"], "2026-10-31T10:00:00Z")
-        self.assertEqual(got[0]["kind"], "other")
         self.assertEqual([t["utc"] for t in got], sorted((t["utc"] for t in got), reverse=True))
 
 

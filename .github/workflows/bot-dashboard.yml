@@ -1,7 +1,7 @@
 name: bot-dashboard
 
 # Public dashboard "Tidebot" on GitHub Pages (dashboard/build.py + dashboard/template.html): the Kraken Futures
-# account's value and its history, the distance to liquidation, the open positions and the recent trades. The browser
+# account's value and its history, the open positions and the recent trades. The browser
 # re-prices the positions every minute from Kraken's public prices and re-reads data.json every 5 minutes.
 # The build reads the read-only account snapshot (positions.json on the branch positions-data of the private repo
 # Tommievr/tradingbot, written every hour there by ops/positions_snapshot.py) with the read-only token
