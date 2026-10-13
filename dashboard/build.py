@@ -118,12 +118,13 @@ def coins(results):
 
 def transfers(snap):
     """Money moved into (+) or out of (-) the account in USD, oldest first (usd None: Kraken gave no rate for it).
-    None when the snapshot has no list: then the page cannot tell a deposit from a gain."""
+    A move worth less than a cent is left out (Kraken values some currencies at $0). None when the snapshot has no
+    list: then the page cannot tell a deposit from a gain."""
     moved = snap.get("transfers")
     if not isinstance(moved, list):
         return None
-    return sorted(({"utc": t["utc"], "usd": num(t.get("usd"))} for t in moved
-                   if isinstance(t, dict) and utc(t.get("utc"))), key=lambda t: t["utc"])
+    out = [{"utc": t["utc"], "usd": num(t.get("usd"))} for t in moved if isinstance(t, dict) and utc(t.get("utc"))]
+    return sorted((t for t in out if t["usd"] is None or abs(t["usd"]) >= 0.005), key=lambda t: t["utc"])
 
 
 def history(snap):

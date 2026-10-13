@@ -90,6 +90,15 @@ class Transfers(unittest.TestCase):
             {"utc": "2026-10-10T00:00:00Z", "usd": -50.0}, {"utc": "2026-10-11T00:00:00Z", "usd": None},
             {"utc": "2026-10-12T10:00:00Z", "usd": None}, {"utc": "2026-10-13T06:54:52Z", "usd": 239.4}])
 
+    def test_a_move_worth_less_than_a_cent_is_left_out(self):
+        snap = sample()
+        snap["transfers"] = [{"utc": "2026-10-13T06:54:52Z", "usd": 239.4},
+                             {"utc": "2026-10-13T10:25:55Z", "usd": 0.0},     # as Kraken's log gave it on 13 Oct
+                             {"utc": "2026-10-13T10:30:00Z", "usd": -0.004},
+                             {"utc": "2026-10-13T10:40:00Z", "usd": 0.01}]
+        self.assertEqual(B.page_data(snap, {}, NOW)["transfers"], [
+            {"utc": "2026-10-13T06:54:52Z", "usd": 239.4}, {"utc": "2026-10-13T10:40:00Z", "usd": 0.01}])
+
     def test_no_list_is_unknown_not_none_moved(self):
         snap = sample()
         del snap["transfers"]
