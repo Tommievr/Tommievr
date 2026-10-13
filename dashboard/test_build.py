@@ -22,10 +22,6 @@ def sample():
     return json.loads(SAMPLE.read_text())
 
 
-def fill(utc, coin="SOL", side="buy", qty=1.0, price=100.0, kind="taker", pnl=0.0):
-    return {"utc": utc, "coin": coin, "side": side, "qty": qty, "price": price, "kind": kind, "pnl": pnl}
-
-
 class PageData(unittest.TestCase):
     def test_sample_gives_the_page_its_numbers(self):
         doc = B.page_data(sample(), {}, NOW)
@@ -108,12 +104,13 @@ class FreshStart(unittest.TestCase):
                            {"utc": "2026-10-13T08:26:32Z", "equity": 262.57}]
         snap["transfers"] = [{"utc": "2026-10-10T00:00:00Z", "usd": 50.0}, {"utc": "2026-10-13T06:54:52Z", "usd": 239.4},
                              {"utc": "2026-10-13T09:00:00Z", "usd": -10.0}]
-        snap["fills"] = [fill("2026-10-13T00:50:49Z", "XRP", "sell", 18, 1.3161), fill("2026-10-13T06:55:10Z", "BTC", "buy", 0.0268, 83695.0)]
+        snap["results"] = [{"coin": "XRP", "usd": -38.2, "since": "2026-10-07T20:11:19Z"},
+                           {"coin": "BTC", "usd": -0.4, "since": "2026-10-13T06:55:10Z"}]
         doc = B.page_data(snap, {}, NOW, "2026-10-13T06:54:52Z")
         self.assertEqual([h["utc"] for h in doc["history"]], ["2026-10-13T06:54:52Z", "2026-10-13T08:26:32Z"])
         self.assertAlmostEqual(doc["history"][0]["equity"], 20.40 + 239.4)       # the 10 Oct move is in the 06:01 value
         self.assertEqual(doc["transfers"], [{"utc": "2026-10-13T09:00:00Z", "usd": -10.0}])
-        self.assertEqual([t["coin"] for t in doc["trades"]], ["BTC"])
+        self.assertEqual([(c["coin"], c["usd"]) for c in doc["coins"]], [("BTC", -0.4), ("XRP", -38.2)])  # losses stay
 
     def test_a_point_at_the_start_is_kept_and_no_start_shows_everything(self):
         snap = sample()
@@ -123,54 +120,26 @@ class FreshStart(unittest.TestCase):
         self.assertEqual(B.utc(B.FRESH_START), B.FRESH_START)
 
 
-class Trades(unittest.TestCase):
-    def test_no_fill_list_is_unknown_not_empty(self):
-        self.assertIsNone(B.trades(None))
-        self.assertEqual(B.trades([]), [])
+class Coins(unittest.TestCase):
+    def test_no_results_are_unknown_not_none(self):
+        self.assertIsNone(B.coins(None))
+        self.assertIsNone(B.page_data({**sample(), "results": None}, {}, NOW)["coins"])
+        self.assertEqual(B.coins([]), [])
 
-    def test_parts_of_one_order_and_a_stepwise_liquidation_are_one_trade(self):
-        fills = [fill("2026-10-13T00:50:49Z", "XRP", "sell", 18, 1.3161, "liquidation", -1.5786),
-                 fill("2026-10-13T00:51:00Z", "XRP", "sell", 16, 1.3146, "liquidation", -1.4272),
-                 fill("2026-10-13T00:50:49Z", "BTC", "sell", 0.0003, 81091, "liquidation", -0.5855),
-                 fill("2026-10-08T14:48:59Z", "ETH", "buy", 0.003, 2529.4),
-                 fill("2026-10-08T14:48:59Z", "ETH", "buy", 0.02, 2529.2)]
-        got = B.trades(fills)
-        self.assertEqual([(t["coin"], t["side"], t["fills"]) for t in got], [("XRP", "sell", 2), ("BTC", "sell", 1), ("ETH", "buy", 2)])
-        xrp = got[0]
-        self.assertEqual((xrp["utc"], xrp["end"], xrp["qty"]), ("2026-10-13T00:50:49Z", "2026-10-13T00:51:00Z", 34))
-        self.assertAlmostEqual(xrp["price"], (18 * 1.3161 + 16 * 1.3146) / 34)
-        self.assertAlmostEqual(xrp["value"], 18 * 1.3161 + 16 * 1.3146)
-        self.assertAlmostEqual(xrp["pnl"], -1.5786 - 1.4272)
-        self.assertIsNone(got[2]["end"])
+    def test_results_pass_through_in_page_order_and_odd_rows_are_left_out(self):
+        got = B.coins([{"coin": "DOGE", "usd": 0.4, "since": "2026-10-08T14:48:59Z"},
+                       {"coin": "XRP", "usd": -38.2, "since": "2026-10-07T20:11:19Z"},
+                       {"coin": "BTC", "usd": "NaN", "since": "2026-10-07T20:11:12Z"},
+                       {"coin": "b@d", "usd": 1.0, "since": "2026-10-07T20:11:12Z"},
+                       {"coin": "SOL", "usd": 1.0, "since": "bad time"}, "not a row"])
+        self.assertEqual(got, [{"coin": "BTC", "usd": None, "since": "2026-10-07T20:11:12Z"},
+                               {"coin": "XRP", "usd": -38.2, "since": "2026-10-07T20:11:19Z"},
+                               {"coin": "DOGE", "usd": 0.4, "since": "2026-10-08T14:48:59Z"}])
 
-    def test_a_gap_another_side_or_kind_starts_a_new_trade(self):
-        fills = [fill("2026-10-10T10:00:00Z"), fill("2026-10-10T10:14:00Z"),          # within 15 min: one
-                 fill("2026-10-10T10:30:00Z"),                                         # 16 min later: new
-                 fill("2026-10-10T10:31:00Z", side="sell"),                            # other side: new
-                 fill("2026-10-10T10:32:00Z"),                                         # after a sell: new
-                 fill("2026-10-10T10:33:00Z", kind="liquidation"),                     # other kind: new
-                 fill("2026-10-10T10:33:30Z", coin="BTC", price=80000.0),              # other coin: own trade
-                 fill("2026-10-10T10:34:00Z")]                                         # after the liquidation: new
-        got = B.trades(fills)
-        self.assertEqual(len(got), 7)
-        self.assertEqual([t["fills"] for t in got if t["coin"] == "SOL"][::-1], [2, 1, 1, 1, 1, 1])
-
-    def test_pnl_unknown_only_when_no_fill_gives_it(self):
-        got = B.trades([fill("2026-10-10T10:00:00Z", pnl=None), fill("2026-10-10T10:01:00Z", pnl=None)])
-        self.assertIsNone(got[0]["pnl"])
-        got = B.trades([fill("2026-10-10T10:00:00Z", pnl=None), fill("2026-10-10T10:01:00Z", pnl=-2.0)])
-        self.assertEqual(got[0]["pnl"], -2.0)
-
-    def test_newest_first_capped_and_odd_fills_left_out(self):
-        fills = [fill(f"2026-10-{d:02d}T10:00:00Z") for d in range(1, 31)] + \
-                [fill(f"2026-09-{d:02d}T10:00:00Z", coin="BTC") for d in range(1, 30)] + \
-                [fill("bad time"), fill("2026-10-10T10:00:00Z", coin="b@d"), fill("2026-10-10T10:00:00Z", side="hold"),
-                 fill("2026-10-10T10:00:00Z", qty=0), fill("2026-10-10T10:00:00Z", price="NaN"), "not a fill",
-                 fill("2026-10-31T10:00:00Z", kind="assignment")]
-        got = B.trades(fills)
-        self.assertEqual(len(got), B.TRADES_MAX)
-        self.assertEqual(got[0]["utc"], "2026-10-31T10:00:00Z")
-        self.assertEqual([t["utc"] for t in got], sorted((t["utc"] for t in got), reverse=True))
+    def test_the_sample_gives_each_coin_and_no_fills_reach_the_page(self):
+        doc = B.page_data(sample(), {}, NOW)
+        self.assertEqual([c["coin"] for c in doc["coins"]], ["BTC", "ETH", "SOL", "XRP"])
+        self.assertNotIn("fills", json.dumps(doc))
 
 
 class Page(unittest.TestCase):
