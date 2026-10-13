@@ -52,12 +52,15 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:12p
 .label{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .big{font:600 2.7rem/1.05 var(--display);letter-spacing:-.025em;margin-top:6px}
 .delta{font-weight:600;margin-top:6px;font-size:.95rem}
-.delta span{color:var(--muted);font-weight:500}
+.delta span+span{color:var(--muted);font-weight:500}
+.delta-note{font-size:.76rem;color:var(--muted);margin-top:2px}
 .chart{position:relative;height:170px;margin:12px 0 4px;touch-action:pan-y}
 .chart svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .chart .ylab{position:absolute;left:0;font-size:.68rem;color:var(--faint);line-height:1}
+.chart .mv{position:absolute;top:0;font-size:.68rem;font-weight:600;color:var(--accent);line-height:1;white-space:nowrap}
 .tip{position:absolute;top:-8px;transform:translate(-50%,-100%);background:var(--fg);color:var(--bg);font-size:.72rem;font-weight:600;
   padding:4px 8px;border-radius:7px;pointer-events:none;white-space:nowrap;display:none}
+.tip div{font-weight:500;opacity:.85}
 .axis{display:flex;justify-content:space-between;font-size:.7rem;color:var(--faint)}
 .controls{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}
 .seg{display:inline-flex;background:var(--bg);border-radius:11px;padding:3px;gap:2px}
@@ -118,6 +121,7 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
     <div class="label" id="valueLabel">Account value</div>
     <div class="big num" id="value">–</div>
     <div class="delta num" id="delta"></div>
+    <div class="delta-note num" id="deltaNote" hidden></div>
     <div class="chart" id="chart" role="img" aria-label="Account value over time"><div class="tip num" id="tip"></div></div>
     <div class="axis num"><span id="axisFrom"></span><span id="axisTo"></span></div>
     <div class="controls">
@@ -233,6 +237,37 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
     return points.length ? points[0].t : now - 864e5;
   }
 
+  // The change over the chart's range without the money moved in or out: the dollar result is the change in value
+  // minus the net deposits, and the percentage chains the returns between deposits (time-weighted), so a deposit is
+  // neither a gain nor a loss. With no list of deposits (or one without a dollar amount) it is the plain change in
+  // value, and the note under it says so.
+  function result(pts, moves) {
+    const first = pts[0], last = pts[pts.length - 1];
+    if (moves == null || moves.some(m => m.usd == null)) {
+      return {gain: last.v - first.v, pct: first.v > 0 ? (last.v - first.v) / first.v : null};
+    }
+    let growth = 1, start = first.v, from = first.t;
+    for (const m of moves) {
+      let end = start;
+      for (const p of pts) if (p.t >= from && p.t < m.t) end = p.v;      // the last value before this move
+      growth = start > 0 ? growth * end / start : NaN;
+      start = end + m.usd; from = m.t;
+    }
+    growth = start > 0 ? growth * last.v / start : NaN;
+    return {gain: last.v - first.v - moves.reduce((a, m) => a + m.usd, 0), pct: isFinite(growth) ? growth - 1 : null};
+  }
+
+  const moved = x => x >= 0 ? usd(x) + " added" : usd(-x) + " taken out";
+
+  function moveNote(moves) {
+    if (moves == null) return "Deposits and withdrawals are not read yet, so they count as gain or loss here.";
+    if (!moves.length) return "";
+    if (moves.some(m => m.usd == null)) return "Includes money moved in or out that Kraken gave no dollar value for.";
+    const added = moves.reduce((a, m) => a + Math.max(m.usd, 0), 0), out = moves.reduce((a, m) => a + Math.max(-m.usd, 0), 0);
+    const parts = [added && moved(added), out && moved(-out)].filter(Boolean);
+    return "Not counting " + parts.join(" and ") + (moves.length === 1 ? " on " + date(new Date(moves[0].t)) : "") + ".";
+  }
+
   function renderChart(A) {
     const box = $("chart"), all = D.history.map(h => ({t: when(h.utc).getTime(), v: h.equity}));
     all.push({t: Date.now(), v: A.value});
@@ -241,9 +276,16 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
     const before = all.filter(p => p.t < t0);
     if (before.length) pts.unshift({t: t0, v: before[before.length - 1].v});   // the value as the range starts
     if (pts.length < 2) pts = all.slice(-2);
-    const first = pts[0], last = pts[pts.length - 1], diff = last.v - first.v;
-    $("delta").replaceChildren(make("span", tone(diff), (diff >= 0 ? "▲ " : "▼ ") + usd(Math.abs(diff)) + " (" + pct(first.v ? diff / first.v : 0, true) + ")"),
+    const first = pts[0], last = pts[pts.length - 1];
+    const moves = D.transfers == null ? null : D.transfers.map(m => ({t: when(m.utc).getTime(), usd: m.usd}))
+      .filter(m => m.t > first.t && m.t <= last.t);
+    const R = result(pts, moves);
+    $("delta").replaceChildren(make("span", tone(R.gain), (R.gain >= 0 ? "▲ " : "▼ ") + usd(Math.abs(R.gain)) +
+                                    (R.pct == null ? "" : " (" + pct(R.pct, true) + ")")),
       make("span", null, range === "1d" ? " · past 24 hours" : range === "7d" ? " · past 7 days" : " · since " + date(new Date(first.t))));
+    const note = moveNote(moves);
+    $("deltaNote").textContent = note;
+    $("deltaNote").hidden = !note;
     $("axisFrom").textContent = range === "1d" ? time(new Date(first.t)) : date(new Date(first.t));
     $("axisTo").textContent = "now";
     const W = Math.max(box.clientWidth, 200), H = box.clientHeight || 170, pad = 20;   // the high and low labels sit in the padding
@@ -253,33 +295,44 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
     const X = t => (t - tA) / (tB - tA) * W, Y = v => pad + (1 - (v - lo) / (hi - lo)) * (H - 2 * pad);
     const ns = "http://www.w3.org/2000/svg", svg = document.createElementNS(ns, "svg");
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-    const color = diff >= 0 ? "var(--up)" : "var(--down)";
+    const color = R.gain >= 0 ? "var(--up)" : "var(--down)";
     const line = pts.map((p, i) => (i ? "L" : "M") + X(p.t).toFixed(1) + "," + Y(p.v).toFixed(1)).join("");
     svg.innerHTML = `<defs><linearGradient id="fade" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".22"/>` +
       `<stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>` +
       `<line x1="0" x2="${W}" y1="${Y(first.v).toFixed(1)}" y2="${Y(first.v).toFixed(1)}" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="4 4"/>` +
+      (moves || []).map(m => `<line x1="${X(m.t).toFixed(1)}" x2="${X(m.t).toFixed(1)}" y1="14" y2="${H}" stroke="var(--accent)" stroke-width="1.2" stroke-dasharray="3 3" opacity=".75"/>`).join("") +
       `<path d="${line}L${W},${H}L0,${H}Z" fill="url(#fade)"/>` +
       `<path d="${line}" fill="none" stroke="${color}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>` +
       `<circle cx="${X(last.t).toFixed(1)}" cy="${Y(last.v).toFixed(1)}" r="4" fill="${color}" stroke="var(--card)" stroke-width="2"/>` +
       `<line id="hair" y1="0" y2="${H}" stroke="var(--muted)" stroke-width="1" visibility="hidden"/>` +
       `<circle id="hdot" r="4" fill="${color}" stroke="var(--card)" stroke-width="2" visibility="hidden"/>`;
-    box.querySelectorAll("svg,.ylab").forEach(e => e.remove());
+    box.querySelectorAll("svg,.ylab,.mv").forEach(e => e.remove());
     box.prepend(svg);
     const top = make("span", "ylab num", usd(hi)), bot = make("span", "ylab num", usd(lo));
     top.style.top = "0"; bot.style.bottom = "0";
     box.append(top, bot);
+    for (const m of moves || []) {          // a deposit's label beside its line, on the side with room
+      if (m.usd == null) continue;
+      const lab = make("span", "mv num", (m.usd >= 0 ? "+" : MINUS) + "$" + fix(m.usd, Math.abs(m.usd) >= 100 ? 0 : 2));
+      const x = X(m.t) / W * 100;
+      if (x > 50) lab.style.right = "calc(" + (100 - x).toFixed(2) + "% + 4px)"; else lab.style.left = "calc(" + x.toFixed(2) + "% + 4px)";
+      box.append(lab);
+    }
     box.setAttribute("aria-label", "Account value from " + usd(first.v) + " to " + usd(last.v));
     const tip = $("tip"), hair = svg.querySelector("#hair"), hdot = svg.querySelector("#hdot");
     const show = ev => {
       const r = box.getBoundingClientRect(), x = Math.min(Math.max(ev.clientX - r.left, 0), r.width) * W / r.width;
-      let best = pts[0];
-      for (const p of pts) if (Math.abs(X(p.t) - x) < Math.abs(X(best.t) - x)) best = p;
-      const bx = X(best.t), by = Y(best.v);
+      let bi = 0;
+      pts.forEach((p, i) => { if (Math.abs(X(p.t) - x) < Math.abs(X(pts[bi].t) - x)) bi = i; });
+      const best = pts[bi], bx = X(best.t), by = Y(best.v);
       hair.setAttribute("x1", bx); hair.setAttribute("x2", bx); hair.setAttribute("visibility", "visible");
       hdot.setAttribute("cx", bx); hdot.setAttribute("cy", by); hdot.setAttribute("visibility", "visible");
-      tip.textContent = usd(best.v) + " · " + (best === last ? "now" : date(new Date(best.t)) + " " + time(new Date(best.t)));
+      const since = (moves || []).filter(m => m.usd != null && m.t <= best.t && (bi === 0 || m.t > pts[bi - 1].t));
+      tip.replaceChildren(usd(best.v) + " · " + (best === last ? "now" : date(new Date(best.t)) + " " + time(new Date(best.t))));
+      if (since.length) tip.append(make("div", null, moved(since.reduce((a, m) => a + m.usd, 0))));
       tip.style.display = "block";
-      tip.style.left = Math.min(Math.max(bx * r.width / W, 60), r.width - 60) + "px";
+      const half = tip.offsetWidth / 2;                // the whole tip stays inside the chart
+      tip.style.left = Math.min(Math.max(bx * r.width / W, half), r.width - half) + "px";
     };
     const hide = () => { tip.style.display = "none"; hair.setAttribute("visibility", "hidden"); hdot.setAttribute("visibility", "hidden"); };
     box.onpointermove = show; box.onpointerdown = show; box.onpointerleave = hide; box.onpointercancel = hide;
