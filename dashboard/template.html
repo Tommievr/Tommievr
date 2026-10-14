@@ -100,6 +100,7 @@ h2 .sub{font:500 .74rem var(--ui);color:var(--muted)}
 .banner{border-radius:14px;padding:11px 14px;font-size:.86rem;border:1px solid var(--warn);color:var(--warn);background:var(--warn-soft)}
 .banner.bad{border-color:var(--down);color:var(--down);background:var(--down-soft)}
 footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;padding:6px 8px 0}
+@media (max-width:540px){.grid4.minor{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:380px){.grid4{grid-template-columns:repeat(2,1fr)}.big{font-size:2.3rem}.stats dd{font-size:.95rem}}
 </style></head><body>
 <div class="wrap">
@@ -165,6 +166,12 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
   const tone = x => x > 0 ? "up" : x < 0 ? "down" : "muted";
   const time = d => d.toLocaleTimeString("en-GB", {hour: "2-digit", minute: "2-digit"});
   const date = d => d.toLocaleDateString("en-GB", {weekday: "short", day: "numeric", month: "short"});
+  const day = d => d.toLocaleDateString("en-GB", {day: "numeric", month: "short"});
+  // a funding rate per hour in %, with at least two significant digits: 1.127e-5 -> "+0.0011%/h"
+  const hourly = x => {
+    const v = x * 100, d = v ? Math.min(6, Math.max(4, 1 - Math.floor(Math.log10(Math.abs(v))))) : 4;
+    return signed(v, true) + fix(v, d) + "%/h";
+  };
   const ago = ms => {
     const m = Math.round(ms / 60e3);
     if (m < 1) return "just now";
@@ -195,7 +202,8 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
     b.className = "banner" + (age > 24 * 3600e3 ? " bad" : "");
     b.textContent = "The account was last read " + ago(age) + ". Position changes and results since then are not shown yet.";
     $("foot").textContent = "Tidebot reads the account every hour (read-only) and the prices every minute. " +
-      "Last account read " + ago(age) + ". Open P&L before fees; results per coin after fees and funding.";
+      "Last account read " + ago(age) + ". Open P&L before fees and funding; results per coin after both. " +
+      "Funding is what Kraken booked, every hour; the funding rate is per hour, and above 0 longs pay shorts.";
   }
 
   function rangeStart(points) {
@@ -324,9 +332,9 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
       const pnl = make("div", "pnl num " + tone(p.pnl), usd(p.pnl, true));
       pnl.append(make("small", null, pct(p.move, true)));
       top.append(coin, pnl);
-      const cell = (grid, k, v, sub, cls) => {
+      const cell = (grid, k, v, sub, cls, vcls) => {
         const c = make("div");
-        c.append(make("span", null, k), make("b", "num", v));
+        c.append(make("span", null, k), make("b", "num" + (vcls ? " " + vcls : ""), v));
         if (sub) c.append(make("small", "num " + (cls || "muted"), sub));
         grid.append(c);
       };
@@ -338,18 +346,27 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
       } else {
         cell(g2, "Stop", "not read"); cell(g2, "Take profit", "not read");
       }
-      cell(g2, "Funding", p.funding == null ? "–" : usd(p.funding, true));
+      if (p.funding_rate == null) cell(g2, "Funding rate", "–");
+      else {                                  // what this position pays (red) or gets (green) at the rate now
+        const pays = p.s * p.funding_rate > 0, perDay = Math.abs(p.funding_rate) * p.value * 24;
+        cell(g2, "Funding rate", hourly(p.funding_rate), p.funding_rate ? (pays ? "pays " : "gets ") + usd(perDay) + " a day" : null,
+             pays ? "down" : "up");
+      }
+      if (p.funding == null) cell(g2, "Funding", "–");
+      else cell(g2, "Funding", usd(p.funding, true), (p.funding < 0 ? "paid" : "received") +
+                (p.funding_since ? " since " + day(when(p.funding_since)) : ""), "muted", tone(p.funding));
       card.append(top, g1, g2);
       return card;
     }));
   }
 
-  // Each coin's result: what the account booked on it (Kraken's P&L, fees and funding) plus its open position now,
-  // and the total of all coins under them.
+  // Each coin's result: what the account booked on it (Kraken's P&L and fees, and the funding on its own) plus its
+  // open position now, and the total of all coins under them.
   function renderCoins(A) {
     const box = $("coins"), open = {};
     for (const p of A.pos) open[p.coin] = (open[p.coin] || 0) + p.pnl;
-    const rows = (D.coins || []).map(c => ({coin: c.coin, booked: c.usd, open: open[c.coin]}));
+    const rows = (D.coins || []).map(c => ({coin: c.coin, booked: c.usd, funding: c.usd == null ? null : c.funding,
+                                             open: open[c.coin]}));
     for (const coin of Object.keys(open)) if (!rows.some(r => r.coin === coin)) rows.push({coin, booked: null, open: open[coin]});
     const first = (D.coins || []).map(c => c.since).sort()[0];
     $("coinsSince").textContent = first ? "since " + date(when(first)) : "";
@@ -364,9 +381,15 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
       row.append(make("div", "ic", ic), what, make("div", "amt num " + tone(x), usd(x, true)));
       return row;
     };
-    const els = rows.map(r => line(r.coin.slice(0, 4), r.coin, [r.booked != null && "realized " + usd(r.booked, true),
-      r.open != null && "open " + usd(r.open, true)].filter(Boolean).join(" · ") || "no result yet", total(r)));
-    if (rows.length > 1) els.push(line("All", "All coins", "realized + open", rows.reduce((a, r) => a + total(r), 0)));
+    const parts = r => [r.booked != null && "realized " + usd(r.funding == null ? r.booked : r.booked - r.funding, true),
+      r.funding != null && "funding " + usd(r.funding, true), r.open != null && "open " + usd(r.open, true)];
+    const els = rows.map(r => line(r.coin.slice(0, 4), r.coin, parts(r).filter(Boolean).join(" · ") || "no result yet", total(r)));
+    if (rows.length > 1) {                    // the funding of all coins on its own when every coin's is known
+      const sum = k => rows.some(r => r[k] != null) ? rows.reduce((a, r) => a + (r[k] || 0), 0) : null;
+      const known = rows.every(r => r.booked == null || r.funding != null);
+      const all = {booked: sum("booked"), funding: known ? sum("funding") : null, open: sum("open")};
+      els.push(line("All", "All coins", parts(all).filter(Boolean).join(" · "), rows.reduce((a, r) => a + total(r), 0)));
+    }
     box.replaceChildren(...els);
   }
 
