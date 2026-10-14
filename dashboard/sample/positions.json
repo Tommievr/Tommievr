@@ -14,6 +14,7 @@
    "stop": 79000.0,
    "tp": 90000.0,
    "funding": -0.35,
+   "funding_since": "2026-10-10T09:12:40Z",
    "funding_rate": 1.2e-05,
    "pnl_usd": 15.0,
    "fees": 0.41000000000000003,
@@ -28,6 +29,7 @@
    "stop": 2700.0,
    "tp": null,
    "funding": 0.12,
+   "funding_since": "2026-10-11T14:02:11Z",
    "funding_rate": 2e-05,
    "pnl_usd": 21.0,
    "fees": 0.38999999999999996,
@@ -42,6 +44,7 @@
    "stop": null,
    "tp": null,
    "funding": -0.08,
+   "funding_since": "2026-10-12T07:45:03Z",
    "funding_rate": 4.2e-05,
    "pnl_usd": -3.4000000000000057,
    "fees": 0.11,
@@ -1140,22 +1143,49 @@
   {
    "coin": "BTC",
    "usd": -1.84,
+   "funding": -0.52,
    "since": "2026-09-17T09:12:40Z"
   },
   {
    "coin": "ETH",
    "usd": -9.37,
+   "funding": 0.05,
    "since": "2026-09-20T14:02:11Z"
   },
   {
    "coin": "SOL",
    "usd": 4.21,
+   "funding": -0.08,
    "since": "2026-10-02T07:45:03Z"
   },
   {
    "coin": "XRP",
    "usd": -11.6,
+   "funding": -0.31,
    "since": "2026-10-08T08:07:12Z"
+  }
+ ],
+ "open_funding": [
+  {
+   "coin": "BTC",
+   "side": "Long",
+   "since": "2026-10-10T09:12:40Z",
+   "usd": -0.35,
+   "from_open": true
+  },
+  {
+   "coin": "ETH",
+   "side": "Short",
+   "since": "2026-10-11T14:02:11Z",
+   "usd": 0.12,
+   "from_open": true
+  },
+  {
+   "coin": "SOL",
+   "side": "Long",
+   "since": "2026-10-12T07:45:03Z",
+   "usd": -0.08,
+   "from_open": true
   }
  ],
  "log_id": 1234
