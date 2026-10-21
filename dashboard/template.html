@@ -94,12 +94,14 @@ h2 .sub{font:500 .74rem var(--ui);color:var(--muted)}
 .what{min-width:0}
 .what .l1{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-weight:600}
 .what .l2{font-size:.78rem;color:var(--muted);margin-top:1px}
+.what .l2 span{white-space:nowrap}
 .amt{text-align:right;font:600 .95rem var(--display);white-space:nowrap}
 .amt small{display:block;font:600 .76rem var(--ui);margin-top:1px}
 .empty{color:var(--muted);font-size:.9rem;padding:18px 2px;text-align:center}
 .banner{border-radius:14px;padding:11px 14px;font-size:.86rem;border:1px solid var(--warn);color:var(--warn);background:var(--warn-soft)}
 .banner.bad{border-color:var(--down);color:var(--down);background:var(--down-soft)}
 footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;padding:6px 8px 0}
+@media (max-width:540px){.grid4.minor{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:380px){.grid4{grid-template-columns:repeat(2,1fr)}.big{font-size:2.3rem}.stats dd{font-size:.95rem}}
 </style></head><body>
 <div class="wrap">
@@ -166,6 +168,12 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
   const tone = x => x > 0 ? "up" : x < 0 ? "down" : "muted";
   const time = d => d.toLocaleTimeString("en-GB", {hour: "2-digit", minute: "2-digit"});
   const date = d => d.toLocaleDateString("en-GB", {weekday: "short", day: "numeric", month: "short"});
+  const day = d => d.toLocaleDateString("en-GB", {day: "numeric", month: "short"});
+  // a funding rate per hour in %, with at least two significant digits: 1.127e-5 -> "+0.0011%/h"
+  const hourly = x => {
+    const v = x * 100, d = v ? Math.min(6, Math.max(4, 1 - Math.floor(Math.log10(Math.abs(v))))) : 4;
+    return signed(v, true) + fix(v, d) + "%/h";
+  };
   const ago = ms => {
     const m = Math.round(ms / 60e3);
     if (m < 1) return "just now";
@@ -180,10 +188,12 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
       const s = p.side === "Long" ? 1 : -1, now = live[p.coin] ? live[p.coin].px : p.mark;
       return Object.assign({}, p, {s, now, pnl: s * p.qty * (now - p.entry), move: s * (now / p.entry - 1), value: p.qty * now});
     });
-    const value = D.equity_snap + pos.reduce((a, p) => a + p.s * p.qty * (p.now - p.mark_snap), 0);
+    const move = p => p.s * p.qty * (p.now - p.mark_snap);    // its open P&L since the account was read
+    const value = D.equity_snap + pos.reduce((a, p) => a + move(p), 0);
     const notional = pos.reduce((a, p) => a + p.value, 0);
-    return {pos, value, notional, free: D.available == null ? null : D.available + (value - D.equity_snap),
-            lev: value > 0 && pos.length ? notional / value : null};
+    // Kraken's free margin moves with the open P&L of positions on cross margin; an isolated one's stays out of it
+    const free = D.available == null ? null : D.available + pos.reduce((a, p) => a + (p.isolated ? 0 : move(p)), 0);
+    return {pos, value, notional, free, lev: value > 0 && pos.length ? notional / value : null};
   }
 
   function renderStatus() {
@@ -196,7 +206,8 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
     b.className = "banner" + (age > 24 * 3600e3 ? " bad" : "");
     b.textContent = "The account was last read " + ago(age) + ". Position changes and results since then are not shown yet.";
     $("foot").textContent = "Tidebot reads the account every hour (read-only) and the prices every minute. " +
-      "Last account read " + ago(age) + ". Open P&L before fees; results after fees and funding.";
+      "Last account read " + ago(age) + ". Open P&L before fees and funding; results after both. " +
+      "Funding is what Kraken booked, every hour; the funding rate is per hour, and above 0 longs pay shorts.";
   }
 
   function rangeStart(points) {
@@ -325,9 +336,9 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
       const pnl = make("div", "pnl num " + tone(p.pnl), usd(p.pnl, true));
       pnl.append(make("small", null, pct(p.move, true)));
       top.append(coin, pnl);
-      const cell = (grid, k, v, sub, cls) => {
+      const cell = (grid, k, v, sub, cls, vcls) => {
         const c = make("div");
-        c.append(make("span", null, k), make("b", "num", v));
+        c.append(make("span", null, k), make("b", "num" + (vcls ? " " + vcls : ""), v));
         if (sub) c.append(make("small", "num " + (cls || "muted"), sub));
         grid.append(c);
       };
@@ -339,18 +350,28 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
       } else {
         cell(g2, "Stop", "not read"); cell(g2, "Take profit", "not read");
       }
-      cell(g2, "Funding", p.funding == null ? "–" : usd(p.funding, true));
+      if (p.funding_rate == null) cell(g2, "Funding rate", "–");
+      else {                                  // what this position pays (red) or gets (green) at the rate now
+        const pays = p.s * p.funding_rate > 0, perDay = Math.abs(p.funding_rate) * p.value * 24;
+        cell(g2, "Funding rate", hourly(p.funding_rate), p.funding_rate ? (pays ? "pays " : "gets ") + usd(perDay) + " a day" : null,
+             pays ? "down" : "up");
+      }
+      if (p.funding == null) cell(g2, "Funding", "–");
+      else cell(g2, "Funding", usd(p.funding, true), (p.funding < 0 ? "paid" : "received") +
+                (p.funding_since ? " since " + day(when(p.funding_since)) : ""), "muted", tone(p.funding));
       card.append(top, g1, g2);
       return card;
     }));
   }
 
-  // A coin's result: what the account booked on it (Kraken's P&L, fees and funding) plus its open position now. The
-  // coins in SHOWN get a line each, and the total under them counts every coin, the ones no longer traded too.
+  // A coin's result: what the account booked on it (Kraken's P&L and fees, and the funding on its own) plus its open
+  // position now. The coins in SHOWN get a line each, and the total under them counts every coin, the ones no longer
+  // traded too.
   function renderCoins(A) {
     const box = $("coins"), open = {};
     for (const p of A.pos) open[p.coin] = (open[p.coin] || 0) + p.pnl;
-    const rows = (D.coins || []).map(c => ({coin: c.coin, booked: c.usd, open: open[c.coin]}));
+    const rows = (D.coins || []).map(c => ({coin: c.coin, booked: c.usd, funding: c.usd == null ? null : c.funding,
+                                             open: open[c.coin]}));
     for (const coin of Object.keys(open)) if (!rows.some(r => r.coin === coin)) rows.push({coin, booked: null, open: open[coin]});
     const first = (D.coins || []).map(c => c.since).sort()[0];
     $("coinsSince").textContent = first ? "since " + date(when(first)) : "";
@@ -359,17 +380,26 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
       return;
     }
     const total = r => (r.booked || 0) + (r.open || 0);
-    const line = (ic, name, sub, x) => {
-      const row = make("div", "row"), what = make("div", "what");
-      what.append(make("div", "l1", name), make("div", "l2 num", sub));
+    const line = (ic, name, parts, x) => {     // parts: kept whole, the line wraps only between them
+      const row = make("div", "row"), what = make("div", "what"), sub = make("div", "l2 num");
+      parts.forEach((p, i) => sub.append(...(i ? [" · "] : []), make("span", null, p)));
+      what.append(make("div", "l1", name), sub);
       row.append(make("div", "ic", ic), what, make("div", "amt num " + tone(x), usd(x, true)));
       return row;
     };
+    const parts = r => [r.booked != null && "realized " + usd(r.funding == null ? r.booked : r.booked - r.funding, true),
+      r.funding != null && "funding " + usd(r.funding, true), r.open != null && "open " + usd(r.open, true)];
     const shown = rows.filter(r => SHOWN.includes(r.coin));
-    const els = shown.map(r => line(r.coin.slice(0, 4), r.coin, [r.booked != null && "realized " + usd(r.booked, true),
-      r.open != null && "open " + usd(r.open, true)].filter(Boolean).join(" · ") || "no result yet", total(r)));
-    if (rows.length > 1 || !shown.length) els.push(line("All", "Total", "all coins, realized + open",
-      rows.reduce((a, r) => a + total(r), 0)));
+    const els = shown.map(r => {
+      const p = parts(r).filter(Boolean);
+      return line(r.coin.slice(0, 4), r.coin, p.length ? p : ["no result yet"], total(r));
+    });
+    if (rows.length > 1 || !shown.length) {   // the total's funding on its own when every coin's is known
+      const sum = k => rows.some(r => r[k] != null) ? rows.reduce((a, r) => a + (r[k] || 0), 0) : null;
+      const known = rows.every(r => r.booked == null || r.funding != null);
+      const all = {booked: sum("booked"), funding: known ? sum("funding") : null, open: sum("open")};
+      els.push(line("All", "Total", ["all coins", ...parts(all)].filter(Boolean), rows.reduce((a, r) => a + total(r), 0)));
+    }
     box.replaceChildren(...els);
   }
 

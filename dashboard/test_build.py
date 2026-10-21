@@ -40,15 +40,19 @@ class PageData(unittest.TestCase):
         self.assertEqual((btc["mark"], btc["mark_snap"], eth["mark"]), (84000.0, 83500.0, 2530.0))
         self.assertTrue(doc["marks_live"])
 
-    def test_futures_marks_reads_the_perpetuals(self):
-        tickers = {"tickers": [{"symbol": "PF_XBTUSD", "markPrice": 84000.5}, {"symbol": "PF_ETHUSD", "markPrice": "NaN"},
+    def test_futures_now_reads_the_perpetuals(self):
+        tickers = {"tickers": [{"symbol": "PF_XBTUSD", "markPrice": 84000.5, "fundingRate": 0.84},
+                               {"symbol": "PF_ETHUSD", "markPrice": "NaN", "fundingRate": 0.1},
                                {"symbol": "pf_solusd", "markPrice": 101.25}]}
         with mock.patch.dict(os.environ, {"NO_NETWORK": ""}), \
                 mock.patch.object(B, "get", return_value=json.dumps(tickers).encode()) as get:
-            self.assertEqual(B.futures_marks(["BTC", "ETH", "SOL", "XRP"]), {"BTC": 84000.5, "SOL": 101.25})
+            marks, rates = B.futures_now(["BTC", "ETH", "SOL", "XRP"])
+        self.assertEqual(marks, {"BTC": 84000.5, "SOL": 101.25})
+        self.assertEqual(list(rates), ["BTC"])                        # Kraken's USD per coin per hour, per dollar
+        self.assertAlmostEqual(rates["BTC"], 0.84 / 84000.5)
         self.assertIn("futures.kraken.com", get.call_args[0][0])
         with mock.patch.dict(os.environ, {"NO_NETWORK": ""}), mock.patch.object(B, "get", side_effect=OSError("down")):
-            self.assertEqual(B.futures_marks(["BTC"]), {})
+            self.assertEqual(B.futures_now(["BTC"]), ({}, {}))
 
     def test_no_liquidation_figures_reach_the_page(self):
         snap = sample()
@@ -141,14 +145,90 @@ class Coins(unittest.TestCase):
                        {"coin": "BTC", "usd": "NaN", "since": "2026-10-07T20:11:12Z"},
                        {"coin": "b@d", "usd": 1.0, "since": "2026-10-07T20:11:12Z"},
                        {"coin": "SOL", "usd": 1.0, "since": "bad time"}, "not a row"])
-        self.assertEqual(got, [{"coin": "BTC", "usd": None, "since": "2026-10-07T20:11:12Z"},
-                               {"coin": "XRP", "usd": -38.2, "since": "2026-10-07T20:11:19Z"},
-                               {"coin": "DOGE", "usd": 0.4, "since": "2026-10-08T14:48:59Z"}])
+        self.assertEqual(got, [{"coin": "BTC", "usd": None, "funding": None, "since": "2026-10-07T20:11:12Z"},
+                               {"coin": "XRP", "usd": -38.2, "funding": None, "since": "2026-10-07T20:11:19Z"},
+                               {"coin": "DOGE", "usd": 0.4, "funding": None, "since": "2026-10-08T14:48:59Z"}])
 
     def test_the_sample_gives_each_coin_and_no_fills_reach_the_page(self):
         doc = B.page_data(sample(), {}, NOW)
         self.assertEqual([c["coin"] for c in doc["coins"]], ["BTC", "ETH", "SOL", "XRP"])
         self.assertNotIn("fills", json.dumps(doc))
+        self.assertNotIn("open_funding", json.dumps(doc))
+
+
+class Funding(unittest.TestCase):
+    def test_funding_of_each_position_and_coin_passes_through(self):
+        doc = B.page_data(sample(), {}, NOW)
+        btc, eth = doc["positions"][:2]
+        self.assertEqual((btc["funding"], btc["funding_since"], btc["funding_rate"]), (-0.35, "2026-10-10T09:12:40Z", 1.2e-05))
+        self.assertEqual((eth["funding"], eth["funding_since"]), (0.12, "2026-10-11T14:02:11Z"))
+        self.assertEqual([(c["coin"], c["usd"], c["funding"]) for c in doc["coins"]],
+                         [("BTC", -1.84, -0.52), ("ETH", -9.37, 0.05), ("SOL", 4.21, -0.08), ("XRP", -11.6, -0.31)])
+
+    def test_kraken_rates_now_replace_the_snapshots(self):
+        doc = B.page_data(sample(), {"BTC": 84000.0}, NOW, None, {"BTC": -3e-06})
+        self.assertEqual([p["funding_rate"] for p in doc["positions"]], [-3e-06, 2e-05, 4.2e-05])
+
+    def test_a_snapshot_from_before_the_split_has_no_funding_figures(self):
+        snap = sample()
+        for p in snap["positions"]:
+            p.pop("funding_since")
+            p["funding"] = None
+        for r in snap["results"]:
+            r.pop("funding")
+        snap["positions"][0]["funding_since"] = "yesterday"
+        doc = B.page_data(snap, {}, NOW)
+        self.assertEqual({(p["funding"], p["funding_since"]) for p in doc["positions"]}, {(None, None)})
+        self.assertEqual({c["funding"] for c in doc["coins"]}, {None})
+
+    def test_page_writes_funding_rates_per_hour(self):
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("node not installed")
+        html = (Path(__file__).resolve().parent / "template.html").read_text()
+        helpers = [re.search(r"\n  const %s = .*?;\n" % name, html, re.S).group(0) for name in ("MINUS", "fix", "signed")]
+        fn = re.search(r"\n  const hourly = x => \{\n.*?\n  \};\n", html, re.S).group(0)
+        js = "".join(helpers) + fn + "console.log(JSON.stringify([1.127e-5, 3.3216e-6, -2e-5, 0, 1.25e-4].map(hourly)));"
+        r = subprocess.run([node, "-e", js], capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(json.loads(r.stdout), ["+0.0011%/h", "+0.00033%/h", "−0.0020%/h", "0.0000%/h", "+0.0125%/h"])
+
+
+class FreeMargin(unittest.TestCase):
+    def test_isolated_positions_are_marked_and_older_snapshots_count_as_cross(self):
+        doc = B.page_data(sample(), {}, NOW)
+        self.assertEqual([(p["coin"], p["isolated"]) for p in doc["positions"]],
+                         [("BTC", False), ("ETH", True), ("SOL", False)])
+        snap = sample()
+        for p in snap["positions"]:
+            p.pop("isolated")
+        snap["positions"][2]["isolated"] = "yes"
+        self.assertEqual({p["isolated"] for p in B.page_data(snap, {}, NOW)["positions"]}, {False})
+
+    def test_page_free_margin_moves_only_with_cross_positions(self):
+        """The page's account(): Kraken's free margin from the account read, moved by the open P&L since then of the
+        positions on cross margin only (21 Oct: the isolated BTC short's P&L had moved $0.75 to about -$7)."""
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("node not installed")
+        html = (Path(__file__).resolve().parent / "template.html").read_text()
+        fn = re.search(r"\n  function account\(\) \{\n.*?\n  \}\n", html, re.S).group(0)
+        short = {"coin": "BTC", "side": "Short", "qty": 0.0165, "entry": 82534.78, "mark_snap": 82778.70, "mark": 83250.0}
+        long = {"coin": "ETH", "side": "Long", "qty": 0.5, "entry": 2400.0, "mark_snap": 2450.0, "mark": 2470.0}
+        cases = [[dict(short, isolated=True)], [dict(short, isolated=False)],
+                 [dict(short, isolated=True), dict(long, isolated=False)]]
+        js = ("const live = {};\nlet D;\n" + fn + "console.log(JSON.stringify(" + json.dumps(cases) + ".map(ps => {"
+              "D = {equity_snap: 132.74, available: 0.745, positions: ps}; const a = account(); return [a.value, a.free];"
+              "})));")
+        r = subprocess.run([node, "-e", js], capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        iso, cross, both = json.loads(r.stdout)
+        move = -0.0165 * (83250.0 - 82778.70)
+        self.assertAlmostEqual(iso[0], 132.74 + move)                 # the account value moves either way
+        self.assertAlmostEqual(iso[1], 0.745)                         # Kraken's figure: the short's P&L stays out
+        self.assertAlmostEqual(cross[1], 0.745 + move)
+        self.assertAlmostEqual(both[0], 132.74 + move + 10.0)
+        self.assertAlmostEqual(both[1], 0.745 + 10.0)                 # only the cross long moves it
 
 
 class Page(unittest.TestCase):

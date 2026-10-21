@@ -3,12 +3,15 @@
 
 Reads the read-only account snapshot (positions.json on the branch positions-data of the private repo
 Tommievr/tradingbot, written every hour by its ops/positions_snapshot.py) with the read-only token
-TRADINGBOT_READ_TOKEN, re-prices the open positions with Kraken's public futures prices, passes on each coin's result
-(from Kraken's account log: P&L, fees and funding) and the deposits and withdrawals (the page leaves them out of its
-gain or loss), and writes site/index.html (the page, its data inline) and site/data.json (the same data, which the
+TRADINGBOT_READ_TOKEN, re-prices the open positions with Kraken's public futures prices (and takes the funding rates
+from the same read), passes on each coin's result (from Kraken's account log: P&L, fees and funding, with the funding
+also on its own, as on each open position) and the deposits and withdrawals (the page leaves them out of its gain or
+loss), and writes site/index.html (the page, its data inline) and site/data.json (the same data, which the
 open page re-reads every few minutes). The account value starts at FRESH_START: the value history and money moves
 before it are left out, while the results per coin keep everything the snapshot has, losses included. The browser
-re-prices the positions every minute from Kraken's public prices and works out the account value and the P&L itself.
+re-prices the positions every minute from Kraken's public prices and works out the account value, the P&L and the free
+margin itself (Kraken's free margin moves with the open P&L of positions on cross margin only, so each position says
+whether it is isolated).
 The page shows no liquidation figures and no trade list, so neither is passed on.
 
 Exit codes: 0 built, 3 no snapshot could be read (nothing written: the workflow keeps the last page up).
@@ -71,22 +74,26 @@ def perp(coin):
     return f"PF_{'XBT' if coin == 'BTC' else coin}USD"
 
 
-def futures_marks(coins):
-    """{coin: Kraken's mark price now} for the coins held; empty when Kraken is not reachable."""
+def futures_now(coins):
+    """({coin: Kraken's mark price now}, {coin: its funding rate now, per hour as a fraction of the position's value})
+    for the coins held; both empty when Kraken is not reachable."""
     if not coins or os.environ.get("NO_NETWORK"):
-        return {}
+        return {}, {}
     try:
         tickers = json.loads(get("https://futures.kraken.com/derivatives/api/v3/tickers"))["tickers"]
         by_sym = {str(t.get("symbol", "")).upper(): t for t in tickers}
-    except Exception as e:  # the page then starts from the snapshot's prices
+    except Exception as e:  # the page then starts from the snapshot's prices and rates
         print("kraken tickers failed:", type(e).__name__)
-        return {}
-    out = {}
+        return {}, {}
+    marks, rates = {}, {}
     for c in coins:
-        mark = num((by_sym.get(perp(c)) or {}).get("markPrice"))
+        t = by_sym.get(perp(c)) or {}
+        mark, rate = num(t.get("markPrice")), num(t.get("fundingRate"))     # the rate in USD per coin per hour
         if mark and mark > 0:
-            out[c] = mark
-    return out
+            marks[c] = mark
+            if rate is not None:
+                rates[c] = rate / mark
+    return marks, rates
 
 
 def positions(snap):
@@ -100,19 +107,21 @@ def positions(snap):
                 qty and qty > 0 and entry and entry > 0 and mark and mark > 0):
             continue
         out.append({"coin": coin, "side": side, "qty": qty, "entry": entry, "mark_snap": mark,
-                    "stop": num(p.get("stop")), "tp": num(p.get("tp")),
-                    "funding": num(p.get("funding")), "funding_rate": num(p.get("funding_rate"))})
+                    "stop": num(p.get("stop")), "tp": num(p.get("tp")), "funding": num(p.get("funding")),
+                    "funding_since": utc(p.get("funding_since")), "funding_rate": num(p.get("funding_rate")),
+                    "isolated": p.get("isolated") is True})
     out.sort(key=lambda p: (ORDER.index(p["coin"]) if p["coin"] in ORDER else len(ORDER), -p["qty"] * p["mark_snap"]))
     return out
 
 
 def coins(results):
-    """Each coin's result in the account from the snapshot (USD, after fees and funding; None when unknown) and the
-    time of its first booking, in the page's coin order. None when the snapshot has no results (unknown, not none)."""
+    """Each coin's result in the account from the snapshot (USD, after fees and funding; None when unknown), the
+    funding part of it (None when unknown) and the time of its first booking, in the page's coin order. None when the
+    snapshot has no results (unknown, not none)."""
     if not isinstance(results, list):
         return None
-    out = [{"coin": r["coin"], "usd": num(r.get("usd")), "since": utc(r.get("since"))} for r in results
-           if isinstance(r, dict) and COIN.fullmatch(str(r.get("coin", ""))) and utc(r.get("since"))]
+    out = [{"coin": r["coin"], "usd": num(r.get("usd")), "funding": num(r.get("funding")), "since": utc(r.get("since"))}
+           for r in results if isinstance(r, dict) and COIN.fullmatch(str(r.get("coin", ""))) and utc(r.get("since"))]
     return sorted(out, key=lambda c: (ORDER.index(c["coin"]) if c["coin"] in ORDER else len(ORDER), c["coin"]))
 
 
@@ -146,14 +155,16 @@ def since(start, hist, moved):
     return hist, moved
 
 
-def page_data(snap, marks, now, start=None):
-    """The page's data; with `start` (a time in FMT) the account value starts afresh there, see since()."""
+def page_data(snap, marks, now, start=None, rates=None):
+    """The page's data; with `start` (a time in FMT) the account value starts afresh there, see since(). `marks` and
+    `rates` (Kraken's prices and funding rates now) replace the snapshot's for the coins they have."""
     snap_utc, equity = utc(snap.get("snapshot_utc")), num(snap.get("equity"))
     if not snap_utc or equity is None:
         raise ValueError("the snapshot has no time or account value")
     pos = positions(snap)
     for p in pos:
         p["mark"] = marks.get(p["coin"], p["mark_snap"])
+        p["funding_rate"] = (rates or {}).get(p["coin"], p["funding_rate"])
     hist, moved = history(snap), transfers(snap)
     if start:
         hist, moved = since(start, hist, moved)
@@ -182,8 +193,8 @@ def main():
     except Exception as e:      # the token, GitHub or the file: only the kind of failure is printed
         print("account snapshot not usable:", type(e).__name__, getattr(e, "code", ""))
         return 3
-    marks = futures_marks([p["coin"] for p in doc["positions"]])
-    doc = page_data(snap, marks, now, FRESH_START)
+    marks, rates = futures_now([p["coin"] for p in doc["positions"]])
+    doc = page_data(snap, marks, now, FRESH_START, rates)
     write(doc, HERE.parent / "site")
     print(f"built {NAME}: snapshot {doc['snapshot_utc']}, {len(doc['positions'])} position(s), "
           f"{'no' if doc['coins'] is None else len(doc['coins'])} coin result(s), prices "
