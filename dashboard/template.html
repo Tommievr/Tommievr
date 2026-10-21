@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
 <style>
 /* Tidebot: one narrow column. Account value and its chart on top, then the open positions (biggest coins first)
-   and each coin's result. Everything is worked out in the browser from the data below, so the live prices (every
-   minute) move every number on the page together. */
+   and the results: BTC's and the total of all coins. Everything is worked out in the browser from the data below, so
+   the live prices (every minute) move every number on the page together. */
 :root{
   --bg:#eef3f3; --card:#ffffff; --fg:#0d1d22; --muted:#55696f; --faint:#7f9297; --line:#dbe5e6;
   --accent:#0b7f8a; --accent-soft:rgba(11,127,138,.11); --on-accent:#ffffff;
@@ -132,7 +132,7 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
   </section>
   <h2>Open positions <span class="count" id="posCount">0</span></h2>
   <div class="list" id="positions"></div>
-  <h2>Results per coin <span class="sub num" id="coinsSince"></span></h2>
+  <h2>Results <span class="sub num" id="coinsSince"></span></h2>
   <div class="card coins" id="coins"></div>
   <footer id="foot"></footer>
 </div>
@@ -142,6 +142,7 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
   "use strict";
   let D = JSON.parse(document.getElementById("data").textContent);
   const SPOT = {BTC: "XBTUSD"};               // Kraken spot pairs; other coins: COIN + "USD"
+  const SHOWN = ["BTC"];                        // coins with a results line of their own; every coin counts in the total
   const LIVE_FOR = 3 * 60e3;                    // a live price this recent counts as live
   const live = {};                              // coin -> {px, t} from Kraken's public prices
   let lastLive = 0;
@@ -202,7 +203,7 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
     b.className = "banner" + (age > 24 * 3600e3 ? " bad" : "");
     b.textContent = "The account was last read " + ago(age) + ". Position changes and results since then are not shown yet.";
     $("foot").textContent = "Tidebot reads the account every hour (read-only) and the prices every minute. " +
-      "Last account read " + ago(age) + ". Open P&L before fees and funding; results per coin after both. " +
+      "Last account read " + ago(age) + ". Open P&L before fees and funding; results after both. " +
       "Funding is what Kraken booked, every hour; the funding rate is per hour, and above 0 longs pay shorts.";
   }
 
@@ -360,8 +361,9 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
     }));
   }
 
-  // Each coin's result: what the account booked on it (Kraken's P&L and fees, and the funding on its own) plus its
-  // open position now, and the total of all coins under them.
+  // A coin's result: what the account booked on it (Kraken's P&L and fees, and the funding on its own) plus its open
+  // position now. The coins in SHOWN get a line each, and the total under them counts every coin, the ones no longer
+  // traded too.
   function renderCoins(A) {
     const box = $("coins"), open = {};
     for (const p of A.pos) open[p.coin] = (open[p.coin] || 0) + p.pnl;
@@ -383,12 +385,15 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
     };
     const parts = r => [r.booked != null && "realized " + usd(r.funding == null ? r.booked : r.booked - r.funding, true),
       r.funding != null && "funding " + usd(r.funding, true), r.open != null && "open " + usd(r.open, true)];
-    const els = rows.map(r => line(r.coin.slice(0, 4), r.coin, parts(r).filter(Boolean).join(" · ") || "no result yet", total(r)));
-    if (rows.length > 1) {                    // the funding of all coins on its own when every coin's is known
+    const shown = rows.filter(r => SHOWN.includes(r.coin));
+    const els = shown.map(r => line(r.coin.slice(0, 4), r.coin, parts(r).filter(Boolean).join(" · ") || "no result yet",
+      total(r)));
+    if (rows.length > 1 || !shown.length) {   // the total's funding on its own when every coin's is known
       const sum = k => rows.some(r => r[k] != null) ? rows.reduce((a, r) => a + (r[k] || 0), 0) : null;
       const known = rows.every(r => r.booked == null || r.funding != null);
       const all = {booked: sum("booked"), funding: known ? sum("funding") : null, open: sum("open")};
-      els.push(line("All", "All coins", parts(all).filter(Boolean).join(" · "), rows.reduce((a, r) => a + total(r), 0)));
+      els.push(line("All", "Total", ["all coins", ...parts(all)].filter(Boolean).join(" · "),
+        rows.reduce((a, r) => a + total(r), 0)));
     }
     box.replaceChildren(...els);
   }
