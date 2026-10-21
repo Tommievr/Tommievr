@@ -9,7 +9,9 @@ also on its own, as on each open position) and the deposits and withdrawals (the
 loss), and writes site/index.html (the page, its data inline) and site/data.json (the same data, which the
 open page re-reads every few minutes). The account value starts at FRESH_START: the value history and money moves
 before it are left out, while the results per coin keep everything the snapshot has, losses included. The browser
-re-prices the positions every minute from Kraken's public prices and works out the account value and the P&L itself.
+re-prices the positions every minute from Kraken's public prices and works out the account value, the P&L and the free
+margin itself (Kraken's free margin moves with the open P&L of positions on cross margin only, so each position says
+whether it is isolated).
 The page shows no liquidation figures and no trade list, so neither is passed on.
 
 Exit codes: 0 built, 3 no snapshot could be read (nothing written: the workflow keeps the last page up).
@@ -106,7 +108,8 @@ def positions(snap):
             continue
         out.append({"coin": coin, "side": side, "qty": qty, "entry": entry, "mark_snap": mark,
                     "stop": num(p.get("stop")), "tp": num(p.get("tp")), "funding": num(p.get("funding")),
-                    "funding_since": utc(p.get("funding_since")), "funding_rate": num(p.get("funding_rate"))})
+                    "funding_since": utc(p.get("funding_since")), "funding_rate": num(p.get("funding_rate")),
+                    "isolated": p.get("isolated") is True})
     out.sort(key=lambda p: (ORDER.index(p["coin"]) if p["coin"] in ORDER else len(ORDER), -p["qty"] * p["mark_snap"]))
     return out
 

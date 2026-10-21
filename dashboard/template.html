@@ -94,6 +94,7 @@ h2 .sub{font:500 .74rem var(--ui);color:var(--muted)}
 .what{min-width:0}
 .what .l1{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-weight:600}
 .what .l2{font-size:.78rem;color:var(--muted);margin-top:1px}
+.what .l2 span{white-space:nowrap}
 .amt{text-align:right;font:600 .95rem var(--display);white-space:nowrap}
 .amt small{display:block;font:600 .76rem var(--ui);margin-top:1px}
 .empty{color:var(--muted);font-size:.9rem;padding:18px 2px;text-align:center}
@@ -187,10 +188,12 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
       const s = p.side === "Long" ? 1 : -1, now = live[p.coin] ? live[p.coin].px : p.mark;
       return Object.assign({}, p, {s, now, pnl: s * p.qty * (now - p.entry), move: s * (now / p.entry - 1), value: p.qty * now});
     });
-    const value = D.equity_snap + pos.reduce((a, p) => a + p.s * p.qty * (p.now - p.mark_snap), 0);
+    const move = p => p.s * p.qty * (p.now - p.mark_snap);    // its open P&L since the account was read
+    const value = D.equity_snap + pos.reduce((a, p) => a + move(p), 0);
     const notional = pos.reduce((a, p) => a + p.value, 0);
-    return {pos, value, notional, free: D.available == null ? null : D.available + (value - D.equity_snap),
-            lev: value > 0 && pos.length ? notional / value : null};
+    // Kraken's free margin moves with the open P&L of positions on cross margin; an isolated one's stays out of it
+    const free = D.available == null ? null : D.available + pos.reduce((a, p) => a + (p.isolated ? 0 : move(p)), 0);
+    return {pos, value, notional, free, lev: value > 0 && pos.length ? notional / value : null};
   }
 
   function renderStatus() {
@@ -377,23 +380,25 @@ footer{font-size:.75rem;color:var(--faint);text-align:center;line-height:1.6;pad
       return;
     }
     const total = r => (r.booked || 0) + (r.open || 0);
-    const line = (ic, name, sub, x) => {
-      const row = make("div", "row"), what = make("div", "what");
-      what.append(make("div", "l1", name), make("div", "l2 num", sub));
+    const line = (ic, name, parts, x) => {     // parts: kept whole, the line wraps only between them
+      const row = make("div", "row"), what = make("div", "what"), sub = make("div", "l2 num");
+      parts.forEach((p, i) => sub.append(...(i ? [" · "] : []), make("span", null, p)));
+      what.append(make("div", "l1", name), sub);
       row.append(make("div", "ic", ic), what, make("div", "amt num " + tone(x), usd(x, true)));
       return row;
     };
     const parts = r => [r.booked != null && "realized " + usd(r.funding == null ? r.booked : r.booked - r.funding, true),
       r.funding != null && "funding " + usd(r.funding, true), r.open != null && "open " + usd(r.open, true)];
     const shown = rows.filter(r => SHOWN.includes(r.coin));
-    const els = shown.map(r => line(r.coin.slice(0, 4), r.coin, parts(r).filter(Boolean).join(" · ") || "no result yet",
-      total(r)));
+    const els = shown.map(r => {
+      const p = parts(r).filter(Boolean);
+      return line(r.coin.slice(0, 4), r.coin, p.length ? p : ["no result yet"], total(r));
+    });
     if (rows.length > 1 || !shown.length) {   // the total's funding on its own when every coin's is known
       const sum = k => rows.some(r => r[k] != null) ? rows.reduce((a, r) => a + (r[k] || 0), 0) : null;
       const known = rows.every(r => r.booked == null || r.funding != null);
       const all = {booked: sum("booked"), funding: known ? sum("funding") : null, open: sum("open")};
-      els.push(line("All", "Total", ["all coins", ...parts(all)].filter(Boolean).join(" · "),
-        rows.reduce((a, r) => a + total(r), 0)));
+      els.push(line("All", "Total", ["all coins", ...parts(all)].filter(Boolean), rows.reduce((a, r) => a + total(r), 0)));
     }
     box.replaceChildren(...els);
   }

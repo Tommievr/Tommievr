@@ -194,6 +194,43 @@ class Funding(unittest.TestCase):
         self.assertEqual(json.loads(r.stdout), ["+0.0011%/h", "+0.00033%/h", "−0.0020%/h", "0.0000%/h", "+0.0125%/h"])
 
 
+class FreeMargin(unittest.TestCase):
+    def test_isolated_positions_are_marked_and_older_snapshots_count_as_cross(self):
+        doc = B.page_data(sample(), {}, NOW)
+        self.assertEqual([(p["coin"], p["isolated"]) for p in doc["positions"]],
+                         [("BTC", False), ("ETH", True), ("SOL", False)])
+        snap = sample()
+        for p in snap["positions"]:
+            p.pop("isolated")
+        snap["positions"][2]["isolated"] = "yes"
+        self.assertEqual({p["isolated"] for p in B.page_data(snap, {}, NOW)["positions"]}, {False})
+
+    def test_page_free_margin_moves_only_with_cross_positions(self):
+        """The page's account(): Kraken's free margin from the account read, moved by the open P&L since then of the
+        positions on cross margin only (21 Oct: the isolated BTC short's P&L had moved $0.75 to about -$7)."""
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("node not installed")
+        html = (Path(__file__).resolve().parent / "template.html").read_text()
+        fn = re.search(r"\n  function account\(\) \{\n.*?\n  \}\n", html, re.S).group(0)
+        short = {"coin": "BTC", "side": "Short", "qty": 0.0165, "entry": 82534.78, "mark_snap": 82778.70, "mark": 83250.0}
+        long = {"coin": "ETH", "side": "Long", "qty": 0.5, "entry": 2400.0, "mark_snap": 2450.0, "mark": 2470.0}
+        cases = [[dict(short, isolated=True)], [dict(short, isolated=False)],
+                 [dict(short, isolated=True), dict(long, isolated=False)]]
+        js = ("const live = {};\nlet D;\n" + fn + "console.log(JSON.stringify(" + json.dumps(cases) + ".map(ps => {"
+              "D = {equity_snap: 132.74, available: 0.745, positions: ps}; const a = account(); return [a.value, a.free];"
+              "})));")
+        r = subprocess.run([node, "-e", js], capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        iso, cross, both = json.loads(r.stdout)
+        move = -0.0165 * (83250.0 - 82778.70)
+        self.assertAlmostEqual(iso[0], 132.74 + move)                 # the account value moves either way
+        self.assertAlmostEqual(iso[1], 0.745)                         # Kraken's figure: the short's P&L stays out
+        self.assertAlmostEqual(cross[1], 0.745 + move)
+        self.assertAlmostEqual(both[0], 132.74 + move + 10.0)
+        self.assertAlmostEqual(both[1], 0.745 + 10.0)                 # only the cross long moves it
+
+
 class Page(unittest.TestCase):
     def test_written_page_and_data(self):
         doc = B.page_data(sample(), {}, NOW)
