@@ -7,14 +7,13 @@ name: bot-dashboard
 # Tommievr/tradingbot, written every hour there by ops/positions_snapshot.py) with the read-only token
 # TRADINGBOT_READ_TOKEN. No Kraken key is in this repo. When the snapshot cannot be read, nothing is deployed and the
 # last page stays up (it shows how old its data is). A file dashboard/PAUSED publishes the blank offline page instead.
+# Offline since 30 Oct 2026 (Tommie: "get the page off"): dashboard/PAUSED is set and the timer is removed.
 on:
   push:
     branches: [main]
     paths:
       - "dashboard/**"
       - ".github/workflows/bot-dashboard.yml"
-  schedule:
-    - cron: "17,47 * * * *"
   workflow_dispatch:
 
 permissions:
